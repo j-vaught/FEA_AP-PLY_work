@@ -13,7 +13,7 @@
 | 06 composite_failure_criteria | INCONCLUSIVE | 5.6 s | Canonical LAW25 + TYPE14 deck is rejected by starter with ERROR 3047 material/property compatibility. TYPE6/SOL_ORTH proxy confirms TSAIWU, HASHIN, and PUCK failure cards execute on solid elements, but the stage TYPE14 gate is not evaluable. |
 | 07 UD_tow_D3039 | INCONCLUSIVE | 1.2 s | Canonical 0 deg and 45 deg D3039 LAW25 + TYPE14 decks fail at starter with ERROR 3047. TYPE6/SOL_ORTH proxy starters succeed, but no modulus gate is evaluated because the required TYPE14 path is blocked. |
 | 08 ply_rotation | INCONCLUSIVE | 4.3 s | Seven-angle LAW25 + TYPE14 ply-rotation sweep fails at starter with ERROR 3047 for every angle. TYPE6/SOL_ORTH proxy starters succeed; analytic Ex(theta) table is reported without FEM modulus claims. |
-| 09 laminate_solid_CLT | not attempted | - | Pending. |
+| 09 laminate_solid_CLT | INCONCLUSIVE | 1.1 s | Cross-ply and quasi-isotropic per-ply LAW25 + TYPE14 laminate probes fail at starter with ERROR 3047. Analytic CLT A-matrices are reported; TYPE6/SOL_ORTH proxy starters succeed but are not used for the gate. |
 | 10 UD_mesoscale_direct | not attempted | - | Pending. |
 | 11 PW_mesoscale_direct | not attempted | - | Pending; Kok geometry port required after stage 10. |
 | 12 DCB_ENF_cohesive | not attempted | - | Pending. |
@@ -31,3 +31,5 @@ Stage 06 exposed a toolchain/specification mismatch: this OpenRadioss starter ac
 Stage 07 is blocked by the same LAW25 + TYPE14 compatibility issue for the D3039 on-axis and off-axis coupons. See `tests/stage_07_UD_tow_D3039/blocker.md`.
 
 Stage 08 is likewise blocked for all seven required ply angles; the analytic stiffness transformation is reported but the FEM gate is not evaluated. See `tests/stage_08_ply_rotation/blocker.md`.
+
+Stage 09 is blocked by the same per-ply LAW25 + TYPE14 incompatibility for both laminate stacks. See `tests/stage_09_laminate_solid_CLT/blocker.md`.

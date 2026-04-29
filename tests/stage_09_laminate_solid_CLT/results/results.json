@@ -1,0 +1,38 @@
+{
+  "stage": 9,
+  "verdict": "INCONCLUSIVE",
+  "metrics": {
+    "canonical_type14_law25_supported": false,
+    "canonical_type14_error_id": 3047,
+    "type6_sol_orth_proxy_starter_supported": true,
+    "layup_count": 2,
+    "clt_A_gate_evaluated": false,
+    "wall_clock_s": 1.1235961439087987
+  },
+  "reference": {
+    "material_card": "/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json",
+    "ply_thickness_m": 0.00018,
+    "layups": {
+      "A_crossply": [
+        0.0,
+        90.0,
+        90.0,
+        0.0
+      ],
+      "B_quasiiso": [
+        0.0,
+        45.0,
+        -45.0,
+        90.0,
+        90.0,
+        -45.0,
+        45.0,
+        0.0
+      ]
+    }
+  },
+  "tolerance": {
+    "A_matrix_component_relative_error": 0.02
+  },
+  "git_sha": "b13d60bc8402c112e1d977962766667ece6dd93c"
+}
