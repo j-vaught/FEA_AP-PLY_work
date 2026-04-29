@@ -112,3 +112,15 @@ B6. Continue stage 03 → 16 per the rules in `CODEX_BRIEF.md` (which still appl
 - Token / time budget — push everything and exit gracefully.
 
 Begin with Phase A.
+
+## Phase A completion notes
+
+Completed on 2026-04-29 on `comech-2422`.
+
+- Installed conda-forge `mumps-mpi=5.8.2=h9620d77_2` with `mumps-include=5.8.2=h158ef2a_2`, OpenMPI 5.0.10, ScaLAPACK 2.2.0, METIS 5.1.0, ParMETIS 4.0.3, and int32 Scotch/PT-Scotch 7.0.11 in `/home/j-vaught/miniforge3/envs/feaapply`.
+- Expanded `/mnt/storage/j-vaught/openradioss/OpenRadioss-src` from the qa-tests sparse checkout and loaded OpenRadioss external library bundle v57.
+- Built `starter_linux64_gf` from source with `./build_script.sh -arch=linux64_gf -release -nt 16`.
+- Built the MUMPS-enabled OpenMPI engine with `./build_script.sh -arch=linux64_gf -mpi=ompi -mpi-root=/home/j-vaught/miniforge3/envs/feaapply -mumps_root=/mnt/storage/j-vaught/openradioss/OpenRadioss-src/engine/extlib/conda_mumps_compat -scalapack_root=/mnt/storage/j-vaught/openradioss/OpenRadioss-src/engine/extlib/conda_mumps_compat/lib -lapack_root=/mnt/storage/j-vaught/openradioss/OpenRadioss-src/engine/extlib/conda_mumps_compat/lib -release -nt 16`.
+- Installed the new runtime under `/mnt/storage/j-vaught/openradioss/OpenRadioss`: prebuilt executables are backed up as `*_prebuilt.bak`; `engine_linux64_gf` is a small wrapper that sets the `feaapply` library path and delegates to the MUMPS-linked `engine_linux64_gf_ompi`.
+- Updated the runtime `hm_cfg_files` and `extlib/hm_reader` from the same source/extlib bundle so the 2612 starter and reader configuration match.
+- Stage 02 implicit smoke now enters `DMUMPS 5.8.2`; the old `Fatal error: MUMPS required` no longer appears. The remaining smoke failure is an implicit timestep/convergence issue in the stage deck controls, not the MUMPS toolchain blocker.
