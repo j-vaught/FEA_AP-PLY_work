@@ -1,0 +1,762 @@
+material_card=/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json
+starter=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf
+engine=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage06_type14_canonical_probe_0000.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 06 TSAIWU one-brick failure-card probe
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    1 THREAD
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. SKEW SYSTEMS                                                                         
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+
+ERROR ID :   3047
+** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
+ .. GEOMETRY PLOT FILE                                                                   
+ .. ERROR ==> NO RESTART FILE                                                            
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  17:28:32
+ EXECUTION COMPLETED    :      2026/04/29  17:28:33
+  
+ ELAPSED TIME...........=          0.25 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     ERROR TERMINATION                  
+     ------------------                                                                  
+              1 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage06_TSAIWU_type6_proxy_0000.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 06 TSAIWU one-brick failure-card probe
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    1 THREAD
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. SKEW SYSTEMS                                                                         
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  17:28:33
+ EXECUTION COMPLETED    :      2026/04/29  17:28:33
+  
+ ELAPSED TIME...........=          0.24 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage06_TSAIWU_type6_proxy_0001.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage06_TSAIWU_type6_proxy  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     1
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 8.1975E-05 ERR=  0.0% DM/M= 0.0000E+00
+     ANIMATION FILE: stage06_TSAIWU_type6_proxyA001 WRITTEN
+ FAILURE (TSAIWU) OF SOLID ELEMENT          1 ,GAUSS PT    1 ,LAYER    1 AT TIME : 4.0987250614287E-04
+     ANIMATION FILE: stage06_TSAIWU_type6_proxyA002 WRITTEN
+     ANIMATION FILE: stage06_TSAIWU_type6_proxyA003 WRITTEN
+     ANIMATION FILE: stage06_TSAIWU_type6_proxyA004 WRITTEN
+     RESTART FILES: stage06_TSAIWU_type6_proxy_0001_[0001-0001].rst WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .3550E-03 .3498E-04 .2301E-04 .3035E-02 .2270E-03 .1200E-04 .4512E-02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1997E-05     0.04 % 
+ ELEMENT FORCES..............: .3550E-03     7.87 % 
+ KINEMATIC COND..............: .3498E-04     0.78 % 
+ INTEGRATION.................: .2301E-04     0.51 % 
+ ASSEMBLING..................: .1200E-04     0.27 % 
+ OTHERS (including I/O)......: .4085E-02    90.54 % 
+ TOTAL.......................: .4512E-02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:       92 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:       92 MB
+ MINIMUM MEMORY PER PROCESSOR...............:       92 MB
+ AVERAGE MEMORY PER PROCESSOR...............:       92 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.39 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :      13
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_TSAIWU_type6_proxyA001
+# vtk DataFile Version 3.0
+vtk output
+ASCII
+DATASET UNSTRUCTURED_GRID
+FIELD FieldData 2
+TIME 1 1 double
+0.000245923
+CYCLE 1 1 int
+0
+POINTS 8 float
+0 0 0
+1.00492 0 0
+1.00492 1 0
+0 1 0
+0 0 1
+1.00492 0 1
+1.00492 1 1
+0 1 1
+
+CELLS 1 9
+8 0  1  2  3  4  5  6  7
+
+CELL_TYPES 1
+12
+
+POINT_DATA 8
+SCALARS NODE_ID int 1
+LOOKUP_TABLE default
+1
+2
+3
+4
+5
+6
+7
+8
+
+VECTORS Displacement float
+0 0 0
+0.00491847 0 0
+0.00491847 0 0
+0 0 0
+0 0 0
+0.00491847 0 0
+0.00491847 0 0
+0 0 0
+
+CELL_DATA 1
+SCALARS ELEMENT_ID int 1
+LOOKUP_TABLE default
+1
+
+SCALARS PART_ID int 1
+LOOKUP_TABLE default
+1
+
+SCALARS EROSION_STATUS int 1
+LOOKUP_TABLE default
+1
+
+SCALARS 3DELEM_Plastic_Strain float 1
+LOOKUP_TABLE default
+0
+
+TENSORS 3DELEM_Damage float
+0 0 0
+0 0 0
+0 0 0
+
+TENSORS 3DELEM_Strs_Intg_Point111__ float
+4.44775e+07 0 0
+0 0 0
+0 0 0
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage06_HASHIN_type6_proxy_0000.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 06 HASHIN one-brick failure-card probe
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    1 THREAD
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. SKEW SYSTEMS                                                                         
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  17:28:34
+ EXECUTION COMPLETED    :      2026/04/29  17:28:35
+  
+ ELAPSED TIME...........=          0.24 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage06_HASHIN_type6_proxy_0001.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage06_HASHIN_type6_proxy  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     1
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 8.1975E-05 ERR=  0.0% DM/M= 0.0000E+00
+     ANIMATION FILE: stage06_HASHIN_type6_proxyA001 WRITTEN
+ FAILURE (HASHIN) IN SOLID ELEMENT          1 ,GAUSS PT    1 ,LAYER  1
+     ANIMATION FILE: stage06_HASHIN_type6_proxyA002 WRITTEN
+     ANIMATION FILE: stage06_HASHIN_type6_proxyA003 WRITTEN
+     ANIMATION FILE: stage06_HASHIN_type6_proxyA004 WRITTEN
+     RESTART FILES: stage06_HASHIN_type6_proxy_0001_[0001-0001].rst WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .4030E-03 .2398E-04 .1999E-04 .5768E-02 .2300E-03 .1200E-04 .7278E-02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .2995E-05     0.04 % 
+ ELEMENT FORCES..............: .4030E-03     5.54 % 
+ KINEMATIC COND..............: .2398E-04     0.33 % 
+ INTEGRATION.................: .1999E-04     0.27 % 
+ ASSEMBLING..................: .1200E-04     0.16 % 
+ OTHERS (including I/O)......: .6816E-02    93.65 % 
+ TOTAL.......................: .7278E-02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:       91 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:       91 MB
+ MINIMUM MEMORY PER PROCESSOR...............:       91 MB
+ AVERAGE MEMORY PER PROCESSOR...............:       91 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.35 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :      13
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_HASHIN_type6_proxyA001
+# vtk DataFile Version 3.0
+vtk output
+ASCII
+DATASET UNSTRUCTURED_GRID
+FIELD FieldData 2
+TIME 1 1 double
+0.000245923
+CYCLE 1 1 int
+0
+POINTS 8 float
+0 0 0
+1.00492 0 0
+1.00492 1 0
+0 1 0
+0 0 1
+1.00492 0 1
+1.00492 1 1
+0 1 1
+
+CELLS 1 9
+8 0  1  2  3  4  5  6  7
+
+CELL_TYPES 1
+12
+
+POINT_DATA 8
+SCALARS NODE_ID int 1
+LOOKUP_TABLE default
+1
+2
+3
+4
+5
+6
+7
+8
+
+VECTORS Displacement float
+0 0 0
+0.00491847 0 0
+0.00491847 0 0
+0 0 0
+0 0 0
+0.00491847 0 0
+0.00491847 0 0
+0 0 0
+
+CELL_DATA 1
+SCALARS ELEMENT_ID int 1
+LOOKUP_TABLE default
+1
+
+SCALARS PART_ID int 1
+LOOKUP_TABLE default
+1
+
+SCALARS EROSION_STATUS int 1
+LOOKUP_TABLE default
+1
+
+SCALARS 3DELEM_Plastic_Strain float 1
+LOOKUP_TABLE default
+0
+
+TENSORS 3DELEM_Damage float
+0 0 0
+0 0 0
+0 0 0
+
+TENSORS 3DELEM_Strs_Intg_Point111__ float
+4.44775e+07 0 0
+0 0 0
+0 0 0
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage06_PUCK_type6_proxy_0000.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 06 PUCK one-brick failure-card probe
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    1 THREAD
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. SKEW SYSTEMS                                                                         
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  17:28:36
+ EXECUTION COMPLETED    :      2026/04/29  17:28:36
+  
+ ELAPSED TIME...........=          0.24 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage06_PUCK_type6_proxy_0001.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage06_PUCK_type6_proxy  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     1
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 8.1975E-05 ERR=  0.0% DM/M= 0.0000E+00
+     ANIMATION FILE: stage06_PUCK_type6_proxyA001 WRITTEN
+ FAILURE (PUCK) IN SOLID ELEMENT          1 ,GAUSS PT    1 ,LAYER  1
+     ANIMATION FILE: stage06_PUCK_type6_proxyA002 WRITTEN
+     ANIMATION FILE: stage06_PUCK_type6_proxyA003 WRITTEN
+     ANIMATION FILE: stage06_PUCK_type6_proxyA004 WRITTEN
+     RESTART FILES: stage06_PUCK_type6_proxy_0001_[0001-0001].rst WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .3960E-03 .4397E-04 .2797E-04 .4455E-02 .2460E-03 .1900E-04 .5581E-02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .4001E-05     0.07 % 
+ ELEMENT FORCES..............: .3960E-03     7.10 % 
+ KINEMATIC COND..............: .4397E-04     0.79 % 
+ INTEGRATION.................: .2797E-04     0.50 % 
+ ASSEMBLING..................: .1900E-04     0.34 % 
+ OTHERS (including I/O)......: .5090E-02    91.20 % 
+ TOTAL.......................: .5581E-02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:       91 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:       91 MB
+ MINIMUM MEMORY PER PROCESSOR...............:       91 MB
+ AVERAGE MEMORY PER PROCESSOR...............:       91 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.39 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :      13
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_PUCK_type6_proxyA001
+# vtk DataFile Version 3.0
+vtk output
+ASCII
+DATASET UNSTRUCTURED_GRID
+FIELD FieldData 2
+TIME 1 1 double
+0.000245923
+CYCLE 1 1 int
+0
+POINTS 8 float
+0 0 0
+1.00492 0 0
+1.00492 1 0
+0 1 0
+0 0 1
+1.00492 0 1
+1.00492 1 1
+0 1 1
+
+CELLS 1 9
+8 0  1  2  3  4  5  6  7
+
+CELL_TYPES 1
+12
+
+POINT_DATA 8
+SCALARS NODE_ID int 1
+LOOKUP_TABLE default
+1
+2
+3
+4
+5
+6
+7
+8
+
+VECTORS Displacement float
+0 0 0
+0.00491847 0 0
+0.00491847 0 0
+0 0 0
+0 0 0
+0.00491847 0 0
+0.00491847 0 0
+0 0 0
+
+CELL_DATA 1
+SCALARS ELEMENT_ID int 1
+LOOKUP_TABLE default
+1
+
+SCALARS PART_ID int 1
+LOOKUP_TABLE default
+1
+
+SCALARS EROSION_STATUS int 1
+LOOKUP_TABLE default
+1
+
+SCALARS 3DELEM_Plastic_Strain float 1
+LOOKUP_TABLE default
+0
+
+TENSORS 3DELEM_Damage float
+0 0 0
+0 0 0
+0 0 0
+
+TENSORS 3DELEM_Strs_Intg_Point111__ float
+4.44775e+07 0 0
+0 0 0
+0 0 0
+
