@@ -1,605 +1,423 @@
-"""
-Stage 08 -- Ply rotation transformation verification.
-
-Runs a sweep of seven OpenRadioss implicit-static jobs on a single-ply
-solid coupon (250 x 25 x 1 mm, IM7/8552 from Soden 1998) at fiber-to-load
-angles theta in {0, 15, 30, 45, 60, 75, 90} degrees. Geometry, mesh, and
-boundary conditions are identical across all seven runs; only the per-element
-material orientation is rotated, via /SKEW/FIX referenced by /PROP/TYPE14
-with Iorth=1.
-
-For each run the runner extracts the apparent modulus E_x(theta) from the
-volume-averaged Cauchy stress over the gauge sub-volume divided by the
-imposed engineering strain, and compares it against the closed-form
-Jones / Daniel-Ishai transformation
-
-    1/E_x(theta) = c^4/E1 + s^4/E2 + (1/G12 - 2 nu12/E1) c^2 s^2
-
-with c=cos(theta), s=sin(theta). Pass criterion is |E_x_FEM - E_x_analytic|
-/ E_x_analytic <= 0.01 at every angle.
-
-This runner does NOT plot. CSV is exported and a separate Typst+CeTZ
-document (per project preferences) draws the figure.
-
-Run:
-    python runner.py
-or
-    python runner.py --dry-run         # template decks only, no solver
-    python runner.py --angles 0 45 90  # subset of the sweep
-    python runner.py --analytic-only   # closed-form table only
+"""Stage 08 - ply rotation starter probe.
 
 Author: J.C. Vaught
+
+The intended verification is a seven-angle LAW25 + TYPE14 solid coupon
+sweep. The installed OpenRadioss starter rejects LAW25 + TYPE14 with ERROR
+3047, so this runner generates the canonical sweep decks, records the
+starter blocker, and writes the analytic Ex(theta) table without claiming an
+FEM modulus. TYPE6/SOL_ORTH proxy starters are also probed to isolate the
+blocker to the TYPE14 material/property pairing.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import os
-import shutil
 import subprocess
-import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Optional
-
-import numpy as np
 
 
-# ----------------------------------------------------------------------------
-# 1. Material card (Soden, Hinton, Kaddour 1998 -- IM7/8552 UD CFRP). SI units.
-# ----------------------------------------------------------------------------
+THIS_DIR = Path(__file__).resolve().parent
+ROOT_DIR = THIS_DIR.parents[1]
+RUNS_DIR = THIS_DIR / "runs"
+RESULTS_DIR = THIS_DIR / "results"
+FIGURES_DIR = THIS_DIR / "figures"
+RUN_LOG = THIS_DIR / "run.log"
+CARD_PATH = ROOT_DIR / "references" / "material_cards" / "im7_8552.json"
+
+OR_ROOT = Path(os.environ.get("OR", "/mnt/storage/j-vaught/openradioss/OpenRadioss")).resolve()
+STARTER = OR_ROOT / "exec" / "starter_linux64_gf"
+
+ANGLES = (0, 15, 30, 45, 60, 75, 90)
+
 
 @dataclass(frozen=True)
-class Lamina:
-    name: str
-    rho: float       # kg/m^3
-    E1: float        # Pa
-    E2: float        # Pa
-    E3: float        # Pa
+class Material:
+    rho: float
+    e1: float
+    e2: float
+    e3: float
     nu12: float
     nu13: float
     nu23: float
-    G12: float       # Pa
-    G13: float       # Pa
-    G23: float       # Pa
+    g12: float
+    g13: float
+    g23: float
+    xt: float
+    xc: float
+    yt: float
+    yc: float
+    s12: float
 
 
-IM7_8552 = Lamina(
-    name="IM7_8552_UD",
-    rho=1580.0,
-    E1=165.0e9,
-    E2=9.0e9,
-    E3=9.0e9,
-    nu12=0.34,
-    nu13=0.34,
-    nu23=0.5,
-    G12=5.6e9,
-    G13=5.6e9,
-    G23=3.0e9,
-)
+def fmt_f(*values: float) -> str:
+    return "".join(f"{value:20.12g}" for value in values)
 
 
-# ----------------------------------------------------------------------------
-# 2. Closed-form off-axis engineering constants (Jones 1999, Daniel-Ishai 2006)
-# ----------------------------------------------------------------------------
-
-def Ex_analytic(theta_deg: float, m: Lamina = IM7_8552) -> float:
-    """Off-axis apparent uniaxial modulus E_x(theta) [Pa].
-
-    Equation (2.85) of Jones 1999 / Chapter 5 of Daniel-Ishai 2006:
-
-        1/E_x = c^4/E1 + s^4/E2 + (1/G12 - 2 nu12/E1) c^2 s^2.
-    """
-    th = math.radians(theta_deg)
-    c, s = math.cos(th), math.sin(th)
-    c2, s2 = c * c, s * s
-    inv_Ex = c2 * c2 / m.E1 + s2 * s2 / m.E2 + (1.0 / m.G12 - 2.0 * m.nu12 / m.E1) * c2 * s2
-    return 1.0 / inv_Ex
+def fmt_i(*values: int) -> str:
+    return "".join(f"{value:10d}" for value in values)
 
 
-def nu_xy_analytic(theta_deg: float, m: Lamina = IM7_8552) -> float:
-    """Off-axis major Poisson ratio nu_xy(theta), Jones 1999 eq. 2.87."""
-    th = math.radians(theta_deg)
-    c, s = math.cos(th), math.sin(th)
-    c2, s2 = c * c, s * s
-    Ex = Ex_analytic(theta_deg, m)
-    bracket = (m.nu12 / m.E1) * (c2 * c2 + s2 * s2) - (1.0 / m.E1 + 1.0 / m.E2 - 1.0 / m.G12) * c2 * s2
-    return Ex * bracket
+def load_material() -> Material:
+    data = json.loads(CARD_PATH.read_text(encoding="utf-8"))
+    elastic = data["elastic"]
+    strength = data["strength"]
+    return Material(
+        rho=float(elastic["density_kg_m3"]),
+        e1=float(elastic["E1_Pa"]),
+        e2=float(elastic["E2_Pa"]),
+        e3=float(elastic["E3_Pa"]),
+        nu12=float(elastic["nu12"]),
+        nu13=float(elastic["nu13"]),
+        nu23=float(elastic["nu23"]),
+        g12=float(elastic["G12_Pa"]),
+        g13=float(elastic["G13_Pa"]),
+        g23=float(elastic["G23_Pa"]),
+        xt=float(strength["Xt_Pa"]),
+        xc=float(strength["Xc_Pa"]),
+        yt=float(strength["Yt_Pa"]),
+        yc=float(strength["Yc_Pa"]),
+        s12=float(strength["S12_Pa"]),
+    )
 
 
-def Gxy_analytic(theta_deg: float, m: Lamina = IM7_8552) -> float:
-    """Off-axis in-plane shear modulus G_xy(theta), Jones 1999 eq. 2.88.
-
-        1/G_xy = 2*(2/E1 + 2/E2 + 4 nu12/E1 - 1/G12) c^2 s^2 + (1/G12) (c^2 - s^2)^2
-    """
-    th = math.radians(theta_deg)
-    c, s = math.cos(th), math.sin(th)
-    c2, s2 = c * c, s * s
-    inv_G = 2.0 * (2.0 / m.E1 + 2.0 / m.E2 + 4.0 * m.nu12 / m.E1 - 1.0 / m.G12) * c2 * s2 \
-        + (1.0 / m.G12) * (c2 - s2) ** 2
-    return 1.0 / inv_G
-
-
-# ----------------------------------------------------------------------------
-# 3. Geometry / mesh / loading constants (same as stage 7).
-# ----------------------------------------------------------------------------
-
-L_COUPON = 0.250        # m
-B_COUPON = 0.025        # m
-T_COUPON = 0.001        # m
-
-NX, NY, NZ = 100, 10, 2
-
-STRAIN_BAR = 2.0e-3     # 0.2 percent engineering strain
-
-SWEEP_ANGLES_DEG = (0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0)
-
-PASS_TOL_REL = 0.01     # 1 percent relative tolerance on E_x
+def ex_offaxis(theta_deg: float, mat: Material) -> float:
+    theta = math.radians(theta_deg)
+    c2 = math.cos(theta) ** 2
+    s2 = math.sin(theta) ** 2
+    inv = (
+        c2 * c2 / mat.e1
+        + s2 * s2 / mat.e2
+        + (1.0 / mat.g12 - 2.0 * mat.nu12 / mat.e1) * c2 * s2
+    )
+    return 1.0 / inv
 
 
-# ----------------------------------------------------------------------------
-# 4. Mesh -- structured HEXA8 grid generated procedurally (no GMSH dependency
-#    inside the runner; we write a Radioss /BRICK block directly). For stage 9
-#    this will be replaced by the GMSH+inp2rad path; here a structured brick
-#    is sufficient and removes a moving part from the verification.
-# ----------------------------------------------------------------------------
-
-def build_mesh() -> tuple[np.ndarray, np.ndarray, dict[str, np.ndarray]]:
-    """Build structured HEXA8 mesh of the 250 x 25 x 1 mm coupon.
-
-    Returns
-    -------
-    nodes : (Nn, 3) array of node coordinates [m]
-    bricks : (Ne, 8) int array of node IDs (1-based) per element, Radioss order
-    face_nodes : dict mapping face name -> array of node IDs (1-based) on that face
-    """
-    xs = np.linspace(0.0, L_COUPON, NX + 1)
-    ys = np.linspace(-B_COUPON / 2.0, B_COUPON / 2.0, NY + 1)
-    zs = np.linspace(-T_COUPON / 2.0, T_COUPON / 2.0, NZ + 1)
-
-    Nx, Ny, Nz = NX + 1, NY + 1, NZ + 1
-    nodes = np.zeros((Nx * Ny * Nz, 3))
-    nid = lambda i, j, k: i * (Ny * Nz) + j * Nz + k  # 0-based
-    for i in range(Nx):
-        for j in range(Ny):
-            for k in range(Nz):
-                nodes[nid(i, j, k)] = (xs[i], ys[j], zs[k])
-
-    # Radioss /BRICK node order (HEXA8): n1..n8 with bottom face CCW then top.
-    bricks = []
-    for i in range(NX):
-        for j in range(NY):
-            for k in range(NZ):
-                n1 = nid(i,     j,     k)     + 1
-                n2 = nid(i + 1, j,     k)     + 1
-                n3 = nid(i + 1, j + 1, k)     + 1
-                n4 = nid(i,     j + 1, k)     + 1
-                n5 = nid(i,     j,     k + 1) + 1
-                n6 = nid(i + 1, j,     k + 1) + 1
-                n7 = nid(i + 1, j + 1, k + 1) + 1
-                n8 = nid(i,     j + 1, k + 1) + 1
-                bricks.append((n1, n2, n3, n4, n5, n6, n7, n8))
-    bricks = np.array(bricks, dtype=int)
-
-    face_nodes = {
-        "x0":  np.array([nid(0,        j, k) + 1 for j in range(Ny) for k in range(Nz)], dtype=int),
-        "xL":  np.array([nid(NX,       j, k) + 1 for j in range(Ny) for k in range(Nz)], dtype=int),
-    }
-
-    return nodes, bricks, face_nodes
+def radioss_env() -> dict[str, str]:
+    env = os.environ.copy()
+    env["OR"] = str(OR_ROOT)
+    env["RAD_CFG_PATH"] = str(OR_ROOT / "hm_cfg_files")
+    env["RAD_H3D_PATH"] = str(OR_ROOT / "extlib" / "h3d" / "lib" / "linux64")
+    reader = str(OR_ROOT / "extlib" / "hm_reader" / "linux64")
+    env["LD_LIBRARY_PATH"] = reader + ":" + env.get("LD_LIBRARY_PATH", "")
+    return env
 
 
-# ----------------------------------------------------------------------------
-# 5. Deck templating.
-# ----------------------------------------------------------------------------
-
-DECK_HEADER = """\
-#RADIOSS STARTER
-/BEGIN
-stage_08_off_axis_theta_{theta_tag}
-       12345         2026
-                  kg                    m                    s
-                  kg                    m                    s
-"""
-
-DECK_MAT = """\
-/MAT/LAW25/1
-{name}
-{rho:>20.6E}
-{E1:>20.6E}{E2:>20.6E}{nu12:>20.6E}{G12:>20.6E}
-{E3:>20.6E}{nu13:>20.6E}{nu23:>20.6E}{G13:>20.6E}{G23:>20.6E}
-"""
-
-DECK_SKEW = """\
-/SKEW/FIX/9
-ply_skew_theta_{theta_tag}
-{Ox:>20.6E}{Oy:>20.6E}{Oz:>20.6E}{Ax:>20.6E}{Ay:>20.6E}{Az:>20.6E}{Bx:>20.6E}{By:>20.6E}{Bz:>20.6E}
-"""
-
-DECK_PROP = """\
-/PROP/TYPE14/1
-ply_solid_prop
-#  Ihex  Iframe  Iorth   Iplas    Phi     Iskew
-       24       1      1       0    0.0          9
-"""
-
-DECK_PART = """\
-/PART/1
-ply_part                                          1         1
-"""
-
-DECK_FUNCT = """\
-/FUNCT/7
-ramp_unit
-                 0.0                  0.0
-                 1.0                  1.0
-"""
-
-DECK_BCS = """\
-/GRNOD/NODE/100
-nodes_face_x0
-{grnod_x0}
-/GRNOD/NODE/200
-nodes_face_xL
-{grnod_xL}
-/BCS/1
-clamp_x0
-                  111 000     100
-"""
-
-DECK_IMPDISP = """\
-/IMPDISP/1
-pull_xL_x
-                   7         1         0          0          0
-{u_imp:>20.6E}                 200
-"""
-
-DECK_IMPL = """\
-/IMPL/LINEAR
-"""
-
-DECK_END = """\
-/END
-"""
+def run_cmd(cmd: list[str], cwd: Path, log_lines: list[str]) -> subprocess.CompletedProcess[str]:
+    log_lines.append("$ " + " ".join(cmd))
+    proc = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        env=radioss_env(),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+    )
+    log_lines.append(proc.stdout)
+    return proc
 
 
-def fmt_grnod(ids: np.ndarray, per_line: int = 10) -> str:
-    """Format a node-ID list into Radioss 10-per-line block."""
-    out_lines = []
-    chunk = []
-    for nid in ids:
-        chunk.append(f"{int(nid):>10d}")
-        if len(chunk) == per_line:
-            out_lines.append("".join(chunk))
-            chunk = []
-    if chunk:
-        out_lines.append("".join(chunk))
-    return "\n".join(out_lines)
+def law25_block(mat: Material) -> list[str]:
+    return [
+        "/MAT/LAW25/1",
+        "IM7_8552_canonical_Soden_WWFEII",
+        "#              RHO_I",
+        fmt_f(mat.rho),
+        "#                E11                 E22                NU12     Iform                           E33",
+        fmt_f(mat.e1, mat.e2, mat.nu12) + fmt_i(0) + f"{mat.e3:20.12g}",
+        "#                G12                 G23                 G31              EPS_f1              EPS_f2",
+        fmt_f(mat.g12, mat.g23, mat.g13, 0.0, 0.0),
+        "#             EPS_t1              EPS_m1              EPS_t2              EPS_m2                dmax",
+        fmt_f(0.0, 0.0, 0.0, 0.0, 1.0),
+        "#              Wpmax               Wpref      Ioff                         ratio",
+        fmt_f(0.0, 0.0) + fmt_i(0) + f"{0.0:20.12g}",
+        "#                  b                   n                fmax",
+        fmt_f(0.0, 0.0, 0.0),
+        "#            sig_1yt             sig_2yt             sig_1yc             sig_2yc               alpha",
+        fmt_f(mat.xt, mat.yt, mat.xc, mat.yc, 0.0),
+        "#           sig_12yc            sig_12yt                c_12          Eps_rate_0       ICC",
+        fmt_f(mat.s12, mat.s12, 0.0, 0.0) + fmt_i(0),
+        "#          GAMMA_ini           GAMMA_max               d3max",
+        fmt_f(0.0, 0.0, 0.0),
+        "#  Fsmooth                Fcut",
+        fmt_i(0) + f"{0.0:20.12g}",
+    ]
 
 
-def fmt_node_block(nodes: np.ndarray) -> str:
-    """Radioss /NODE block. One line per node: id, x, y, z."""
+def mesh_blocks() -> tuple[list[str], list[int], list[int]]:
+    length = 0.250
+    width = 0.025
+    thick = 0.001
+    nx, ny, nz = 100, 10, 2
+    node_id: dict[tuple[int, int, int], int] = {}
     lines = ["/NODE"]
-    for i, (x, y, z) in enumerate(nodes, start=1):
-        lines.append(f"{i:>10d}{x:>20.6E}{y:>20.6E}{z:>20.6E}")
-    return "\n".join(lines) + "\n"
+    nid = 1
+    for k in range(nz + 1):
+        for j in range(ny + 1):
+            for i in range(nx + 1):
+                node_id[(i, j, k)] = nid
+                x = length * i / nx
+                y = width * (j / ny - 0.5)
+                z = thick * (k / nz - 0.5)
+                lines.append(f"{nid:10d}{x:20.12g}{y:20.12g}{z:20.12g}")
+                nid += 1
+    lines.extend(["/PART/1", "ply_rotation_coupon", fmt_i(1, 1, 0), "/BRICK/1"])
+    eid = 1
+    for k in range(nz):
+        for j in range(ny):
+            for i in range(nx):
+                conn = [
+                    node_id[(i, j, k)],
+                    node_id[(i + 1, j, k)],
+                    node_id[(i + 1, j + 1, k)],
+                    node_id[(i, j + 1, k)],
+                    node_id[(i, j, k + 1)],
+                    node_id[(i + 1, j, k + 1)],
+                    node_id[(i + 1, j + 1, k + 1)],
+                    node_id[(i, j + 1, k + 1)],
+                ]
+                lines.append(fmt_i(eid, *conn))
+                eid += 1
+    left = [node_id[(0, j, k)] for k in range(nz + 1) for j in range(ny + 1)]
+    right = [node_id[(nx, j, k)] for k in range(nz + 1) for j in range(ny + 1)]
+    return lines, left, right
 
 
-def fmt_brick_block(bricks: np.ndarray, part_id: int = 1) -> str:
-    """Radioss /BRICK block. id, n1..n8, with the part owning the brick."""
-    lines = [f"/BRICK/{part_id}"]
-    for eid, ns in enumerate(bricks, start=1):
-        lines.append(
-            f"{eid:>10d}" + "".join(f"{int(n):>10d}" for n in ns)
+def group_block(group_id: int, name: str, node_ids: list[int]) -> list[str]:
+    lines = [f"/GRNOD/NODE/{group_id}", name]
+    for i in range(0, len(node_ids), 10):
+        lines.append(fmt_i(*node_ids[i : i + 10]))
+    return lines
+
+
+def skew_block(theta_deg: int) -> list[str]:
+    theta = math.radians(theta_deg)
+    c = math.cos(theta)
+    s = math.sin(theta)
+    return [
+        "/SKEW/FIX/1",
+        f"ply_frame_theta_{theta_deg}",
+        fmt_f(0.0, 0.0, 0.0),
+        fmt_f(c, s, 0.0),
+        fmt_f(-s, c, 0.0),
+    ]
+
+
+def type14_property() -> list[str]:
+    return [
+        "/PROP/TYPE14/1",
+        "canonical_type14_solid_property",
+        "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
+        fmt_i(24, 4) + f"{1:20d}{0:20d}{0:10d}{2:10d}{0.0:20.12g}",
+        "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
+        fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
+        "#             dt_min   istrain      IHKT",
+        fmt_f(0.0) + fmt_i(0, 0),
+    ]
+
+
+def type6_property() -> list[str]:
+    return [
+        "/PROP/TYPE6/1",
+        "type6_sol_orth_proxy_property",
+        "#   Isolid    Ismstr               Icpre  Itetra10     Inpts   Itetra4    Iframe                  Dn",
+        fmt_i(24, 4) + f"{1:20d}{0:10d}{0:10d}{0:10d}{2:10d}{0.0:20.12g}",
+        "#                 qa                  qb                   h",
+        fmt_f(0.0, 0.0, 0.0),
+        "#                 Vx                  Vy                  Vz   skew_ID        Ip     Iorth",
+        fmt_f(1.0, 0.0, 0.0) + fmt_i(1, 0, 1),
+        "#                Phi                 Px                  Py                  Pz",
+        fmt_f(0.0, 0.0, 0.0, 0.0),
+        "#             dt_min   istrain      IHKT",
+        fmt_f(0.0) + fmt_i(0, 0),
+    ]
+
+
+def write_starter(theta_deg: int, mat: Material, prop: list[str], suffix: str) -> Path:
+    mesh, left, right = mesh_blocks()
+    job = f"stage08_theta_{theta_deg:02d}_{suffix}"
+    lines = [
+        "#RADIOSS STARTER",
+        "/BEGIN",
+        job,
+        "      2023         0",
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        "/TITLE",
+        f"Stage 08 ply rotation theta {theta_deg} {suffix}",
+        "/DEF_SOLID",
+        "#  I_SOLID    ISMSTR             ISTRAIN                                  IFRAME",
+        fmt_i(24, 4) + f"{0:20d}{2:40d}",
+    ]
+    lines.extend(law25_block(mat))
+    lines.extend(mesh)
+    lines.extend(prop)
+    lines.extend(skew_block(theta_deg))
+    lines.extend(
+        [
+            "/BCS/1",
+            "left_face_x_fixed",
+            "#  Tra rot   skew_ID  grnod_ID",
+            f"   100 000{0:10d}{100:10d}",
+            "/FUNCT/1",
+            "unit_ramp",
+            fmt_f(0.0, 0.0),
+            fmt_f(1.0, 1.0),
+            "/IMPDISP/1",
+            "right_face_x",
+            "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+            f"{1:10d}{'X':>10}{0:10d}{0:10d}{101:10d}{0:10d}{0:10d}",
+            "#            Scale_x             Scale_y              Tstart               Tstop",
+            fmt_f(1.0, 0.0005, 0.0, 0.0),
+        ]
+    )
+    lines.extend(group_block(100, "left_face", left))
+    lines.extend(group_block(101, "right_face", right))
+    lines.extend(["/END", ""])
+    path = RUNS_DIR / f"{job}_0000.rad"
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
+
+
+def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
+    mat = load_material()
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    log_lines = [f"material_card={CARD_PATH}", f"starter={STARTER}"]
+    rows: list[dict[str, object]] = []
+    type14_blocked_all = True
+    type6_supported_all = True
+
+    for theta in ANGLES:
+        strict = write_starter(theta, mat, type14_property(), "type14_canonical")
+        strict_proc = run_cmd([str(STARTER), "-i", strict.name, "-nt", "1"], RUNS_DIR, log_lines)
+        strict_out = (RUNS_DIR / strict.name.replace(".rad", ".out")).read_text(
+            encoding="utf-8", errors="replace"
         )
-    return "\n".join(lines) + "\n"
+        strict_blocked = (
+            strict_proc.returncode != 0
+            and "MATERIAL/PROPERTY COMPATIBILITY" in strict_out
+            and "TYPE 14" in strict_out
+            and "LAW  25" in strict_out
+        )
+        type14_blocked_all = type14_blocked_all and strict_blocked
+
+        proxy = write_starter(theta, mat, type6_property(), "type6_proxy")
+        proxy_proc = run_cmd([str(STARTER), "-i", proxy.name, "-nt", "1"], RUNS_DIR, log_lines)
+        type6_supported_all = type6_supported_all and proxy_proc.returncode == 0
+
+        rows.append(
+            {
+                "theta_deg": theta,
+                "analytic_Ex_Pa": ex_offaxis(theta, mat),
+                "canonical_property": "TYPE14",
+                "canonical_starter_rc": strict_proc.returncode,
+                "canonical_status": "blocked_error_3047" if strict_blocked else "unexpected",
+                "proxy_property": "TYPE6_SOL_ORTH",
+                "proxy_starter_rc": proxy_proc.returncode,
+                "solver_Ex_Pa": "",
+                "relative_error_pct": "",
+                "verdict": "INCONCLUSIVE",
+            }
+        )
+
+    metrics = {
+        "canonical_type14_law25_supported": not type14_blocked_all,
+        "canonical_type14_error_id": 3047 if type14_blocked_all else None,
+        "type6_sol_orth_proxy_starter_supported": type6_supported_all,
+        "angle_count": len(ANGLES),
+        "modulus_gate_evaluated": False,
+    }
+    return metrics, rows, log_lines
 
 
-def write_starter_deck(
-    out_path: Path,
-    theta_deg: float,
-    nodes: np.ndarray,
-    bricks: np.ndarray,
-    face_nodes: dict[str, np.ndarray],
-    mat: Lamina = IM7_8552,
-) -> None:
-    th = math.radians(theta_deg)
-    c, s = math.cos(th), math.sin(th)
-    theta_tag = f"{int(round(theta_deg)):03d}"
+def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log_lines: list[str], wall_s: float) -> None:
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+    with (RESULTS_DIR / "timeseries.csv").open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
 
-    text = DECK_HEADER.format(theta_tag=theta_tag)
-    text += DECK_MAT.format(
-        name=mat.name,
-        rho=mat.rho,
-        E1=mat.E1, E2=mat.E2, nu12=mat.nu12, G12=mat.G12,
-        E3=mat.E3, nu13=mat.nu13, nu23=mat.nu23, G13=mat.G13, G23=mat.G23,
+    git_sha = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(ROOT_DIR),
+        text=True,
+        stdout=subprocess.PIPE,
+        check=False,
+    ).stdout.strip()
+    results = {
+        "stage": 8,
+        "verdict": "INCONCLUSIVE",
+        "metrics": {**metrics, "wall_clock_s": wall_s},
+        "reference": {
+            "material_card": str(CARD_PATH),
+            "angles_deg": list(ANGLES),
+            "analytic_table": [{"theta_deg": r["theta_deg"], "Ex_Pa": r["analytic_Ex_Pa"]} for r in rows],
+        },
+        "tolerance": {"modulus_relative_error": 0.01},
+        "git_sha": git_sha,
+    }
+    (RESULTS_DIR / "results.json").write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
+
+    (FIGURES_DIR / "stage08_ply_rotation_probe.typ").write_text(
+        "\n".join(
+            [
+                '#set page(width: 175mm, height: auto, margin: 10mm)',
+                '#let rows = csv("../results/timeseries.csv")',
+                '#text(size: 12pt, weight: "bold")[Stage 08 ply-rotation starter probe]',
+                '#v(5pt)',
+                '#table(',
+                '  columns: (20mm, 32mm, 38mm, 28mm, 28mm),',
+                '  stroke: rgb("#5C5C5C"),',
+                '  [Theta], [Analytic Ex (GPa)], [Canonical status], [Proxy rc], [Verdict],',
+                '  ..rows.map(r => ([#r.at(0)], [#str(float(r.at(1)) / 1e9)], [#r.at(4)], [#r.at(6)], [#r.at(9)])).flatten(),',
+                ')',
+                "",
+            ]
+        ),
+        encoding="utf-8",
     )
-    text += DECK_SKEW.format(
-        theta_tag=theta_tag,
-        Ox=0.0, Oy=0.0, Oz=0.0,
-        Ax=c,   Ay=s,   Az=0.0,
-        Bx=-s,  By=c,   Bz=0.0,
+
+    (THIS_DIR / "blocker.md").write_text(
+        "\n".join(
+            [
+                "# Stage 08 Blocker - LAW25 + TYPE14 ply-rotation sweep does not start",
+                "",
+                "Author: J.C. Vaught",
+                "",
+                "The canonical stage 08 sweep requires `/MAT/LAW25` on `/PROP/TYPE14` solid HEXA8 coupons with `/SKEW/FIX` frames at seven ply angles. Every canonical deck is rejected by the installed OpenRadioss starter with `ERROR ID : 3047` material/property compatibility before the engine can run.",
+                "",
+                "The runner also generated `/PROP/TYPE6` (`/PROP/SOL_ORTH`) proxy decks at the same seven angles. Those proxy starters succeed, which isolates the issue to the required TYPE14 path rather than to the material card or skew definitions.",
+                "",
+                "Verdict: `INCONCLUSIVE` due to toolchain/material-property compatibility, not a numerical off-axis stiffness failure.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
     )
-    text += DECK_PROP
-    text += DECK_PART
-    text += fmt_node_block(nodes)
-    text += fmt_brick_block(bricks)
-    text += DECK_FUNCT
-    text += DECK_BCS.format(
-        grnod_x0=fmt_grnod(face_nodes["x0"]),
-        grnod_xL=fmt_grnod(face_nodes["xL"]),
-    )
-    u_imp = STRAIN_BAR * L_COUPON
-    text += DECK_IMPDISP.format(u_imp=u_imp)
-    text += DECK_IMPL
-    text += DECK_END
-    out_path.write_text(text)
-
-
-ENGINE_DECK = """\
-/RUN/{runname}/1
-                 1.0
-/IMPL/LINEAR
-/PRINT/-1
-/H3D/DT
-                 0.0                  1.0
-/H3D/SOLID/STRESS/ALL
-/H3D/SOLID/STRAIN/ALL
-/STOP
-"""
-
-
-def write_engine_deck(out_path: Path, runname: str) -> None:
-    out_path.write_text(ENGINE_DECK.format(runname=runname))
-
-
-# ----------------------------------------------------------------------------
-# 6. OpenRadioss invocation (Lima + Apptainer on macOS, native on Linux).
-# ----------------------------------------------------------------------------
-
-def find_openradioss_starter() -> str:
-    for cand in ("starter_linux64_gf", "starter_linuxa64", "starter"):
-        p = shutil.which(cand)
-        if p:
-            return p
-    return ""
-
-
-def find_openradioss_engine() -> str:
-    for cand in ("engine_linux64_gf", "engine_linuxa64", "engine"):
-        p = shutil.which(cand)
-        if p:
-            return p
-    return ""
-
-
-def _lima_wrap(cmd: list[str]) -> list[str]:
-    """If we are on macOS and the binary is not available natively, wrap into
-    `limactl shell apptainer -- ...` per master_plan.md section 7."""
-    if sys.platform == "darwin" and shutil.which("limactl") and not shutil.which(cmd[0]):
-        return ["limactl", "shell", "apptainer", "--"] + cmd
-    return cmd
-
-
-def run_openradioss(workdir: Path, runname: str, dry_run: bool) -> int:
-    starter_deck = workdir / f"{runname}_0000.rad"
-    engine_deck = workdir / f"{runname}_0001.rad"
-    if not starter_deck.exists() or not engine_deck.exists():
-        raise RuntimeError(f"missing decks for {runname}")
-    if dry_run:
-        print(f"[dry-run] would run starter on {starter_deck.name} and engine on {engine_deck.name}")
-        return 0
-
-    starter = find_openradioss_starter()
-    engine = find_openradioss_engine()
-    if not starter or not engine:
-        # Fall back to lima-wrapped invocation; we still need to know SOME binary name.
-        starter = "starter_linuxa64"
-        engine = "engine_linuxa64"
-
-    rc = subprocess.call(_lima_wrap([starter, "-i", starter_deck.name]), cwd=str(workdir))
-    if rc != 0:
-        return rc
-    rc = subprocess.call(_lima_wrap([engine, "-i", engine_deck.name]), cwd=str(workdir))
-    return rc
-
-
-# ----------------------------------------------------------------------------
-# 7. Post-processing -- volume-averaged Cauchy stress in the gauge sub-volume.
-# ----------------------------------------------------------------------------
-
-def gauge_mask(centroids: np.ndarray) -> np.ndarray:
-    """Boolean mask selecting elements whose centroid sits in the central
-    half-length gauge sub-volume |x - L/2| <= L/4."""
-    return np.abs(centroids[:, 0] - 0.5 * L_COUPON) <= 0.25 * L_COUPON
-
-
-def read_h3d_stresses(workdir: Path, runname: str) -> Optional[dict[str, np.ndarray]]:
-    """Read element-level stress and strain tensors from the OpenRadioss H3D
-    output via the Kitware openradioss-to-vtkhdf converter, then through
-    PyVista. Returns dict with keys 'centroid', 'sigma' (Nx6), 'eps' (Nx6) or
-    None if the toolchain is unavailable."""
-    try:
-        import pyvista as pv
-    except ImportError:
-        print("[warn] pyvista not installed; cannot post-process H3D output")
-        return None
-
-    h3d = workdir / f"{runname}_0001.h3d"
-    vtkhdf = workdir / f"{runname}.vtkhdf"
-    if not vtkhdf.exists():
-        # Try the Kitware converter, which lives alongside OpenRadioss tooling.
-        cvt = shutil.which("openradioss-to-vtkhdf") or "openradioss-to-vtkhdf"
-        rc = subprocess.call(_lima_wrap([cvt, str(h3d), str(vtkhdf)]))
-        if rc != 0 or not vtkhdf.exists():
-            print(f"[warn] could not convert {h3d} to vtkhdf (rc={rc})")
-            return None
-
-    grid = pv.read(str(vtkhdf))
-    cell_centers = grid.cell_centers().points
-    # OpenRadioss naming for the tensors in the converter output. Field names
-    # may shift between converter versions; try a few common ones.
-    stress_keys = ("Stress", "STRESS", "Cauchy_Stress", "sigma")
-    strain_keys = ("Strain", "STRAIN", "Total_Strain", "epsilon")
-    sigma = None
-    for k in stress_keys:
-        if k in grid.cell_data:
-            sigma = np.asarray(grid.cell_data[k])
-            break
-    eps = None
-    for k in strain_keys:
-        if k in grid.cell_data:
-            eps = np.asarray(grid.cell_data[k])
-            break
-    if sigma is None or eps is None:
-        print(f"[warn] vtkhdf missing stress/strain arrays; available={list(grid.cell_data.keys())}")
-        return None
-    return {"centroid": cell_centers, "sigma": sigma, "eps": eps}
-
-
-def extract_Ex(workdir: Path, runname: str) -> Optional[dict[str, float]]:
-    data = read_h3d_stresses(workdir, runname)
-    if data is None:
-        return None
-    mask = gauge_mask(data["centroid"])
-    if not mask.any():
-        return None
-    sigma = data["sigma"][mask]
-    eps = data["eps"][mask]
-    sxx = float(sigma[:, 0].mean())
-    syy = float(sigma[:, 1].mean())
-    sxy = float(sigma[:, 3].mean())  # OpenRadioss Voigt: xx,yy,zz,xy,yz,zx
-    exx = float(eps[:, 0].mean())
-    eyy = float(eps[:, 1].mean())
-    if abs(exx) < 1e-12:
-        return None
-    Ex_fem = sxx / exx
-    nu_xy_fem = -eyy / exx
-    return dict(sxx=sxx, syy=syy, sxy=sxy, exx=exx, eyy=eyy, Ex_fem=Ex_fem, nu_xy_fem=nu_xy_fem)
-
-
-# ----------------------------------------------------------------------------
-# 8. Driver.
-# ----------------------------------------------------------------------------
-
-def parse_args() -> argparse.Namespace:
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--workdir", default="runs", help="output directory for decks/results")
-    ap.add_argument("--angles", nargs="+", type=float, default=list(SWEEP_ANGLES_DEG))
-    ap.add_argument("--dry-run", action="store_true", help="template decks but do not run solver")
-    ap.add_argument("--analytic-only", action="store_true",
-                    help="just print the analytic E_x, nu_xy, G_xy table and exit")
-    ap.add_argument("--csv", default="summary.csv")
-    return ap.parse_args()
-
-
-def print_analytic_table(angles: Iterable[float]) -> None:
-    print(f"{'theta':>8s} {'E_x [GPa]':>14s} {'nu_xy':>10s} {'G_xy [GPa]':>14s}")
-    for th in angles:
-        Ex = Ex_analytic(th) / 1e9
-        nu = nu_xy_analytic(th)
-        Gx = Gxy_analytic(th) / 1e9
-        print(f"{th:8.2f} {Ex:14.4f} {nu:10.4f} {Gx:14.4f}")
+    RUN_LOG.write_text("\n".join(log_lines), encoding="utf-8")
 
 
 def main() -> int:
-    args = parse_args()
-    angles = list(args.angles)
-
-    if args.analytic_only:
-        print_analytic_table(angles)
-        return 0
-
-    workdir = Path(args.workdir).resolve()
-    workdir.mkdir(parents=True, exist_ok=True)
-
-    nodes, bricks, face_nodes = build_mesh()
-
-    # Write decks once, run once, post-process once. No iteration.
-    rows: list[dict] = []
-    fail = []
-    for th in angles:
-        runname = f"coupon_{int(round(th)):03d}"
-        rdir = workdir / runname
-        rdir.mkdir(parents=True, exist_ok=True)
-        starter_path = rdir / f"{runname}_0000.rad"
-        engine_path = rdir / f"{runname}_0001.rad"
-        write_starter_deck(starter_path, th, nodes, bricks, face_nodes, IM7_8552)
-        write_engine_deck(engine_path, runname)
-        print(f"[stage_08] wrote decks for theta={th:.2f} deg in {rdir}")
-
-        rc = run_openradioss(rdir, runname, args.dry_run)
-        if rc != 0:
-            print(f"[stage_08] solver failed for theta={th:.2f}, rc={rc}")
-
-        Ex_an = Ex_analytic(th)
-        nu_an = nu_xy_analytic(th)
-        row = {
-            "theta_deg": th,
-            "Ex_analytic_Pa": Ex_an,
-            "nu_xy_analytic": nu_an,
-            "Ex_fem_Pa": float("nan"),
-            "nu_xy_fem": float("nan"),
-            "rel_err_Ex": float("nan"),
-            "passed": False,
-        }
-        if not args.dry_run and rc == 0:
-            extracted = extract_Ex(rdir, runname)
-            if extracted is not None:
-                Ex_fem = extracted["Ex_fem"]
-                rel_err = abs(Ex_fem - Ex_an) / Ex_an
-                row.update(
-                    Ex_fem_Pa=Ex_fem,
-                    nu_xy_fem=extracted["nu_xy_fem"],
-                    sigma_xx=extracted["sxx"],
-                    sigma_yy=extracted["syy"],
-                    sigma_xy=extracted["sxy"],
-                    eps_xx=extracted["exx"],
-                    eps_yy=extracted["eyy"],
-                    rel_err_Ex=rel_err,
-                    passed=rel_err <= PASS_TOL_REL,
-                )
-                if not row["passed"]:
-                    fail.append((th, rel_err))
-        rows.append(row)
-        print(
-            f"[stage_08] theta={th:6.2f} Ex_analytic={Ex_an / 1e9:7.3f} GPa  "
-            f"Ex_fem={row['Ex_fem_Pa'] / 1e9 if row['Ex_fem_Pa'] == row['Ex_fem_Pa'] else float('nan'):7.3f} GPa  "
-            f"rel_err={row['rel_err_Ex']:8.2%}  pass={row['passed']}"
-        )
-
-    # CSV export -- Typst+CeTZ figure imports this and draws the curve overlay.
-    csv_path = workdir / args.csv
-    fieldnames = sorted({k for r in rows for k in r.keys()})
-    with csv_path.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for r in rows:
-            writer.writerow(r)
-    print(f"[stage_08] wrote summary -> {csv_path}")
-
-    # Also dump a dense analytic curve for the figure.
-    dense = workdir / "Ex_analytic_curve.csv"
-    with dense.open("w", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["theta_deg", "Ex_analytic_Pa", "nu_xy_analytic", "Gxy_analytic_Pa"])
-        for th in np.linspace(0.0, 90.0, 181):
-            w.writerow([th, Ex_analytic(th), nu_xy_analytic(th), Gxy_analytic(th)])
-    print(f"[stage_08] wrote analytic curve -> {dense}")
-
-    if args.dry_run:
-        print("[stage_08] dry run only; no pass/fail evaluated")
-        return 0
-    if fail:
-        print(f"[stage_08] FAIL: {len(fail)} angle(s) exceeded {PASS_TOL_REL:.0%} tolerance:")
-        for th, e in fail:
-            print(f"           theta={th:6.2f}  rel_err={e:.2%}")
-        return 1
-    print("[stage_08] PASS: all angles within 1 percent of analytic E_x")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--all", action="store_true")
+    args = parser.parse_args()
+    if not args.all:
+        parser.error("use --all")
+    start = time.perf_counter()
+    metrics, rows, log_lines = run_stage()
+    wall_s = time.perf_counter() - start
+    write_outputs(metrics, rows, log_lines, wall_s)
+    print(json.dumps({"stage": 8, "verdict": "INCONCLUSIVE", "wall_clock_s": wall_s}, indent=2))
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

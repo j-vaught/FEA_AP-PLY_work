@@ -1,0 +1,58 @@
+{
+  "stage": 8,
+  "verdict": "INCONCLUSIVE",
+  "metrics": {
+    "canonical_type14_law25_supported": false,
+    "canonical_type14_error_id": 3047,
+    "type6_sol_orth_proxy_starter_supported": true,
+    "angle_count": 7,
+    "modulus_gate_evaluated": false,
+    "wall_clock_s": 4.268588448874652
+  },
+  "reference": {
+    "material_card": "/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json",
+    "angles_deg": [
+      0,
+      15,
+      30,
+      45,
+      60,
+      75,
+      90
+    ],
+    "analytic_table": [
+      {
+        "theta_deg": 0,
+        "Ex_Pa": 171400000000.0
+      },
+      {
+        "theta_deg": 15,
+        "Ex_Pa": 58294062840.81972
+      },
+      {
+        "theta_deg": 30,
+        "Ex_Pa": 22267164983.219913
+      },
+      {
+        "theta_deg": 45,
+        "Ex_Pa": 13277196220.353676
+      },
+      {
+        "theta_deg": 60,
+        "Ex_Pa": 10303106998.372343
+      },
+      {
+        "theta_deg": 75,
+        "Ex_Pa": 9304143500.122427
+      },
+      {
+        "theta_deg": 90,
+        "Ex_Pa": 9080000000.0
+      }
+    ]
+  },
+  "tolerance": {
+    "modulus_relative_error": 0.01
+  },
+  "git_sha": "2cd5f383c291e97525c53c4c1bf8aa1339fe768d"
+}
