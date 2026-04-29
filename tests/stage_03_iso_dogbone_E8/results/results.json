@@ -1,0 +1,130 @@
+{
+  "stage": 3,
+  "name": "iso_dogbone_E8",
+  "verdict": "PASS",
+  "metrics": {
+    "load_factor_0.50": {
+      "load_factor": 0.5,
+      "applied_load_N": 9375.0,
+      "sigma_ref_Pa": 125000000.0,
+      "sigma_mean_Pa": 124944776.5625,
+      "sigma_std_Pa": 162081.48533433297,
+      "eps_disp": 0.0006246691555134022,
+      "eps_mean": 0.0006245593504900171,
+      "eps_ref_elastic": 0.000625,
+      "epsp_est": 0.0,
+      "sigma_jc_from_epsp_Pa": 250000000.0,
+      "stress_error": 0.0004417875,
+      "strain_error": 0.00017578108734185753,
+      "uniformity": 0.0012972249804557169,
+      "wall_clock_s": 19.63707545772195,
+      "elements": 4480,
+      "nodes": 6345
+    },
+    "load_factor_0.80": {
+      "load_factor": 0.8,
+      "applied_load_N": 15000.0,
+      "sigma_ref_Pa": 200000000.0,
+      "sigma_mean_Pa": 199958025.025,
+      "sigma_std_Pa": 259011.1347099761,
+      "eps_disp": 0.0009998998575611042,
+      "eps_mean": 0.0009995370261094648,
+      "eps_ref_elastic": 0.001,
+      "epsp_est": 1.0973243610426162e-07,
+      "sigma_jc_from_epsp_Pa": 250858723.40760875,
+      "stress_error": 0.0002098748749999702,
+      "strain_error": 0.0003628677901048688,
+      "uniformity": 0.0012953275302533763,
+      "wall_clock_s": 19.761904343031347,
+      "elements": 4480,
+      "nodes": 6345
+    },
+    "load_factor_1.00": {
+      "load_factor": 1.0,
+      "applied_load_N": 18750.0,
+      "sigma_ref_Pa": 250000000.0,
+      "sigma_mean_Pa": 250035868.475,
+      "sigma_std_Pa": 485744.71601199574,
+      "eps_disp": 0.0012538771261461081,
+      "eps_mean": 0.001253443953464739,
+      "eps_ref_elastic": 0.00125,
+      "epsp_est": 3.6977837711081162e-06,
+      "sigma_jc_from_epsp_Pa": 253046433.0492671,
+      "stress_error": 0.00014347389999997616,
+      "strain_error": 0.00034546661099128746,
+      "uniformity": 0.0019427001372827565,
+      "wall_clock_s": 19.628055800683796,
+      "elements": 4480,
+      "nodes": 6345
+    },
+    "load_factor_1.20": {
+      "load_factor": 1.2,
+      "applied_load_N": 22500.0,
+      "sigma_ref_Pa": 300000000.0,
+      "sigma_mean_Pa": 301289949.3375,
+      "sigma_std_Pa": 1193491.1937989786,
+      "eps_disp": 0.011026507854694502,
+      "eps_mean": 0.010996304058426176,
+      "eps_ref_elastic": 0.0015,
+      "epsp_est": 0.009520058108007002,
+      "sigma_jc_from_epsp_Pa": 301480522.9071087,
+      "stress_error": 0.004299831124999921,
+      "strain_error": 0.002739198726047034,
+      "uniformity": 0.003961271182206114,
+      "wall_clock_s": 19.584032967686653,
+      "elements": 4480,
+      "nodes": 6345
+    }
+  },
+  "checks": {
+    "C1_uniformity": {
+      "pass": true,
+      "value": 0.0012953275302533763,
+      "tolerance": 0.01
+    },
+    "C2_stress_vs_load_over_area": {
+      "pass": true,
+      "value": 0.0002098748749999702,
+      "tolerance": 0.01
+    },
+    "C3_strain_vtk_vs_extensometer": {
+      "pass": true,
+      "value": 0.0003628677901048688,
+      "tolerance": 0.01
+    },
+    "C4_yield_onset_stress": {
+      "pass": true,
+      "observed_Pa": 250035868.475,
+      "target_Pa": 250000000.0,
+      "relative_error": 0.00014347389999997616,
+      "tolerance": 0.01
+    },
+    "S1_apparent_E": {
+      "pass": true,
+      "observed_Pa": 199912342068.8635,
+      "target_Pa": 200000000000.0,
+      "relative_error": 0.00043828965568252565,
+      "tolerance": 0.01
+    },
+    "S3_post_yield_plasticity_observed": {
+      "pass": true,
+      "epsp_est": 0.009520058108007002,
+      "sigma_mean_Pa": 301289949.3375
+    }
+  },
+  "reference": {
+    "type": "closed-form uniaxial stress/strain plus input LAW2 yield stress",
+    "E_Pa": 200000000000.0,
+    "sigma_y_Pa": 250000000.0,
+    "area_gauge_m2": 7.500000000000001e-05,
+    "yield_load_N": 18750.0
+  },
+  "tolerance": {
+    "stress_uniformity": 0.01,
+    "stress_vs_load_over_area": 0.01,
+    "strain_vtk_vs_extensometer": 0.01,
+    "yield_stress": 0.01,
+    "apparent_E": 0.01
+  },
+  "git_sha": "ef0cbb1f042cb804151902dcdf7242449f4a714e"
+}
