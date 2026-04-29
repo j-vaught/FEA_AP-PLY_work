@@ -1,8 +1,8 @@
-theta_deg,analytic_Ex_Pa,canonical_property,canonical_starter_rc,canonical_status,proxy_property,proxy_starter_rc,solver_Ex_Pa,relative_error_pct,verdict
-0,171400000000.0,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-15,58294062840.81972,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-30,22267164983.219913,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-45,13277196220.353676,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-60,10303106998.372343,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-75,9304143500.122427,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-90,9080000000.0,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
+theta_deg,analytic_Ex_Pa,solver_Ex_Pa,relative_error_pct,starter_rc,engine_rc,sigma_x_mean_pa,stress_measure,reaction_force_x_n,reaction_sigma_x_pa,strain_x,strain_measure,vtk_path,verdict
+0,171400000000.0,171239438631.42526,0.09367641107044197,0,0,85699776.0,mean_gauge_sigma_x,8590.107971191406,85901079.71191406,0.000500467513120384,engineering_displacement_difference,/mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_00_law12_type6A001.vtk,PASS
+15,58294062840.81972,57818919246.3352,0.8150805953977982,0,0,28934900.0,mean_gauge_sigma_x,2875.6089935302734,28756089.935302734,0.0005004400009056553,engineering_displacement_difference,/mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_15_law12_type6A001.vtk,PASS
+30,22267164983.219913,22213085755.734592,0.24286534691809245,0,0,11116650.0,mean_gauge_sigma_x,1120.3994979858398,11203994.979858398,0.0005004550075682346,engineering_displacement_difference,/mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_30_law12_type6A001.vtk,PASS
+45,13277196220.353676,13271242154.653473,0.04484429996655075,0,0,6641858.75,mean_gauge_sigma_x,650.2712020874023,6502712.020874023,0.0005004700142308138,engineering_displacement_difference,/mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_45_law12_type6A001.vtk,PASS
+60,10303106998.372343,10301395685.866106,0.016609674212908578,0,0,5155720.0,mean_gauge_sigma_x,525.1565017700195,5251565.017700195,0.000500487522003823,engineering_displacement_difference,/mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_60_law12_type6A001.vtk,PASS
+75,9304143500.122427,9292088244.760689,0.12956867401689987,0,0,4650690.0,mean_gauge_sigma_x,456.616304397583,4566163.04397583,0.0005004999820812372,engineering_displacement_difference,/mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_75_law12_type6A001.vtk,PASS
+90,9080000000.0,9065303980.939104,0.16185043018607842,0,0,4537252.5,mean_gauge_sigma_x,439.0708980560303,4390708.980560303,0.0005005074854125269,engineering_displacement_difference,/mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_90_law12_type6A001.vtk,PASS

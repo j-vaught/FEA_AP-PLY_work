@@ -1,13 +1,19 @@
 {
   "stage": 8,
-  "verdict": "INCONCLUSIVE",
+  "verdict": "PASS",
   "metrics": {
-    "canonical_type14_law25_supported": false,
-    "canonical_type14_error_id": 3047,
-    "type6_sol_orth_proxy_starter_supported": true,
+    "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
+    "matrix_evidence": "LAW12 row: TYPE6/SOL_ORTH solid OK; TYPE14 solid = B3047",
+    "orientation_evidence": "references/openradioss_orientation_convention.md uniform property angle row: Ip=3, Iorth=0, Phi=theta",
+    "strain_measurement": "engineering strain from displacement difference; VTK cell Stra[0] is not used for modulus",
     "angle_count": 7,
-    "modulus_gate_evaluated": false,
-    "wall_clock_s": 4.268588448874652
+    "starter_all_ok": true,
+    "engine_all_ok": true,
+    "modulus_gate_evaluated": true,
+    "mesh_evidence": "compact 4x4x1 HEXA8 block mirrors references/orientation_probe_decks/run_orientation_probes.py",
+    "modulus_gate_pass": true,
+    "max_relative_error_pct": 0.8150805953977982,
+    "wall_clock_s": 13.996647202409804
   },
   "reference": {
     "material_card": "/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json",
@@ -54,5 +60,5 @@
   "tolerance": {
     "modulus_relative_error": 0.01
   },
-  "git_sha": "2cd5f383c291e97525c53c4c1bf8aa1339fe768d"
+  "git_sha": "fdb4a6541092f52582059e8a4def53275ac240af"
 }

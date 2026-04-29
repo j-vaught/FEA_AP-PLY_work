@@ -12,7 +12,7 @@
 | 05 dogbone_damage | PASS | 2376.0 s | LAW22 notched-dogbone mesh ladder passed pre-onset RMSE gates: coarse-medium 4.843%, medium-fine 3.736%; medium ligament EPSP max 0.1229 exceeded the 0.05 damage-onset threshold. |
 | 06 composite_failure_criteria | PASS | 5.4 s | Post-matrix LAW12 + TYPE6/SOL_ORTH solid composite decks start, run, convert to VTK, and register TSAIWU, HASHIN, and PUCK failure cards on the verified matrix row. Principal-axis strengths match the WWFE-II card values used by the failure cards. |
 | 07 UD_tow_D3039 | PASS | 9.6 s | Post-rotation LAW12 + TYPE6/SOL_ORTH decks use the verified `Ip=3`, `Iorth=0`, `Phi=theta` property convention. 0 deg error 0.403%; 45 deg off-axis error 0.114% using engineering strain from displacement. |
-| 08 ply_rotation | INCONCLUSIVE | 4.3 s | Seven-angle LAW25 + TYPE14 ply-rotation sweep fails at starter with ERROR 3047 for every angle. TYPE6/SOL_ORTH proxy starters succeed; analytic Ex(theta) table is reported without FEM modulus claims. |
+| 08 ply_rotation | PASS | 14.0 s | Seven-angle LAW12 + TYPE6/SOL_ORTH sweep uses `Ip=3`, `Iorth=0`, `Phi=theta` on a compact 4x4x1 HEXA8 block. Max analytic Ex(theta) error 0.815%; VTK cell `Stra[0]` is not used for the gate. |
 | 09 laminate_solid_CLT | INCONCLUSIVE | 1.1 s | Cross-ply and quasi-isotropic per-ply LAW25 + TYPE14 laminate probes fail at starter with ERROR 3047. Analytic CLT A-matrices are reported; TYPE6/SOL_ORTH proxy starters succeed but are not used for the gate. |
 | 10 UD_mesoscale_direct | not attempted | - | Pending. |
 | 11 PW_mesoscale_direct | not attempted | - | Pending; Kok geometry port required after stage 10. |
@@ -25,7 +25,5 @@
 ## Open Issues
 
 Stage 02 no longer fails on missing MUMPS. The active blocker is robust completion of the `alpha=3` and `alpha=5` large-deflection implicit paths. See `tests/stage_02_cantilever_large/blocker.md` for attempted solver controls and failure modes. Stage 03 was independent enough to proceed despite that INCONCLUSIVE gate.
-
-Stage 08 is likewise blocked for all seven required ply angles; the analytic stiffness transformation is reported but the FEM gate is not evaluated. See `tests/stage_08_ply_rotation/blocker.md`.
 
 Stage 09 is blocked by the same per-ply LAW25 + TYPE14 incompatibility for both laminate stacks. See `tests/stage_09_laminate_solid_CLT/blocker.md`.

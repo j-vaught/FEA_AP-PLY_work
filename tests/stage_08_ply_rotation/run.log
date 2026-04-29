@@ -1,6 +1,7 @@
 material_card=/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json
 starter=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_00_type14_canonical_0000.rad -nt 1
+engine=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_00_law12_type6_0000.rad -nt 16
 ************************************************************************
 **                                                                    **
 **                                                                    **
@@ -31,96 +32,13 @@ DESCRIPTION :
 unsupported field exists
 SOLUTION :     
     Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 0 type14_canonical
+Stage 08 ply rotation theta 0 LAW12 TYPE6
  .. UNITS SYSTEM                                                                         
  .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
+ .. STARTER RUNNING ON   16 THREADS
  .. FUNCTIONS & TABLES
  .. MATERIALS                                                                            
  .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:10
- EXECUTION COMPLETED    :      2026/04/29  17:34:10
-  
- ELAPSED TIME...........=          0.25 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     ERROR TERMINATION                  
-     ------------------                                                                  
-              1 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_00_type6_proxy_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 0 type6_proxy
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
  .. PROPERTIES                                                                           
  .. 3D SOLID ELEMENTS                                                                    
  .. SUBSETS
@@ -139,330 +57,8 @@ Stage 08 ply rotation theta 0 type6_proxy
   
                    ** COMPUTE TIME INFORMATION **
   
- EXECUTION STARTED      :      2026/04/29  17:34:10
- EXECUTION COMPLETED    :      2026/04/29  17:34:10
-  
- ELAPSED TIME...........=          0.24 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     TERMINATION WITH WARNING           
-     ------------------                                                                  
-              0 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_15_type14_canonical_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 15 type14_canonical
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:10
- EXECUTION COMPLETED    :      2026/04/29  17:34:11
-  
- ELAPSED TIME...........=          0.25 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     ERROR TERMINATION                  
-     ------------------                                                                  
-              1 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_15_type6_proxy_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 15 type6_proxy
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
- .. GEOMETRY PLOT FILE                                                                   
- .. PARALLEL RESTART FILES GENERATION                                                    
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:11
- EXECUTION COMPLETED    :      2026/04/29  17:34:11
-  
- ELAPSED TIME...........=          0.25 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     TERMINATION WITH WARNING           
-     ------------------                                                                  
-              0 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_30_type14_canonical_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 30 type14_canonical
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:11
- EXECUTION COMPLETED    :      2026/04/29  17:34:11
-  
- ELAPSED TIME...........=          0.25 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     ERROR TERMINATION                  
-     ------------------                                                                  
-              1 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_30_type6_proxy_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 30 type6_proxy
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
- .. GEOMETRY PLOT FILE                                                                   
- .. PARALLEL RESTART FILES GENERATION                                                    
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:11
- EXECUTION COMPLETED    :      2026/04/29  17:34:12
+ EXECUTION STARTED      :      2026/04/29  19:35:54
+ EXECUTION COMPLETED    :      2026/04/29  19:35:54
   
  ELAPSED TIME...........=          0.27 s
                                00:00:00
@@ -483,7 +79,94 @@ PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
 
 
 
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_45_type14_canonical_0000.rad -nt 1
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage08_theta_00_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage08_theta_00_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0325E-07 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 2.0325E-05 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=         12.55 s
+ NC=     200 T= 4.0650E-05 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.44 s  REMAINING TIME=          5.63 s
+ NC=     300 T= 6.0974E-05 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          3.31 s
+ NC=     400 T= 8.1298E-05 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.47 s  REMAINING TIME=          2.14 s
+ NC=     500 T= 1.0162E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.49 s  REMAINING TIME=          1.44 s
+ NC=     600 T= 1.2195E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.50 s  REMAINING TIME=          0.96 s
+ NC=     700 T= 1.4227E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.52 s  REMAINING TIME=          0.62 s
+ NC=     800 T= 1.6259E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.53 s  REMAINING TIME=          0.35 s
+ NC=     900 T= 1.8291E-04 DT= 2.0322E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.55 s  REMAINING TIME=          0.14 s
+     RESTART FILES: stage08_theta_00_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage08_theta_00_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .2073E+01 .3363E-01 .7164E-01 .1167E+00 .2523E+00 .3330E-01 .2686E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .4163E-03     0.02 % 
+ ELEMENT FORCES..............: .2073E+01    77.17 % 
+ KINEMATIC COND..............: .3363E-01     1.25 % 
+ INTEGRATION.................: .7164E-01     2.67 % 
+ ASSEMBLING..................: .3330E-01     1.24 % 
+ OTHERS (including I/O)......: .4743E+00    17.66 % 
+ TOTAL.......................: .2686E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      161 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      161 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      161 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      161 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.56 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     986
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_00_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_15_law12_type6_0000.rad -nt 16
 ************************************************************************
 **                                                                    **
 **                                                                    **
@@ -514,96 +197,13 @@ DESCRIPTION :
 unsupported field exists
 SOLUTION :     
     Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 45 type14_canonical
+Stage 08 ply rotation theta 15 LAW12 TYPE6
  .. UNITS SYSTEM                                                                         
  .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
+ .. STARTER RUNNING ON   16 THREADS
  .. FUNCTIONS & TABLES
  .. MATERIALS                                                                            
  .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:12
- EXECUTION COMPLETED    :      2026/04/29  17:34:12
-  
- ELAPSED TIME...........=          0.26 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     ERROR TERMINATION                  
-     ------------------                                                                  
-              1 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_45_type6_proxy_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 45 type6_proxy
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
  .. PROPERTIES                                                                           
  .. 3D SOLID ELEMENTS                                                                    
  .. SUBSETS
@@ -622,8 +222,8 @@ Stage 08 ply rotation theta 45 type6_proxy
   
                    ** COMPUTE TIME INFORMATION **
   
- EXECUTION STARTED      :      2026/04/29  17:34:12
- EXECUTION COMPLETED    :      2026/04/29  17:34:12
+ EXECUTION STARTED      :      2026/04/29  19:35:56
+ EXECUTION COMPLETED    :      2026/04/29  19:35:57
   
  ELAPSED TIME...........=          0.25 s
                                00:00:00
@@ -644,7 +244,94 @@ PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
 
 
 
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_60_type14_canonical_0000.rad -nt 1
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage08_theta_15_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage08_theta_15_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0325E-07 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 2.0325E-05 DT= 2.0324E-07 ERR= -0.3% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.43 s  REMAINING TIME=         12.68 s
+ NC=     200 T= 4.0648E-05 DT= 2.0323E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          5.69 s
+ NC=     300 T= 6.0970E-05 DT= 2.0322E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.47 s  REMAINING TIME=          3.35 s
+ NC=     400 T= 8.1293E-05 DT= 2.0322E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=          2.17 s
+ NC=     500 T= 1.0162E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.50 s  REMAINING TIME=          1.45 s
+ NC=     600 T= 1.2194E-04 DT= 2.0322E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.52 s  REMAINING TIME=          0.97 s
+ NC=     700 T= 1.4226E-04 DT= 2.0322E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.53 s  REMAINING TIME=          0.62 s
+ NC=     800 T= 1.6258E-04 DT= 2.0321E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.55 s  REMAINING TIME=          0.36 s
+ NC=     900 T= 1.8290E-04 DT= 2.0321E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.57 s  REMAINING TIME=          0.15 s
+     RESTART FILES: stage08_theta_15_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage08_theta_15_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .2052E+01 .3389E-01 .8188E-01 .1161E+00 .2389E+00 .4400E-01 .2660E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .4640E-03     0.02 % 
+ ELEMENT FORCES..............: .2052E+01    77.14 % 
+ KINEMATIC COND..............: .3389E-01     1.27 % 
+ INTEGRATION.................: .8188E-01     3.08 % 
+ ASSEMBLING..................: .4400E-01     1.65 % 
+ OTHERS (including I/O)......: .4480E+00    16.84 % 
+ TOTAL.......................: .2660E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      162 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      162 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      162 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      162 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.58 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     986
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_15_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_30_law12_type6_0000.rad -nt 16
 ************************************************************************
 **                                                                    **
 **                                                                    **
@@ -675,14 +362,13 @@ DESCRIPTION :
 unsupported field exists
 SOLUTION :     
     Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 60 type14_canonical
+Stage 08 ply rotation theta 30 LAW12 TYPE6
  .. UNITS SYSTEM                                                                         
  .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
+ .. STARTER RUNNING ON   16 THREADS
  .. FUNCTIONS & TABLES
  .. MATERIALS                                                                            
  .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
  .. PROPERTIES                                                                           
  .. 3D SOLID ELEMENTS                                                                    
  .. SUBSETS
@@ -694,18 +380,15 @@ Stage 08 ply rotation theta 60 type14_canonical
  .. DOMAIN DECOMPOSITION
  .. ELEMENT GROUPS                                                                       
  .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
  .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
+ .. PARALLEL RESTART FILES GENERATION                                                    
   
 ------------------------------------------------------------------------
   
                    ** COMPUTE TIME INFORMATION **
   
- EXECUTION STARTED      :      2026/04/29  17:34:12
- EXECUTION COMPLETED    :      2026/04/29  17:34:13
+ EXECUTION STARTED      :      2026/04/29  19:35:58
+ EXECUTION COMPLETED    :      2026/04/29  19:35:59
   
  ELAPSED TIME...........=          0.24 s
                                00:00:00
@@ -714,9 +397,9 @@ ERROR ID :   3047
 
 
 
-     ERROR TERMINATION                  
+     TERMINATION WITH WARNING           
      ------------------                                                                  
-              1 ERROR(S)            
+              0 ERROR(S)            
               1 WARNING(S)          
 
 
@@ -726,7 +409,94 @@ PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
 
 
 
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_60_type6_proxy_0000.rad -nt 1
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage08_theta_30_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage08_theta_30_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0325E-07 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 2.0325E-05 DT= 2.0324E-07 ERR= -0.9% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=         12.56 s
+ NC=     200 T= 4.0648E-05 DT= 2.0324E-07 ERR= -0.3% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.44 s  REMAINING TIME=          5.63 s
+ NC=     300 T= 6.0972E-05 DT= 2.0323E-07 ERR= -0.2% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          3.31 s
+ NC=     400 T= 8.1295E-05 DT= 2.0323E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.47 s  REMAINING TIME=          2.14 s
+ NC=     500 T= 1.0162E-04 DT= 2.0323E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=          1.44 s
+ NC=     600 T= 1.2194E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.50 s  REMAINING TIME=          0.96 s
+ NC=     700 T= 1.4226E-04 DT= 2.0322E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=          0.61 s
+ NC=     800 T= 1.6259E-04 DT= 2.0322E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.53 s  REMAINING TIME=          0.35 s
+ NC=     900 T= 1.8291E-04 DT= 2.0322E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=          0.14 s
+     RESTART FILES: stage08_theta_30_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage08_theta_30_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .1988E+01 .2646E-01 .5250E-01 .1192E+00 .2378E+00 .4043E-01 .2555E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1063E-02     0.04 % 
+ ELEMENT FORCES..............: .1988E+01    77.83 % 
+ KINEMATIC COND..............: .2646E-01     1.04 % 
+ INTEGRATION.................: .5250E-01     2.06 % 
+ ASSEMBLING..................: .4043E-01     1.58 % 
+ OTHERS (including I/O)......: .4459E+00    17.46 % 
+ TOTAL.......................: .2555E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      158 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      158 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      158 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      158 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.56 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     986
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_30_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_45_law12_type6_0000.rad -nt 16
 ************************************************************************
 **                                                                    **
 **                                                                    **
@@ -757,14 +527,13 @@ DESCRIPTION :
 unsupported field exists
 SOLUTION :     
     Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 60 type6_proxy
+Stage 08 ply rotation theta 45 LAW12 TYPE6
  .. UNITS SYSTEM                                                                         
  .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
+ .. STARTER RUNNING ON   16 THREADS
  .. FUNCTIONS & TABLES
  .. MATERIALS                                                                            
  .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
  .. PROPERTIES                                                                           
  .. 3D SOLID ELEMENTS                                                                    
  .. SUBSETS
@@ -783,90 +552,8 @@ Stage 08 ply rotation theta 60 type6_proxy
   
                    ** COMPUTE TIME INFORMATION **
   
- EXECUTION STARTED      :      2026/04/29  17:34:13
- EXECUTION COMPLETED    :      2026/04/29  17:34:13
-  
- ELAPSED TIME...........=          0.25 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     TERMINATION WITH WARNING           
-     ------------------                                                                  
-              0 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_75_type14_canonical_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 75 type14_canonical
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:13
- EXECUTION COMPLETED    :      2026/04/29  17:34:13
+ EXECUTION STARTED      :      2026/04/29  19:36:00
+ EXECUTION COMPLETED    :      2026/04/29  19:36:00
   
  ELAPSED TIME...........=          0.24 s
                                00:00:00
@@ -875,9 +562,9 @@ ERROR ID :   3047
 
 
 
-     ERROR TERMINATION                  
+     TERMINATION WITH WARNING           
      ------------------                                                                  
-              1 ERROR(S)            
+              0 ERROR(S)            
               1 WARNING(S)          
 
 
@@ -887,7 +574,94 @@ PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
 
 
 
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_75_type6_proxy_0000.rad -nt 1
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage08_theta_45_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage08_theta_45_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0325E-07 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 2.0325E-05 DT= 2.0324E-07 ERR= -0.3% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.43 s  REMAINING TIME=         12.63 s
+ NC=     200 T= 4.0649E-05 DT= 2.0324E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          5.66 s
+ NC=     300 T= 6.0973E-05 DT= 2.0324E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.46 s  REMAINING TIME=          3.33 s
+ NC=     400 T= 8.1297E-05 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=          2.16 s
+ NC=     500 T= 1.0162E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.49 s  REMAINING TIME=          1.45 s
+ NC=     600 T= 1.2194E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=          0.97 s
+ NC=     700 T= 1.4227E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.53 s  REMAINING TIME=          0.62 s
+ NC=     800 T= 1.6259E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=          0.35 s
+ NC=     900 T= 1.8291E-04 DT= 2.0323E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.56 s  REMAINING TIME=          0.15 s
+     RESTART FILES: stage08_theta_45_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage08_theta_45_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .2026E+01 .5099E-01 .6323E-01 .1087E+00 .2512E+00 .3422E-01 .2649E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .4690E-03     0.02 % 
+ ELEMENT FORCES..............: .2026E+01    76.47 % 
+ KINEMATIC COND..............: .5099E-01     1.92 % 
+ INTEGRATION.................: .6323E-01     2.39 % 
+ ASSEMBLING..................: .3422E-01     1.29 % 
+ OTHERS (including I/O)......: .4745E+00    17.91 % 
+ TOTAL.......................: .2649E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      159 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      159 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      159 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      159 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.57 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     986
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_45_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_60_law12_type6_0000.rad -nt 16
 ************************************************************************
 **                                                                    **
 **                                                                    **
@@ -918,14 +692,13 @@ DESCRIPTION :
 unsupported field exists
 SOLUTION :     
     Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 75 type6_proxy
+Stage 08 ply rotation theta 60 LAW12 TYPE6
  .. UNITS SYSTEM                                                                         
  .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
+ .. STARTER RUNNING ON   16 THREADS
  .. FUNCTIONS & TABLES
  .. MATERIALS                                                                            
  .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
  .. PROPERTIES                                                                           
  .. 3D SOLID ELEMENTS                                                                    
  .. SUBSETS
@@ -944,8 +717,173 @@ Stage 08 ply rotation theta 75 type6_proxy
   
                    ** COMPUTE TIME INFORMATION **
   
- EXECUTION STARTED      :      2026/04/29  17:34:13
- EXECUTION COMPLETED    :      2026/04/29  17:34:13
+ EXECUTION STARTED      :      2026/04/29  19:36:02
+ EXECUTION COMPLETED    :      2026/04/29  19:36:02
+  
+ ELAPSED TIME...........=          0.24 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage08_theta_60_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage08_theta_60_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0325E-07 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 2.0325E-05 DT= 2.0325E-07 ERR= -0.2% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.40 s  REMAINING TIME=         12.35 s
+ NC=     200 T= 4.0650E-05 DT= 2.0325E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.41 s  REMAINING TIME=          5.54 s
+ NC=     300 T= 6.0975E-05 DT= 2.0325E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.43 s  REMAINING TIME=          3.26 s
+ NC=     400 T= 8.1299E-05 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          2.11 s
+ NC=     500 T= 1.0162E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.46 s  REMAINING TIME=          1.41 s
+ NC=     600 T= 1.2195E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=          0.95 s
+ NC=     700 T= 1.4227E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.49 s  REMAINING TIME=          0.61 s
+ NC=     800 T= 1.6260E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=          0.35 s
+ NC=     900 T= 1.8292E-04 DT= 2.0324E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.53 s  REMAINING TIME=          0.14 s
+     RESTART FILES: stage08_theta_60_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage08_theta_60_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .2072E+01 .3749E-01 .6522E-01 .1079E+00 .2346E+00 .3307E-01 .2650E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .4494E-03     0.02 % 
+ ELEMENT FORCES..............: .2072E+01    78.20 % 
+ KINEMATIC COND..............: .3749E-01     1.41 % 
+ INTEGRATION.................: .6522E-01     2.46 % 
+ ASSEMBLING..................: .3307E-01     1.25 % 
+ OTHERS (including I/O)......: .4415E+00    16.66 % 
+ TOTAL.......................: .2650E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      161 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      161 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      161 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      161 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.54 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     986
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_60_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_75_law12_type6_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 08 ply rotation theta 75 LAW12 TYPE6
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:36:04
+ EXECUTION COMPLETED    :      2026/04/29  19:36:04
   
  ELAPSED TIME...........=          0.25 s
                                00:00:00
@@ -966,7 +904,94 @@ PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
 
 
 
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_90_type14_canonical_0000.rad -nt 1
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage08_theta_75_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage08_theta_75_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0325E-07 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 2.0325E-05 DT= 2.0325E-07 ERR= -0.5% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=         12.56 s
+ NC=     200 T= 4.0650E-05 DT= 2.0325E-07 ERR= -0.2% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.44 s  REMAINING TIME=          5.63 s
+ NC=     300 T= 6.0975E-05 DT= 2.0325E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          3.31 s
+ NC=     400 T= 8.1300E-05 DT= 2.0325E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.47 s  REMAINING TIME=          2.14 s
+ NC=     500 T= 1.0163E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.49 s  REMAINING TIME=          1.44 s
+ NC=     600 T= 1.2195E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.50 s  REMAINING TIME=          0.96 s
+ NC=     700 T= 1.4227E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.52 s  REMAINING TIME=          0.62 s
+ NC=     800 T= 1.6260E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.53 s  REMAINING TIME=          0.35 s
+ NC=     900 T= 1.8292E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.55 s  REMAINING TIME=          0.14 s
+     RESTART FILES: stage08_theta_75_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage08_theta_75_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .2030E+01 .4244E-01 .6417E-01 .1296E+00 .2522E+00 .3387E-01 .2659E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .4663E-03     0.02 % 
+ ELEMENT FORCES..............: .2030E+01    76.36 % 
+ KINEMATIC COND..............: .4244E-01     1.60 % 
+ INTEGRATION.................: .6417E-01     2.41 % 
+ ASSEMBLING..................: .3387E-01     1.27 % 
+ OTHERS (including I/O)......: .4876E+00    18.34 % 
+ TOTAL.......................: .2659E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      162 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      162 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      162 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      162 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.57 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     986
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_75_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_90_law12_type6_0000.rad -nt 16
 ************************************************************************
 **                                                                    **
 **                                                                    **
@@ -997,96 +1022,13 @@ DESCRIPTION :
 unsupported field exists
 SOLUTION :     
     Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 90 type14_canonical
+Stage 08 ply rotation theta 90 LAW12 TYPE6
  .. UNITS SYSTEM                                                                         
  .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
+ .. STARTER RUNNING ON   16 THREADS
  .. FUNCTIONS & TABLES
  .. MATERIALS                                                                            
  .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. NODE GROUP
- .. BOUNDARY CONDITIONS                                                                  
- .. IMPOSED VELOCITIES                                                                   
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:34:13
- EXECUTION COMPLETED    :      2026/04/29  17:34:14
-  
- ELAPSED TIME...........=          0.25 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     ERROR TERMINATION                  
-     ------------------                                                                  
-              1 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage08_theta_90_type6_proxy_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 08 ply rotation theta 90 type6_proxy
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. FUNCTIONS & TABLES
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
  .. PROPERTIES                                                                           
  .. 3D SOLID ELEMENTS                                                                    
  .. SUBSETS
@@ -1105,10 +1047,10 @@ Stage 08 ply rotation theta 90 type6_proxy
   
                    ** COMPUTE TIME INFORMATION **
   
- EXECUTION STARTED      :      2026/04/29  17:34:14
- EXECUTION COMPLETED    :      2026/04/29  17:34:14
+ EXECUTION STARTED      :      2026/04/29  19:36:06
+ EXECUTION COMPLETED    :      2026/04/29  19:36:06
   
- ELAPSED TIME...........=          0.26 s
+ ELAPSED TIME...........=          0.24 s
                                00:00:00
   
 ------------------------------------------------------------------------
@@ -1126,3 +1068,91 @@ Stage 08 ply rotation theta 90 type6_proxy
 PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
 
 
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage08_theta_90_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage08_theta_90_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0325E-07 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 2.0325E-05 DT= 2.0325E-07 ERR= -0.7% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.39 s  REMAINING TIME=         12.32 s
+ NC=     200 T= 4.0650E-05 DT= 2.0325E-07 ERR= -0.3% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.41 s  REMAINING TIME=          5.52 s
+ NC=     300 T= 6.0976E-05 DT= 2.0325E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=          3.25 s
+ NC=     400 T= 8.1301E-05 DT= 2.0325E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.44 s  REMAINING TIME=          2.10 s
+ NC=     500 T= 1.0163E-04 DT= 2.0325E-07 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.46 s  REMAINING TIME=          1.41 s
+ NC=     600 T= 1.2195E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.47 s  REMAINING TIME=          0.94 s
+ NC=     700 T= 1.4228E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.49 s  REMAINING TIME=          0.60 s
+ NC=     800 T= 1.6260E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.50 s  REMAINING TIME=          0.35 s
+ NC=     900 T= 1.8293E-04 DT= 2.0325E-07 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.52 s  REMAINING TIME=          0.14 s
+     RESTART FILES: stage08_theta_90_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage08_theta_90_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .1944E+01 .4198E-01 .7251E-01 .1057E+00 .2174E+00 .2974E-01 .2503E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1069E-02     0.04 % 
+ ELEMENT FORCES..............: .1944E+01    77.66 % 
+ KINEMATIC COND..............: .4198E-01     1.68 % 
+ INTEGRATION.................: .7251E-01     2.90 % 
+ ASSEMBLING..................: .2974E-01     1.19 % 
+ OTHERS (including I/O)......: .4137E+00    16.53 % 
+ TOTAL.......................: .2503E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      160 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      160 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      160 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      160 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          1.53 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     986
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_08_ply_rotation/runs/stage08_theta_90_law12_type6A001
+[exit 0]
