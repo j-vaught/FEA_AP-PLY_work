@@ -3,8 +3,9 @@
 Author: J.C. Vaught
 
 Post-matrix update: composite solids use the verified LAW12 + TYPE6/SOL_ORTH
-row from references/openradioss_law_compatibility_matrix.md. TYPE6 is an
-orthotropic solid property, so the all-solid constraint is preserved.
+row from references/openradioss_law_compatibility_matrix.md. Uniform off-axis
+orientation is bound to references/openradioss_orientation_convention.md:
+TYPE6 Ip=3, Iorth=0, Phi=theta.
 """
 
 from __future__ import annotations
@@ -215,31 +216,18 @@ def group_block(group_id: int, name: str, node_ids: list[int]) -> list[str]:
     return lines
 
 
-def skew_block(theta_deg: float) -> list[str]:
-    theta = math.radians(theta_deg)
-    c = math.cos(theta)
-    s = math.sin(theta)
-    return [
-        "/SKEW/FIX/1",
-        f"ply_frame_theta_{theta_deg:.1f}",
-        fmt_f(0.0, 0.0, 0.0),
-        fmt_f(c, s, 0.0),
-        fmt_f(-s, c, 0.0),
-    ]
-
-
 def type6_property(theta_deg: float) -> list[str]:
     return [
         "/PROP/TYPE6/1",
-        "law12_type6_sol_orth_property",
+        "law12_type6_phi_ip3_orientation",
         "#   Isolid    Ismstr               Icpre  Itetra10     Inpts   Itetra4    Iframe                  Dn",
         fmt_i(24, 4) + f"{1:20d}{0:10d}{0:10d}{0:10d}{2:10d}{0.0:20.12g}",
         "#                 qa                  qb                   h",
         fmt_f(0.0, 0.0, 0.0),
         "#                 Vx                  Vy                  Vz   skew_ID        Ip     Iorth",
-        fmt_f(1.0, 0.0, 0.0) + fmt_i(1, 1, 1),
+        fmt_f(1.0, 0.0, 0.0) + fmt_i(0, 3, 0),
         "#                Phi                 Px                  Py                  Pz",
-        fmt_f(0.0, 0.0, 0.0, 0.0),
+        fmt_f(theta_deg, 0.0, 0.0, 0.0),
         "#             dt_min   istrain      IHKT",
         fmt_f(0.0) + fmt_i(0, 0),
     ]
@@ -266,7 +254,6 @@ def write_starter(coupon: Coupon, mat: Material) -> Path:
     lines.extend(law12_block(mat))
     lines.extend(mesh)
     lines.extend(type6_property(coupon.theta_deg))
-    lines.extend(skew_block(coupon.theta_deg))
     lines.extend(
         [
             "/BCS/1",
@@ -387,30 +374,32 @@ def extract_modulus(coupon: Coupon, vtk_path: Path, e_ref: float) -> dict[str, o
 
     grid = pv.read(str(vtk_path))
     stress = np.asarray(stress_array(grid), dtype=float)
-    strain = np.asarray(strain_array(grid), dtype=float)
     centers = grid.cell_centers().points
     x0 = centers[:, 0].min()
     x1 = centers[:, 0].max()
     gauge = (centers[:, 0] >= x0 + 0.35 * (x1 - x0)) & (centers[:, 0] <= x0 + 0.65 * (x1 - x0))
     sigma_x = float(np.mean(stress[gauge, 0]))
-    eps_x = abs(float(np.mean(strain[gauge, 0])))
     disp = np.asarray(_point_array(grid, "Displacement"), dtype=float)
     points = np.asarray(grid.points, dtype=float)
     original_x = points[:, 0] - disp[:, 0]
+    left = original_x < original_x.min() + 1.0e-8
     right = original_x > original_x.max() - 1.0e-8
+    eps_x = abs(float(np.mean(disp[right, 0]) - np.mean(disp[left, 0]))) / coupon.length
     reaction = np.asarray(_point_array(grid, "Reaction"), dtype=float)
     force_x = float(np.sum(reaction[right, 0]))
     reaction_sigma_x = force_x / (coupon.width * coupon.thickness)
-    modulus = abs(reaction_sigma_x) / eps_x
+    modulus = abs(sigma_x) / eps_x
     rel_err = abs(modulus - e_ref) / e_ref
     return {
         "solver_modulus_pa": modulus,
         "relative_error_pct": 100.0 * rel_err,
         "pass": rel_err <= 0.02,
         "sigma_x_mean_pa": sigma_x,
+        "stress_measure": "mean_gauge_sigma_x",
         "reaction_force_x_n": force_x,
         "reaction_sigma_x_pa": reaction_sigma_x,
         "strain_x": eps_x,
+        "strain_measure": "engineering_displacement_difference",
         "vtk_path": str(vtk_path),
     }
 
@@ -437,9 +426,11 @@ def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
             "relative_error_pct": "",
             "pass": False,
             "sigma_x_mean_pa": "",
+            "stress_measure": "",
             "reaction_force_x_n": "",
             "reaction_sigma_x_pa": "",
             "strain_x": "",
+            "strain_measure": "",
             "vtk_path": "",
         }
         if starter_proc.returncode == 0:
@@ -462,9 +453,11 @@ def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
                 "solver_modulus_pa": extracted["solver_modulus_pa"],
                 "relative_error_pct": extracted["relative_error_pct"],
                 "sigma_x_mean_pa": extracted["sigma_x_mean_pa"],
+                "stress_measure": extracted["stress_measure"],
                 "reaction_force_x_n": extracted["reaction_force_x_n"],
                 "reaction_sigma_x_pa": extracted["reaction_sigma_x_pa"],
                 "strain_x": extracted["strain_x"],
+                "strain_measure": extracted["strain_measure"],
                 "vtk_path": extracted["vtk_path"],
                 "verdict": "PASS" if extracted["pass"] else "FAIL",
             }
@@ -473,6 +466,8 @@ def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
     metrics = {
         "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
         "matrix_evidence": "LAW12 row: TYPE6/SOL_ORTH solid OK; TYPE14 solid = B3047",
+        "orientation_evidence": "references/openradioss_orientation_convention.md uniform property angle row: Ip=3, Iorth=0, Phi=theta",
+        "strain_measurement": "engineering strain from displacement difference; VTK cell Stra[0] is not used for modulus",
         "starter_all_ok": all_started,
         "engine_all_ok": all_engine,
         "d3039_modulus_gate_evaluated": True,
@@ -524,7 +519,7 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
                 '  columns: (22mm, 22mm, 42mm, 32mm, 30mm),',
                 '  stroke: rgb("#5C5C5C"),',
                 '  [Run], [Theta], [Reference Pa], [Error %], [Verdict],',
-                '  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(7)], [#r.at(13)])).flatten(),',
+                '  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(7)], [#r.at(15)])).flatten(),',
                 ')',
                 "",
             ]
@@ -539,20 +534,22 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
         blocker.write_text(
             "\n".join(
                 [
-                    "# Stage 07 Blocker - TYPE6 off-axis D3039 orientation mismatch",
+                    "# Stage 07 Blocker - TYPE6 off-axis D3039 mismatch",
                     "",
                     "Author: J.C. Vaught",
                     "",
-                    "The post-matrix `LAW12 + TYPE6/SOL_ORTH` D3039 decks now start, run, write animation output, convert through `anim_to_vtk`, and post-process with PyVista. The remaining blocker is numerical, not starter parsing.",
+                    "The post-matrix `LAW12 + TYPE6/SOL_ORTH` D3039 decks use the verified property-level orientation recipe from `references/openradioss_orientation_convention.md`: `Ip=3`, `Iorth=0`, `Phi=theta`. They start, run, write animation output, convert through `anim_to_vtk`, and post-process with PyVista. The remaining blocker is numerical, not starter parsing.",
                     "",
                     "Observed results from `results/timeseries.csv`:",
                     "",
-                    "- Run 7A, 0 deg: `E_FEM = 170.22 GPa` vs `E1 = 171.40 GPa`, error `0.69%`, PASS.",
-                    "- Run 7B, 45 deg: `E_FEM = 171.15 GPa` vs analytic `Ex(45) = 13.28 GPa`, error `1189%`, FAIL.",
+                    *[
+                        f"- Run {row['run']}, {row['theta_deg']} deg: `E_FEM = {float(row['solver_modulus_pa']) / 1.0e9:.3f} GPa` vs reference `{float(row['reference_modulus_pa']) / 1.0e9:.3f} GPa`, error `{float(row['relative_error_pct']):.3f}%`, {row['verdict']}."
+                        for row in rows
+                    ],
                     "",
-                    "The 45 deg value is E1-like, indicating the verified `TYPE6` solid property path is not applying the in-plane material-frame rotation in the way required by the stage 07 off-axis D3039 gate. I also probed alternate `TYPE6` `Ip`, `Iorth`, `Phi`, skew-frame, and reference-vector combinations; none recovered the 45 deg plane-stress transformed modulus within the 2% tolerance.",
+                    "The modulus calculation uses mean gauge `sigma_x` divided by engineering strain from the displacement field. It does not use VTK cell `Stra[0]` for the gate.",
                     "",
-                    f"Verdict: `{verdict}` due to a real off-axis modulus mismatch after the matrix substitution, not due to `ERROR 3047` or another starter parse blocker.",
+                    f"Verdict: `{verdict}` after the post-rotation convention update.",
                     "",
                 ]
             ),

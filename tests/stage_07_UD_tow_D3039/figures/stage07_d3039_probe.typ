@@ -6,5 +6,5 @@
   columns: (22mm, 22mm, 42mm, 32mm, 30mm),
   stroke: rgb("#5C5C5C"),
   [Run], [Theta], [Reference Pa], [Error %], [Verdict],
-  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(7)], [#r.at(13)])).flatten(),
+  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(7)], [#r.at(15)])).flatten(),
 )

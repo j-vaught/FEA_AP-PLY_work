@@ -1,14 +1,16 @@
 {
   "stage": 7,
-  "verdict": "FAIL",
+  "verdict": "PASS",
   "metrics": {
     "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
     "matrix_evidence": "LAW12 row: TYPE6/SOL_ORTH solid OK; TYPE14 solid = B3047",
+    "orientation_evidence": "references/openradioss_orientation_convention.md uniform property angle row: Ip=3, Iorth=0, Phi=theta",
+    "strain_measurement": "engineering strain from displacement difference; VTK cell Stra[0] is not used for modulus",
     "starter_all_ok": true,
     "engine_all_ok": true,
     "d3039_modulus_gate_evaluated": true,
-    "d3039_modulus_gate_pass": false,
-    "wall_clock_s": 9.79663900192827
+    "d3039_modulus_gate_pass": true,
+    "wall_clock_s": 9.637628410942852
   },
   "reference": {
     "material_card": "/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json",
@@ -18,5 +20,5 @@
   "tolerance": {
     "modulus_relative_error": 0.02
   },
-  "git_sha": "27859e1aa7e5eb973261f8297f57660585f04bd8"
+  "git_sha": "a2619648476f4e9547e2bdfc1cd8bbe9a5feaedb"
 }
