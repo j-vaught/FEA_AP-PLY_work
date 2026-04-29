@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "material": "Hexcel IM7/8552 unidirectional carbon/epoxy",
+  "author": "J.C. Vaught",
+  "units": "SI",
+  "basis": {
+    "elastic": "SodenHintonKaddour1998",
+    "strength": "KaddourHinton2013WWFEII",
+    "cohesive": "CamanhoDavila2003"
+  },
+  "elastic": {
+    "density_kg_m3": 1580.0,
+    "E1_Pa": 171400000000.0,
+    "E2_Pa": 9080000000.0,
+    "E3_Pa": 9080000000.0,
+    "nu12": 0.32,
+    "nu13": 0.32,
+    "nu23": 0.50,
+    "G12_Pa": 5290000000.0,
+    "G13_Pa": 5290000000.0,
+    "G23_Pa": 3026666666.6666665,
+    "G23_note": "Derived as E2 / (2 * (1 + nu23)) for the transverse isotropic plane."
+  },
+  "strength": {
+    "Xt_Pa": 2560000000.0,
+    "Xc_Pa": 1590000000.0,
+    "Yt_Pa": 73000000.0,
+    "Yc_Pa": 185000000.0,
+    "Zt_Pa": 73000000.0,
+    "Zc_Pa": 185000000.0,
+    "S12_Pa": 90000000.0,
+    "S13_Pa": 90000000.0,
+    "S23_Pa": 90000000.0,
+    "S23_note": "Carried equal to S12 where a card requires transverse shear strength and WWFE-II does not provide an independent S23 gate."
+  },
+  "cohesive": {
+    "GIc_J_m2": 250.0,
+    "GIIc_J_m2": 800.0,
+    "Tn_Pa": 30000000.0,
+    "Ts_Pa": 60000000.0,
+    "eta_BK": 1.45,
+    "penalty_stiffness_N_m3": 1000000000000.0
+  },
+  "deck_conversions": {
+    "MPa": {
+      "E1": 171400.0,
+      "E2": 9080.0,
+      "E3": 9080.0,
+      "G12": 5290.0,
+      "G13": 5290.0,
+      "G23": 3026.6666666666665,
+      "Xt": 2560.0,
+      "Xc": 1590.0,
+      "Yt": 73.0,
+      "Yc": 185.0,
+      "S12": 90.0
+    }
+  },
+  "intended_stages": [6, 7, 8, 9, 11, 12, 13, 14, 15, 16],
+  "notes": [
+    "This is the canonical project card required by plan/consolidation_review.md item A.",
+    "Kok 2022 VTC401-aligned moduli are validation targets for stage 11, not input material values."
+  ]
+}

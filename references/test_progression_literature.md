@@ -268,28 +268,7 @@ Validation success criterion.
 
 ---
 
-## Stage 13 - Compression After Impact (CAI)
-
-Goal. Combine impact damage and compressive residual strength. Verify that an externally introduced delamination / damage field in a quasi-isotropic plate produces a residual compressive strength matching ASTM D7137 measurements.
-
-Standard. ASTM D7137 / D7137M (Compressive Residual Strength of Damaged Polymer Matrix Composite Plates). Used in tandem with ASTM D7136 (low-velocity impact, see Stage 14) to define the input damage state. NASA RP-1142 also documents the CAI test.
-
-Reference. ASTM D7137-17 (https://store.astm.org/d7137_d7137m-17.html). Soutis, C., Curtis, P.T. (1996), "Prediction of the post-impact compressive strength of CFRP laminated composites", *Composites Science and Technology*, **56**, 677-684 - canonical analytic / semi-empirical CAI strength model. Davies, G.A.O., Hitchings, D., Ankersen, J. (2006), "Predicting delamination and debonding in modern aerospace composite structures", *Composites Science and Technology*, **66**, 846-854. Camanho, P.P. et al. (2008), CMH-17-derived CAI benchmark.
-
-Specimen dimensions. Per ASTM D7137: $L=152.4$ mm (6 in), $w=101.6$ mm (4 in), $t \approx 5$ mm, quasi-isotropic $[45/0/-45/90]_{4S}$ T800/3900-2 or IM7/8552.
-
-Failure / success criterion of the physical experiment. Compressive residual strength after a specified impact energy (typically 6.7 J/mm). Failure is local sublaminate buckling at the impact site followed by global compression failure.
-
-FEniCSx tutorial. None directly. Built up from the orthotropic elasticity (Stage 7), CLT (Stage 9), and CZM (Stage 12) tours.
-
-Validation success criterion.
-- Residual compressive strength within 10% of the published Soutis-Curtis 1996 sublaminate-buckling closed-form for the same damage area.
-- Buckling mode shape (local sublaminate vs. global) matches the published experimental observation for the same damage size.
-- For a baseline (undamaged) specimen, compressive strength matches ASTM D6641 reference data within 5%.
-
----
-
-## Stage 14 - Low-Velocity Impact (Drop Tower, ASTM D7136)
+## Stage 13 - Low-Velocity Impact (Drop Tower, ASTM D7136)
 
 Goal. Couple explicit transient dynamics, contact, and progressive damage. Verify a drop-tower simulation against ASTM D7136 measurements: peak contact force, contact duration, absorbed energy, and projected delamination area (typically by C-scan).
 
@@ -309,6 +288,27 @@ Validation success criterion.
 - Absorbed energy within 15%.
 - Projected delamination area within 20% (this is the loosest tolerance because it depends sensitively on stacking sequence and through-thickness CZM resolution).
 - Back-face displacement history matches Lopes-Camanho 2009 Figure 9-12 within 10% RMS.
+
+---
+
+## Stage 14 - Compression After Impact (CAI)
+
+Goal. Combine impact damage and compressive residual strength. Verify that an externally introduced delamination / damage field in a quasi-isotropic plate produces a residual compressive strength matching ASTM D7137 measurements.
+
+Standard. ASTM D7137 / D7137M (Compressive Residual Strength of Damaged Polymer Matrix Composite Plates). Used in tandem with ASTM D7136 (low-velocity impact, see Stage 13) to define the input damage state. NASA RP-1142 also documents the CAI test.
+
+Reference. ASTM D7137-17 (https://store.astm.org/d7137_d7137m-17.html). Soutis, C., Curtis, P.T. (1996), "Prediction of the post-impact compressive strength of CFRP laminated composites", *Composites Science and Technology*, **56**, 677-684 - canonical analytic / semi-empirical CAI strength model. Davies, G.A.O., Hitchings, D., Ankersen, J. (2006), "Predicting delamination and debonding in modern aerospace composite structures", *Composites Science and Technology*, **66**, 846-854. Camanho, P.P. et al. (2008), CMH-17-derived CAI benchmark.
+
+Specimen dimensions. Per ASTM D7137: $L=152.4$ mm (6 in), $w=101.6$ mm (4 in), $t \approx 5$ mm, quasi-isotropic $[45/0/-45/90]_{4S}$ T800/3900-2 or IM7/8552.
+
+Failure / success criterion of the physical experiment. Compressive residual strength after a specified impact energy (typically 6.7 J/mm). Failure is local sublaminate buckling at the impact site followed by global compression failure.
+
+FEniCSx tutorial. None directly. Built up from the orthotropic elasticity (Stage 7), CLT (Stage 9), CZM (Stage 12) tours.
+
+Validation success criterion.
+- Residual compressive strength within 10% of the published Soutis-Curtis 1996 sublaminate-buckling closed-form for the same damage area.
+- Buckling mode shape (local sublaminate vs. global) matches the published experimental observation for the same damage size.
+- For a baseline (undamaged) specimen, compressive strength matches ASTM D6641 reference data within 5%.
 
 ---
 
