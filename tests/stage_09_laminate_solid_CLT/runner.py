@@ -1,23 +1,23 @@
-"""Stage 09 - solid laminate CLT starter probe.
+"""Stage 09 - solid laminate CLT verification.
 
 Author: J.C. Vaught
 
-The intended stage verifies CLT A-matrices with one solid layer per ply using
-/MAT/LAW25 on /PROP/TYPE14. The installed OpenRadioss starter rejects that
-material/property pair with ERROR 3047, so this runner computes the analytic
-CLT references, writes canonical per-ply TYPE14 starter probes for the
-cross-ply and quasi-isotropic stacks, records the starter blocker, and marks
-the stage INCONCLUSIVE. TYPE6/SOL_ORTH proxy starters are also checked to
-isolate the blocker to the required TYPE14 path.
+Composite plies use the verified LAW12 + TYPE6/SOL_ORTH row from
+references/openradioss_law_compatibility_matrix.md. Per-ply orientation is
+bound to references/openradioss_orientation_convention.md using TYPE6
+Ip=3, Iorth=0, Phi=theta_ply. Three grouped affine strain cases recover the
+laminate A-matrix from VTK stress resultants.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import math
 import os
+import shutil
 import subprocess
 import time
 from dataclasses import dataclass
@@ -36,12 +36,22 @@ CARD_PATH = ROOT_DIR / "references" / "material_cards" / "im7_8552.json"
 
 OR_ROOT = Path(os.environ.get("OR", "/mnt/storage/j-vaught/openradioss/OpenRadioss")).resolve()
 STARTER = OR_ROOT / "exec" / "starter_linux64_gf"
+ENGINE = OR_ROOT / "exec" / "engine_linux64_gf"
+ANIM_TO_VTK = OR_ROOT / "exec" / "anim_to_vtk_linux64_gf"
+N_THREADS = int(os.environ.get("RAD_NT", "16"))
 
 PLY_T = 0.18e-3
+LX = 0.020
+LY = 0.020
+NX_INPLANE = 10
+NY_INPLANE = 10
+STRAIN = 5.0e-4
+RUN_TIME = 2.0e-4
 LAYUPS = {
     "A_crossply": (0.0, 90.0, 90.0, 0.0),
     "B_quasiiso": (0.0, 45.0, -45.0, 90.0, 90.0, -45.0, 45.0, 0.0),
 }
+COMPONENTS = ("xx", "yy", "xy")
 
 
 @dataclass(frozen=True)
@@ -60,7 +70,32 @@ class Material:
     xc: float
     yt: float
     yc: float
+    zt: float
+    zc: float
     s12: float
+    s13: float
+    s23: float
+
+
+@dataclass(frozen=True)
+class MeshData:
+    nodes: list[str]
+    bricks: list[tuple[int, int, list[int]]]
+    groups: dict[str, list[int]]
+
+
+@dataclass(frozen=True)
+class LoadCase:
+    name: str
+    column: int
+    denominator: float
+
+
+LOAD_CASES = (
+    LoadCase("exx", 0, STRAIN),
+    LoadCase("eyy", 1, STRAIN),
+    LoadCase("gxy", 2, STRAIN),
+)
 
 
 def fmt_f(*values: float) -> str:
@@ -90,7 +125,11 @@ def load_material() -> Material:
         xc=float(strength["Xc_Pa"]),
         yt=float(strength["Yt_Pa"]),
         yc=float(strength["Yc_Pa"]),
+        zt=float(strength["Zt_Pa"]),
+        zc=float(strength["Zc_Pa"]),
         s12=float(strength["S12_Pa"]),
+        s13=float(strength["S13_Pa"]),
+        s23=float(strength["S23_Pa"]),
     )
 
 
@@ -157,113 +196,184 @@ def run_cmd(cmd: list[str], cwd: Path, log_lines: list[str]) -> subprocess.Compl
     return proc
 
 
-def law25_block(mat: Material, mat_id: int) -> list[str]:
+def law12_block(mat: Material, mat_id: int) -> list[str]:
+    nu31 = mat.nu13 * mat.e3 / mat.e1
     return [
-        f"/MAT/LAW25/{mat_id}",
+        f"/MAT/LAW12/{mat_id}",
         f"IM7_8552_ply_{mat_id}",
         "#              RHO_I",
         fmt_f(mat.rho),
-        "#                E11                 E22                NU12     Iform                           E33",
-        fmt_f(mat.e1, mat.e2, mat.nu12) + fmt_i(0) + f"{mat.e3:20.12g}",
-        "#                G12                 G23                 G31              EPS_f1              EPS_f2",
-        fmt_f(mat.g12, mat.g23, mat.g13, 0.0, 0.0),
-        "#             EPS_t1              EPS_m1              EPS_t2              EPS_m2                dmax",
-        fmt_f(0.0, 0.0, 0.0, 0.0, 1.0),
-        "#              Wpmax               Wpref      Ioff                         ratio",
-        fmt_f(0.0, 0.0) + fmt_i(0) + f"{0.0:20.12g}",
-        "#                  b                   n                fmax",
-        fmt_f(0.0, 0.0, 0.0),
-        "#            sig_1yt             sig_2yt             sig_1yc             sig_2yc               alpha",
-        fmt_f(mat.xt, mat.yt, mat.xc, mat.yc, 0.0),
-        "#           sig_12yc            sig_12yt                c_12          Eps_rate_0       ICC",
-        fmt_f(mat.s12, mat.s12, 0.0, 0.0) + fmt_i(0),
-        "#          GAMMA_ini           GAMMA_max               d3max",
-        fmt_f(0.0, 0.0, 0.0),
-        "#  Fsmooth                Fcut",
-        fmt_i(0) + f"{0.0:20.12g}",
+        "#                E11                 E22                 E33",
+        fmt_f(mat.e1, mat.e2, mat.e3),
+        "#               NU12                NU23                NU31",
+        fmt_f(mat.nu12, mat.nu23, nu31),
+        "#                G12                 G23                 G31",
+        fmt_f(mat.g12, mat.g23, mat.g13),
+        "#           SIGMA_T1            SIGMA_T2            SIGMA_T3               DELTA",
+        fmt_f(mat.xt, mat.yt, mat.zt, 0.05),
+        "#                  B                   n                fmax               Wpref",
+        fmt_f(1.0, 1.0, 1.0, 1.0),
+        "#          sigma_1yt           sigma_2yt           sigma_1yc           sigma_2yc",
+        fmt_f(mat.xt, mat.yt, mat.xc, mat.yc),
+        "#         sigma_12yt          sigma_12yc          sigma_23yt          sigma_23yc",
+        fmt_f(mat.s12, mat.s12, mat.s23, mat.s23),
+        "#          sigma_3yt           sigma_3yc          sigma_13yt          sigma_13yc",
+        fmt_f(mat.zt, mat.zc, mat.s13, mat.s13),
+        "#              alpha                  Ef                   c          EPS_RATE_0   STRFLAG",
+        fmt_f(0.0, 0.0, 0.0, 0.0) + fmt_i(1),
     ]
 
 
-def skew_block(skew_id: int, theta_deg: float) -> list[str]:
-    th = math.radians(theta_deg)
-    c = math.cos(th)
-    s = math.sin(th)
-    return [
-        f"/SKEW/FIX/{skew_id}",
-        f"ply_frame_{skew_id}_theta_{theta_deg:+.0f}",
-        fmt_f(0.0, 0.0, 0.0),
-        fmt_f(c, s, 0.0),
-        fmt_f(-s, c, 0.0),
-    ]
-
-
-def type14_property(prop_id: int) -> list[str]:
-    return [
-        f"/PROP/TYPE14/{prop_id}",
-        f"ply_{prop_id}_canonical_type14",
-        "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
-        fmt_i(24, 4) + f"{1:20d}{0:20d}{0:10d}{2:10d}{0.0:20.12g}",
-        "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
-        fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
-        "#             dt_min   istrain      IHKT",
-        fmt_f(0.0) + fmt_i(0, 0),
-    ]
-
-
-def type6_property(prop_id: int, skew_id: int) -> list[str]:
+def type6_property(prop_id: int, theta_deg: float) -> list[str]:
     return [
         f"/PROP/TYPE6/{prop_id}",
-        f"ply_{prop_id}_type6_proxy",
+        f"ply_{prop_id}_type6_phi_ip3_theta_{theta_deg:+.0f}",
         "#   Isolid    Ismstr               Icpre  Itetra10     Inpts   Itetra4    Iframe                  Dn",
         fmt_i(24, 4) + f"{1:20d}{0:10d}{0:10d}{0:10d}{2:10d}{0.0:20.12g}",
         "#                 qa                  qb                   h",
         fmt_f(0.0, 0.0, 0.0),
         "#                 Vx                  Vy                  Vz   skew_ID        Ip     Iorth",
-        fmt_f(1.0, 0.0, 0.0) + fmt_i(skew_id, 0, 1),
+        fmt_f(1.0, 0.0, 0.0) + fmt_i(0, 3, 0),
         "#                Phi                 Px                  Py                  Pz",
-        fmt_f(0.0, 0.0, 0.0, 0.0),
+        fmt_f(theta_deg, 0.0, 0.0, 0.0),
         "#             dt_min   istrain      IHKT",
         fmt_f(0.0) + fmt_i(0, 0),
     ]
 
 
-def stack_mesh(nplies: int) -> tuple[list[str], list[tuple[int, list[int]]]]:
-    lx = 0.100
-    ly = 0.100
+def stack_mesh(nplies: int) -> MeshData:
     node_id: dict[tuple[int, int, int], int] = {}
-    lines = ["/NODE"]
+    nodes = ["/NODE"]
     nid = 1
     for k in range(nplies + 1):
-        for j in range(2):
-            for i in range(2):
+        for j in range(NY_INPLANE + 1):
+            for i in range(NX_INPLANE + 1):
                 node_id[(i, j, k)] = nid
-                x = lx * i
-                y = ly * j
-                z = PLY_T * k
-                lines.append(f"{nid:10d}{x:20.12g}{y:20.12g}{z:20.12g}")
+                x = LX * i / NX_INPLANE
+                y = LY * j / NY_INPLANE
+                nodes.append(f"{nid:10d}{x:20.12g}{y:20.12g}{PLY_T * k:20.12g}")
                 nid += 1
-    bricks: list[tuple[int, list[int]]] = []
+
+    bricks: list[tuple[int, int, list[int]]] = []
     eid = 1
     for k in range(nplies):
-        conn = [
-            node_id[(0, 0, k)],
-            node_id[(1, 0, k)],
-            node_id[(1, 1, k)],
-            node_id[(0, 1, k)],
-            node_id[(0, 0, k + 1)],
-            node_id[(1, 0, k + 1)],
-            node_id[(1, 1, k + 1)],
-            node_id[(0, 1, k + 1)],
+        for j in range(NY_INPLANE):
+            for i in range(NX_INPLANE):
+                conn = [
+                    node_id[(i, j, k)],
+                    node_id[(i + 1, j, k)],
+                    node_id[(i + 1, j + 1, k)],
+                    node_id[(i, j + 1, k)],
+                    node_id[(i, j, k + 1)],
+                    node_id[(i + 1, j, k + 1)],
+                    node_id[(i + 1, j + 1, k + 1)],
+                    node_id[(i, j + 1, k + 1)],
+                ]
+                bricks.append((k + 1, eid, conn))
+                eid += 1
+
+    all_nodes = sorted(node_id.values())
+    groups = {
+        "all": all_nodes,
+        "x0": sorted(node_id[(0, j, k)] for k in range(nplies + 1) for j in range(NY_INPLANE + 1)),
+        "x1": sorted(node_id[(NX_INPLANE, j, k)] for k in range(nplies + 1) for j in range(NY_INPLANE + 1)),
+        "y0": sorted(node_id[(i, 0, k)] for k in range(nplies + 1) for i in range(NX_INPLANE + 1)),
+        "y1": sorted(node_id[(i, NY_INPLANE, k)] for k in range(nplies + 1) for i in range(NX_INPLANE + 1)),
+        "z_anchor": [node_id[(0, 0, 0)]],
+    }
+    return MeshData(nodes=nodes, bricks=bricks, groups=groups)
+
+
+def group_block(group_id: int, name: str, node_ids: list[int]) -> list[str]:
+    lines = [f"/GRNOD/NODE/{group_id}", name]
+    for i in range(0, len(node_ids), 10):
+        lines.append(fmt_i(*node_ids[i : i + 10]))
+    return lines
+
+
+def bcs_and_loads(case: LoadCase, mesh: MeshData) -> list[str]:
+    group_ids = {"x0": 100, "x1": 101, "y0": 102, "y1": 103, "all": 104, "z_anchor": 105}
+    lines: list[str] = []
+    if case.name == "exx":
+        lines.extend(
+            [
+                "/BCS/1",
+                "x0_fixed_x",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   100 000{0:10d}{group_ids['x0']:10d}",
+                "/BCS/2",
+                "all_fixed_y",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   010 000{0:10d}{group_ids['all']:10d}",
+                "/IMPDISP/1",
+                "x1_exx",
+                "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+                f"{1:10d}{'X':>10}{0:10d}{0:10d}{group_ids['x1']:10d}{0:10d}{0:10d}",
+                "#            Scale_x             Scale_y              Tstart               Tstop",
+                fmt_f(1.0, STRAIN * LX, 0.0, 0.0),
+            ]
+        )
+    elif case.name == "eyy":
+        lines.extend(
+            [
+                "/BCS/1",
+                "y0_fixed_y",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   010 000{0:10d}{group_ids['y0']:10d}",
+                "/BCS/2",
+                "all_fixed_x",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   100 000{0:10d}{group_ids['all']:10d}",
+                "/IMPDISP/1",
+                "y1_eyy",
+                "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+                f"{1:10d}{'Y':>10}{0:10d}{0:10d}{group_ids['y1']:10d}{0:10d}{0:10d}",
+                "#            Scale_x             Scale_y              Tstart               Tstop",
+                fmt_f(1.0, STRAIN * LY, 0.0, 0.0),
+            ]
+        )
+    elif case.name == "gxy":
+        lines.extend(
+            [
+                "/BCS/1",
+                "y0_fixed_x",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   100 000{0:10d}{group_ids['y0']:10d}",
+                "/BCS/2",
+                "all_fixed_y",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   010 000{0:10d}{group_ids['all']:10d}",
+                "/IMPDISP/1",
+                "y1_gxy_x",
+                "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+                f"{1:10d}{'X':>10}{0:10d}{0:10d}{group_ids['y1']:10d}{0:10d}{0:10d}",
+                "#            Scale_x             Scale_y              Tstart               Tstop",
+                fmt_f(1.0, STRAIN * LY, 0.0, 0.0),
+            ]
+        )
+    else:
+        raise ValueError(case.name)
+
+    lines.extend(
+        [
+            "/BCS/3",
+            "z_anchor",
+            "#  Tra rot   skew_ID  grnod_ID",
+            f"   001 000{0:10d}{group_ids['z_anchor']:10d}",
+            "/FUNCT/1",
+            "unit_ramp",
+            fmt_f(0.0, 0.0),
+            fmt_f(RUN_TIME, 1.0),
         ]
-        bricks.append((eid, conn))
-        eid += 1
-    return lines, bricks
+    )
+    for name, gid in group_ids.items():
+        lines.extend(group_block(gid, name, mesh.groups[name]))
+    return lines
 
 
-def write_starter(layup_name: str, thetas: tuple[float, ...], mat: Material, use_type6: bool) -> Path:
-    suffix = "type6_proxy" if use_type6 else "type14_canonical"
-    job = f"stage09_{layup_name}_{suffix}"
-    nodes, bricks = stack_mesh(len(thetas))
+def write_starter(layup_name: str, thetas: tuple[float, ...], case: LoadCase, mat: Material) -> Path:
+    job = f"stage09_{layup_name}_{case.name}_law12_type6"
+    mesh = stack_mesh(len(thetas))
     lines = [
         "#RADIOSS STARTER",
         "/BEGIN",
@@ -272,78 +382,218 @@ def write_starter(layup_name: str, thetas: tuple[float, ...], mat: Material, use
         f"{'kg':>20}{'m':>20}{'s':>20}",
         f"{'kg':>20}{'m':>20}{'s':>20}",
         "/TITLE",
-        f"Stage 09 {layup_name} {suffix}",
+        f"Stage 09 {layup_name} {case.name} LAW12 TYPE6",
         "/DEF_SOLID",
         "#  I_SOLID    ISMSTR             ISTRAIN                                  IFRAME",
         fmt_i(24, 4) + f"{0:20d}{2:40d}",
     ]
     for ply, theta in enumerate(thetas, start=1):
-        lines.extend(law25_block(mat, ply))
-        lines.extend(skew_block(ply, theta))
-        lines.extend(type6_property(ply, ply) if use_type6 else type14_property(ply))
+        lines.extend(law12_block(mat, ply))
+        lines.extend(type6_property(ply, theta))
+    lines.extend(mesh.nodes)
+    for ply, _theta in enumerate(thetas, start=1):
         lines.extend([f"/PART/{ply}", f"ply_{ply:02d}", fmt_i(ply, ply, 0), f"/BRICK/{ply}"])
-        eid, conn = bricks[ply - 1]
-        lines.append(fmt_i(eid, *conn))
-    lines.extend(nodes)
+        for brick_ply, eid, conn in mesh.bricks:
+            if brick_ply == ply:
+                lines.append(fmt_i(eid, *conn))
+    lines.extend(bcs_and_loads(case, mesh))
     lines.extend(["/END", ""])
     path = RUNS_DIR / f"{job}_0000.rad"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
 
 
+def write_engine(job: str) -> Path:
+    path = RUNS_DIR / f"{job}_0001.rad"
+    lines = [
+        "#RADIOSS ENGINE",
+        "/ANIM/DT",
+        fmt_f(RUN_TIME, RUN_TIME),
+        "/ANIM/VECT/DISP",
+        "/ANIM/BRICK/TENS/STRESS/ALL",
+        "/ANIM/BRICK/TENS/STRAIN/ALL",
+        "/ANIM/GZIP",
+        "/TFILE/4",
+        fmt_f(RUN_TIME / 20.0),
+        "/RFILE",
+        fmt_i(1000),
+        "/PRINT/-100/55",
+        f"/RUN/{job}/1",
+        fmt_f(RUN_TIME),
+        "/VERS/2023",
+        "",
+    ]
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
+
+
+def convert_anim_to_vtk(job: str, log_lines: list[str]) -> Path:
+    anim = RUNS_DIR / f"{job}A001"
+    gz = RUNS_DIR / f"{job}A001.gz"
+    if gz.exists():
+        with gzip.open(gz, "rb") as src, anim.open("wb") as dst:
+            shutil.copyfileobj(src, dst)
+    if not anim.exists():
+        raise FileNotFoundError(f"animation frame not found for {job}")
+    cmd = [str(ANIM_TO_VTK), str(anim)]
+    log_lines.append("$ " + " ".join(cmd))
+    proc = subprocess.run(
+        cmd,
+        cwd=str(RUNS_DIR),
+        env=radioss_env(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if proc.stderr:
+        log_lines.append(proc.stderr.decode("utf-8", errors="replace"))
+    log_lines.append(f"[exit {proc.returncode}]")
+    vtk = RUNS_DIR / f"{job}A001.vtk"
+    if proc.returncode != 0:
+        raise RuntimeError(f"anim_to_vtk failed for {job}")
+    if proc.stdout.lstrip().startswith(b"# vtk"):
+        vtk.write_bytes(proc.stdout[proc.stdout.find(b"# vtk") :])
+    if not vtk.exists():
+        raise FileNotFoundError(f"anim_to_vtk produced no VTK for {job}")
+    return vtk
+
+
+def _cell_array(grid, contains: str):
+    for name in grid.cell_data.keys():
+        if contains in name:
+            return grid.cell_data[name]
+    raise KeyError(f"no cell data containing {contains}; available={list(grid.cell_data.keys())}")
+
+
+def extract_resultant(vtk_path: Path) -> np.ndarray:
+    import pyvista as pv  # type: ignore[import-not-found]
+
+    grid = pv.read(str(vtk_path))
+    stress = np.asarray(_cell_array(grid, "Strs"), dtype=float)
+    if stress.shape[1] >= 9:
+        sigma_xx = stress[:, 0]
+        sigma_yy = stress[:, 4]
+        sigma_xy = 0.5 * (stress[:, 1] + stress[:, 3])
+    else:
+        sigma_xx = stress[:, 0]
+        sigma_yy = stress[:, 1]
+        sigma_xy = stress[:, 3]
+    scale = PLY_T / (NX_INPLANE * NY_INPLANE)
+    return np.array(
+        [
+            float(np.sum(sigma_xx)) * scale,
+            float(np.sum(sigma_yy)) * scale,
+            float(np.sum(sigma_xy)) * scale,
+        ],
+        dtype=float,
+    )
+
+
+def run_case(layup_name: str, thetas: tuple[float, ...], case: LoadCase, mat: Material, log_lines: list[str]) -> tuple[np.ndarray | None, dict[str, object]]:
+    starter = write_starter(layup_name, thetas, case, mat)
+    job = starter.name.removesuffix("_0000.rad")
+    engine = write_engine(job)
+    starter_proc = run_cmd([str(STARTER), "-i", starter.name, "-nt", str(N_THREADS)], RUNS_DIR, log_lines)
+    row = {"starter_rc": starter_proc.returncode, "engine_rc": "", "vtk_path": ""}
+    if starter_proc.returncode != 0:
+        return None, row
+    engine_proc = run_cmd([str(ENGINE), "-i", engine.name, "-nt", str(N_THREADS)], RUNS_DIR, log_lines)
+    row["engine_rc"] = engine_proc.returncode
+    if engine_proc.returncode != 0:
+        return None, row
+    vtk = convert_anim_to_vtk(job, log_lines)
+    row["vtk_path"] = str(vtk)
+    return extract_resultant(vtk), row
+
+
+def component_pass(reference: float, solver: float, scale: float) -> tuple[bool, float]:
+    if abs(reference) > 1.0e-9 * scale:
+        err = abs(solver - reference) / abs(reference)
+        return err <= 0.02, 100.0 * err
+    err = abs(solver) / scale
+    return err <= 0.02, 100.0 * err
+
+
 def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
     mat = load_material()
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
-    log_lines = [f"material_card={CARD_PATH}", f"starter={STARTER}"]
+    log_lines = [f"material_card={CARD_PATH}", f"starter={STARTER}", f"engine={ENGINE}"]
     rows: list[dict[str, object]] = []
-    type14_blocked_all = True
-    type6_supported_all = True
+    all_started = True
+    all_engine = True
+    all_pass = True
+    max_error = 0.0
 
-    for name, thetas in LAYUPS.items():
-        a = a_matrix(mat, thetas)
-        strict = write_starter(name, thetas, mat, use_type6=False)
-        strict_proc = run_cmd([str(STARTER), "-i", strict.name, "-nt", "1"], RUNS_DIR, log_lines)
-        strict_out = (RUNS_DIR / strict.name.replace(".rad", ".out")).read_text(
-            encoding="utf-8", errors="replace"
-        )
-        strict_blocked = (
-            strict_proc.returncode != 0
-            and "MATERIAL/PROPERTY COMPATIBILITY" in strict_out
-            and "TYPE 14" in strict_out
-            and "LAW  25" in strict_out
-        )
-        type14_blocked_all = type14_blocked_all and strict_blocked
+    for layup_name, thetas in LAYUPS.items():
+        ref_a = a_matrix(mat, thetas)
+        fem_a = np.full((3, 3), np.nan)
+        case_info: dict[str, dict[str, object]] = {}
+        for case in LOAD_CASES:
+            resultant, info = run_case(layup_name, thetas, case, mat, log_lines)
+            case_info[case.name] = info
+            all_started = all_started and info["starter_rc"] == 0
+            all_engine = all_engine and info["engine_rc"] == 0
+            if resultant is not None:
+                fem_a[:, case.column] = resultant / case.denominator
 
-        proxy = write_starter(name, thetas, mat, use_type6=True)
-        proxy_proc = run_cmd([str(STARTER), "-i", proxy.name, "-nt", "1"], RUNS_DIR, log_lines)
-        type6_supported_all = type6_supported_all and proxy_proc.returncode == 0
-
-        for i, row_name in enumerate(("xx", "yy", "xy")):
-            for j, col_name in enumerate(("xx", "yy", "xy")):
+        scale = float(np.max(np.abs(ref_a)))
+        for i, row_name in enumerate(COMPONENTS):
+            for j, col_name in enumerate(COMPONENTS):
+                solver = fem_a[i, j]
+                passed = False
+                rel_err_pct: float | str = ""
+                if not math.isnan(float(solver)):
+                    passed, rel_err_pct = component_pass(float(ref_a[i, j]), float(solver), scale)
+                    max_error = max(max_error, float(rel_err_pct))
+                all_pass = all_pass and passed
                 rows.append(
                     {
-                        "layup": name,
+                        "layup": layup_name,
                         "component": f"A_{row_name}{col_name}",
-                        "reference_N_per_m": a[i, j],
-                        "canonical_property": "TYPE14",
-                        "canonical_starter_rc": strict_proc.returncode,
-                        "canonical_status": "blocked_error_3047" if strict_blocked else "unexpected",
-                        "proxy_property": "TYPE6_SOL_ORTH",
-                        "proxy_starter_rc": proxy_proc.returncode,
-                        "solver_N_per_m": "",
-                        "relative_error_pct": "",
-                        "verdict": "INCONCLUSIVE",
+                        "reference_N_per_m": ref_a[i, j],
+                        "solver_N_per_m": "" if math.isnan(float(solver)) else solver,
+                        "relative_error_pct": rel_err_pct,
+                        "verdict": "PASS" if passed else "FAIL",
                     }
                 )
 
+        for case_name, info in case_info.items():
+            rows.append(
+                {
+                    "layup": layup_name,
+                    "component": f"case_{case_name}",
+                    "reference_N_per_m": "",
+                    "solver_N_per_m": "",
+                    "relative_error_pct": "",
+                    "verdict": f"starter_rc={info['starter_rc']}; engine_rc={info['engine_rc']}; vtk={info['vtk_path']}",
+                }
+            )
+
     metrics = {
-        "canonical_type14_law25_supported": not type14_blocked_all,
-        "canonical_type14_error_id": 3047 if type14_blocked_all else None,
-        "type6_sol_orth_proxy_starter_supported": type6_supported_all,
+        "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
+        "matrix_evidence": "LAW12 row: TYPE6/SOL_ORTH solid OK; TYPE14 solid = B3047",
+        "orientation_evidence": "references/openradioss_orientation_convention.md per-ply property angle: Ip=3, Iorth=0, Phi=theta_ply",
         "layup_count": len(LAYUPS),
-        "clt_A_gate_evaluated": False,
+        "load_case_count": len(LOAD_CASES),
+        "mesh_evidence": f"{NX_INPLANE}x{NY_INPLANE} in-plane HEXA8 cells with one element through each ply",
+        "starter_all_ok": all_started,
+        "engine_all_ok": all_engine,
+        "clt_A_gate_evaluated": True,
+        "clt_A_gate_pass": all_pass,
+        "max_component_error_pct": max_error,
     }
     return metrics, rows, log_lines
+
+
+def _format_fail_rows(rows: list[dict[str, object]]) -> list[str]:
+    out: list[str] = []
+    for row in rows:
+        if row["verdict"] == "FAIL":
+            out.append(
+                f"- {row['layup']} {row['component']}: FEM `{float(row['solver_N_per_m']):.6e}` N/m, "
+                f"CLT `{float(row['reference_N_per_m']):.6e}` N/m, error `{float(row['relative_error_pct']):.3f}%`."
+            )
+    return out
 
 
 def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log_lines: list[str], wall_s: float) -> None:
@@ -354,6 +604,15 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
         writer.writeheader()
         writer.writerows(rows)
 
+    mat = load_material()
+    for name, thetas in LAYUPS.items():
+        np.savetxt(
+            RESULTS_DIR / f"cltA_{name}_reference.csv",
+            a_matrix(mat, thetas),
+            delimiter=",",
+            header=f"CLT A-matrix [N/m] for layup {name}, plies {thetas} deg, t_ply = {PLY_T} m",
+        )
+
     git_sha = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=str(ROOT_DIR),
@@ -361,9 +620,10 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
         stdout=subprocess.PIPE,
         check=False,
     ).stdout.strip()
+    verdict = "PASS" if bool(metrics["clt_A_gate_pass"]) else "FAIL"
     results = {
         "stage": 9,
-        "verdict": "INCONCLUSIVE",
+        "verdict": verdict,
         "metrics": {**metrics, "wall_clock_s": wall_s},
         "reference": {
             "material_card": str(CARD_PATH),
@@ -380,13 +640,13 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
             [
                 '#set page(width: 175mm, height: auto, margin: 10mm)',
                 '#let rows = csv("../results/timeseries.csv")',
-                '#text(size: 12pt, weight: "bold")[Stage 09 laminate CLT starter probe]',
+                '#text(size: 12pt, weight: "bold")[Stage 09 laminate CLT sweep]',
                 '#v(5pt)',
                 '#table(',
-                '  columns: (34mm, 24mm, 34mm, 36mm, 26mm),',
+                '  columns: (34mm, 24mm, 34mm, 34mm, 24mm),',
                 '  stroke: rgb("#5C5C5C"),',
-                '  [Layup], [Component], [Reference N/m], [Canonical status], [Verdict],',
-                '  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(5)], [#r.at(10)])).flatten(),',
+                '  [Layup], [Component], [CLT N/m], [FEM N/m], [Verdict],',
+                '  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(3)], [#r.at(5)])).flatten(),',
                 ')',
                 "",
             ]
@@ -394,23 +654,30 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
         encoding="utf-8",
     )
 
-    (THIS_DIR / "blocker.md").write_text(
-        "\n".join(
-            [
-                "# Stage 09 Blocker - LAW25 + TYPE14 laminate stack does not start",
-                "",
-                "Author: J.C. Vaught",
-                "",
-                "The canonical stage 09 CLT verification requires one `/MAT/LAW25` and one `/PROP/TYPE14` per solid ply. The installed OpenRadioss starter rejects the LAW25 + TYPE14 pairing with `ERROR ID : 3047` material/property compatibility for both the `[0/90]s` and `[0/+45/-45/90]s` stacks.",
-                "",
-                "Analytic CLT A-matrices are written to `results/timeseries.csv`. `/PROP/TYPE6` (`/PROP/SOL_ORTH`) proxy stacks start successfully, so the blocker is the required TYPE14 path rather than the material card or layup bookkeeping.",
-                "",
-                "Verdict: `INCONCLUSIVE` due to toolchain/material-property compatibility, not a numerical CLT failure.",
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
+    blocker = THIS_DIR / "blocker.md"
+    if verdict == "PASS" and blocker.exists():
+        blocker.unlink()
+    elif verdict != "PASS":
+        fail_rows = _format_fail_rows(rows)
+        blocker.write_text(
+            "\n".join(
+                [
+                    "# Stage 09 Blocker - laminate CLT mismatch",
+                    "",
+                    "Author: J.C. Vaught",
+                    "",
+                    "The laminate stack uses `LAW12 + TYPE6/SOL_ORTH` with per-ply `Ip=3`, `Iorth=0`, `Phi=theta_ply` on `/PROP/TYPE6`.",
+                    "",
+                    "Observed failing A-matrix components from `results/timeseries.csv`:",
+                    "",
+                    *(fail_rows or ["- Solver did not complete one or more load cases."]),
+                    "",
+                    f"Verdict: `{verdict}` after the post-rotation convention update.",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
     RUN_LOG.write_text("\n".join(log_lines), encoding="utf-8")
 
 
@@ -424,8 +691,9 @@ def main() -> int:
     metrics, rows, log_lines = run_stage()
     wall_s = time.perf_counter() - start
     write_outputs(metrics, rows, log_lines, wall_s)
-    print(json.dumps({"stage": 9, "verdict": "INCONCLUSIVE", "wall_clock_s": wall_s}, indent=2))
-    return 0
+    verdict = "PASS" if bool(metrics["clt_A_gate_pass"]) else "FAIL"
+    print(json.dumps({"stage": 9, "verdict": verdict, "wall_clock_s": wall_s}, indent=2))
+    return 0 if verdict == "PASS" else 1
 
 
 if __name__ == "__main__":

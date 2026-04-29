@@ -1,19 +1,25 @@
-layup,component,reference_N_per_m,canonical_property,canonical_starter_rc,canonical_status,proxy_property,proxy_starter_rc,solver_N_per_m,relative_error_pct,verdict
-A_crossply,A_xxxx,65327179.74978948,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_xxyy,2103442.5252769096,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_xxxy,9.63731094042986e-11,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_yyxx,2103442.5252769096,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_yyyy,65327179.74978948,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_yyxy,3.501267007651689e-09,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_xyxx,9.63731094042986e-11,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_xyyy,3.501267007651689e-09,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-A_crossply,A_xyxy,3808800.0000000005,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_xxxx,102851290.8873227,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_xxyy,32009953.6628101,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_xxxy,0.0,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_yyxx,32009953.6628101,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_yyyy,102851290.88732266,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_yyxy,3.725290298461914e-09,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_xyxx,0.0,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_xyyy,3.725290298461914e-09,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-B_quasiiso,A_xyxy,35420668.61225629,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
+layup,component,reference_N_per_m,solver_N_per_m,relative_error_pct,verdict
+A_crossply,A_xxxx,65327179.74978948,65313848.246400006,0.020407284441990994,PASS
+A_crossply,A_xxyy,2103442.5252769096,2103018.696,0.02014931579144482,PASS
+A_crossply,A_xxxy,9.63731094042986e-11,710.2172497844697,0.001087169616849652,PASS
+A_crossply,A_yyxx,2103442.5252769096,2103083.0640000002,0.01708918939261318,PASS
+A_crossply,A_yyyy,65327179.74978948,65313794.3688,0.02048975792425843,PASS
+A_crossply,A_yyxy,3.501267007651689e-09,6212.976709350586,0.009510554003933728,PASS
+A_crossply,A_xyxx,9.63731094042986e-11,-1.3077823278307916,2.0018961982435895e-06,PASS
+A_crossply,A_xyyy,3.501267007651689e-09,2.3870033856734634,3.6539207643984593e-06,PASS
+A_crossply,A_xyxy,3808800.0000000005,3808906.488,0.0027958412098149027,PASS
+A_crossply,case_exx,,,,starter_rc=0; engine_rc=0; vtk=/mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_A_crossply_exx_law12_type6A001.vtk
+A_crossply,case_eyy,,,,starter_rc=0; engine_rc=0; vtk=/mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_A_crossply_eyy_law12_type6A001.vtk
+A_crossply,case_gxy,,,,starter_rc=0; engine_rc=0; vtk=/mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_A_crossply_gxy_law12_type6A001.vtk
+B_quasiiso,A_xxxx,102851290.8873227,102515277.528,0.32669824211619447,PASS
+B_quasiiso,A_xxyy,32009953.6628101,31690731.456,0.9972591968509404,PASS
+B_quasiiso,A_xxxy,0.0,-74300.66958268605,0.07224087217737026,PASS
+B_quasiiso,A_yyxx,32009953.6628101,31689928.584,0.9997673916720224,PASS
+B_quasiiso,A_yyyy,102851290.88732266,102516367.68,0.325638311812321,PASS
+B_quasiiso,A_yyxy,3.725290298461914e-09,278254.5183070527,0.27054061831065457,PASS
+B_quasiiso,A_xyxx,0.0,113089.05186210023,0.10995394504673098,PASS
+B_quasiiso,A_xyyy,3.725290298461914e-09,-89641.86444483262,0.08715677136521166,PASS
+B_quasiiso,A_xyxy,35420668.61225629,35036227.72800001,1.0853575026058553,PASS
+B_quasiiso,case_exx,,,,starter_rc=0; engine_rc=0; vtk=/mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_B_quasiiso_exx_law12_type6A001.vtk
+B_quasiiso,case_eyy,,,,starter_rc=0; engine_rc=0; vtk=/mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_B_quasiiso_eyy_law12_type6A001.vtk
+B_quasiiso,case_gxy,,,,starter_rc=0; engine_rc=0; vtk=/mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_B_quasiiso_gxy_law12_type6A001.vtk

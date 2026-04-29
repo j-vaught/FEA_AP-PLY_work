@@ -1,6 +1,7 @@
 material_card=/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json
 starter=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_A_crossply_type14_canonical_0000.rad -nt 1
+engine=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_A_crossply_exx_law12_type6_0000.rad -nt 16
 ************************************************************************
 **                                                                    **
 **                                                                    **
@@ -31,96 +32,21 @@ DESCRIPTION :
 unsupported field exists
 SOLUTION :     
     Please check input format and fields description defined in the Reference Guide.
-Stage 09 A_crossply type14_canonical
+Stage 09 A_crossply exx LAW12 TYPE6
  .. UNITS SYSTEM                                                                         
  .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
  .. MATERIALS                                                                            
  .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
  .. PROPERTIES                                                                           
  .. 3D SOLID ELEMENTS                                                                    
  .. SUBSETS
  .. ELEMENT GROUPS
  .. PART GROUPS
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:36:40
- EXECUTION COMPLETED    :      2026/04/29  17:36:41
-  
- ELAPSED TIME...........=          0.24 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     ERROR TERMINATION                  
-     ------------------                                                                  
-              1 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_A_crossply_type6_proxy_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 09 A_crossply type6_proxy
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
  .. DOMAIN DECOMPOSITION
  .. ELEMENT GROUPS                                                                       
  .. ELEMENT BUFFER INITIALIZATION                                                        
@@ -131,161 +57,8 @@ Stage 09 A_crossply type6_proxy
   
                    ** COMPUTE TIME INFORMATION **
   
- EXECUTION STARTED      :      2026/04/29  17:36:41
- EXECUTION COMPLETED    :      2026/04/29  17:36:41
-  
- ELAPSED TIME...........=          0.23 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     TERMINATION WITH WARNING           
-     ------------------                                                                  
-              0 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_B_quasiiso_type14_canonical_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 09 B_quasiiso type14_canonical
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
-
-ERROR ID :   3047
-** ERROR IN MATERIAL/PROPERTY COMPATIBILITY
- .. GEOMETRY PLOT FILE                                                                   
- .. ERROR ==> NO RESTART FILE                                                            
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:36:41
- EXECUTION COMPLETED    :      2026/04/29  17:36:41
-  
- ELAPSED TIME...........=          0.24 s
-                               00:00:00
-  
-------------------------------------------------------------------------
-
-
-
-     ERROR TERMINATION                  
-     ------------------                                                                  
-              1 ERROR(S)            
-              1 WARNING(S)          
-
-
-
-
-PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
-
-
-
-$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_B_quasiiso_type6_proxy_0000.rad -nt 1
-************************************************************************
-**                                                                    **
-**                                                                    **
-**                        OpenRadioss Starter                         **
-**                                                                    **
-**            Non-linear Finite Element Analysis Software             **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-**                    Linux 64 bits, GNU compiler                     **
-**                      Double Precision Version                      **
-**                                                                    **
-**                                                                    **
-**                                                                    **
-************************************************************************
-** OpenRadioss Software                                               **
-** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
-** Licensed under GNU Affero General Public License.                  **
-** See License file.                                                  **
-************************************************************************
- 
-
-WARNING ID : 100214
-** WARNING IN INPUT OPTIONS
-DESCRIPTION :  
--- BLOCK: /DEF_SOLID
--- LINE: 24         4                   0                                       2
-unsupported field exists
-SOLUTION :     
-    Please check input format and fields description defined in the Reference Guide.
-Stage 09 B_quasiiso type6_proxy
- .. UNITS SYSTEM                                                                         
- .. CONTROL VARIABLES                                                                    
- .. STARTER RUNNING ON    1 THREAD
- .. MATERIALS                                                                            
- .. NODES                                                                                
- .. SKEW SYSTEMS                                                                         
- .. PROPERTIES                                                                           
- .. 3D SOLID ELEMENTS                                                                    
- .. SUBSETS
- .. ELEMENT GROUPS
- .. PART GROUPS
- .. DOMAIN DECOMPOSITION
- .. ELEMENT GROUPS                                                                       
- .. ELEMENT BUFFER INITIALIZATION                                                        
- .. GEOMETRY PLOT FILE                                                                   
- .. PARALLEL RESTART FILES GENERATION                                                    
-  
-------------------------------------------------------------------------
-  
-                   ** COMPUTE TIME INFORMATION **
-  
- EXECUTION STARTED      :      2026/04/29  17:36:41
- EXECUTION COMPLETED    :      2026/04/29  17:36:42
+ EXECUTION STARTED      :      2026/04/29  19:43:58
+ EXECUTION COMPLETED    :      2026/04/29  19:43:58
   
  ELAPSED TIME...........=          0.24 s
                                00:00:00
@@ -305,3 +78,2518 @@ Stage 09 B_quasiiso type6_proxy
 PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
 
 
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage09_A_crossply_exx_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage09_A_crossply_exx_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 1.4634E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=        192.17 s
+ NC=     200 T= 2.9268E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=         97.40 s
+ NC=     300 T= 4.3902E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=         65.77 s
+ NC=     400 T= 5.8536E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=         49.95 s
+ NC=     500 T= 7.3170E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=         40.44 s
+ NC=     600 T= 8.7804E-06 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.56 s  REMAINING TIME=         34.06 s
+ NC=     700 T= 1.0244E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.59 s  REMAINING TIME=         29.50 s
+ NC=     800 T= 1.1707E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.62 s  REMAINING TIME=         26.08 s
+ NC=     900 T= 1.3171E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.65 s  REMAINING TIME=         23.38 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    1000 T= 1.4634E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.68 s  REMAINING TIME=         21.23 s
+ NC=    1100 T= 1.6097E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.70 s  REMAINING TIME=         19.46 s
+ NC=    1200 T= 1.7561E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.73 s  REMAINING TIME=         18.00 s
+ NC=    1300 T= 1.9024E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.76 s  REMAINING TIME=         16.73 s
+ NC=    1400 T= 2.0488E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.79 s  REMAINING TIME=         15.65 s
+ NC=    1500 T= 2.1951E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.81 s  REMAINING TIME=         14.71 s
+ NC=    1600 T= 2.3414E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.84 s  REMAINING TIME=         13.89 s
+ NC=    1700 T= 2.4878E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.87 s  REMAINING TIME=         13.16 s
+ NC=    1800 T= 2.6341E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.90 s  REMAINING TIME=         12.50 s
+ NC=    1900 T= 2.7804E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.92 s  REMAINING TIME=         11.91 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    2000 T= 2.9268E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.95 s  REMAINING TIME=         11.40 s
+ NC=    2100 T= 3.0731E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.98 s  REMAINING TIME=         10.91 s
+ NC=    2200 T= 3.2194E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.01 s  REMAINING TIME=         10.47 s
+ NC=    2300 T= 3.3658E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.04 s  REMAINING TIME=         10.07 s
+ NC=    2400 T= 3.5121E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.07 s  REMAINING TIME=          9.70 s
+ NC=    2500 T= 3.6585E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.09 s  REMAINING TIME=          9.34 s
+ NC=    2600 T= 3.8048E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.12 s  REMAINING TIME=          9.02 s
+ NC=    2700 T= 3.9511E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.15 s  REMAINING TIME=          8.72 s
+ NC=    2800 T= 4.0975E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.18 s  REMAINING TIME=          8.44 s
+ NC=    2900 T= 4.2438E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.20 s  REMAINING TIME=          8.18 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    3000 T= 4.3901E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.23 s  REMAINING TIME=          7.94 s
+ NC=    3100 T= 4.5365E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.26 s  REMAINING TIME=          7.70 s
+ NC=    3200 T= 4.6828E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.29 s  REMAINING TIME=          7.48 s
+ NC=    3300 T= 4.8291E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.31 s  REMAINING TIME=          7.27 s
+ NC=    3400 T= 4.9755E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.34 s  REMAINING TIME=          7.07 s
+ NC=    3500 T= 5.1218E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.37 s  REMAINING TIME=          6.88 s
+ NC=    3600 T= 5.2681E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.40 s  REMAINING TIME=          6.70 s
+ NC=    3700 T= 5.4145E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.42 s  REMAINING TIME=          6.53 s
+ NC=    3800 T= 5.5608E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.45 s  REMAINING TIME=          6.36 s
+ NC=    3900 T= 5.7071E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.48 s  REMAINING TIME=          6.20 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    4000 T= 5.8534E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.51 s  REMAINING TIME=          6.05 s
+ NC=    4100 T= 5.9998E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.53 s  REMAINING TIME=          5.91 s
+ NC=    4200 T= 6.1461E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.56 s  REMAINING TIME=          5.77 s
+ NC=    4300 T= 6.2924E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.59 s  REMAINING TIME=          5.63 s
+ NC=    4400 T= 6.4388E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.61 s  REMAINING TIME=          5.50 s
+ NC=    4500 T= 6.5851E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.64 s  REMAINING TIME=          5.38 s
+ NC=    4600 T= 6.7314E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.67 s  REMAINING TIME=          5.26 s
+ NC=    4700 T= 6.8778E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.70 s  REMAINING TIME=          5.14 s
+ NC=    4800 T= 7.0241E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.72 s  REMAINING TIME=          5.03 s
+ NC=    4900 T= 7.1704E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.75 s  REMAINING TIME=          4.92 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    5000 T= 7.3167E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.78 s  REMAINING TIME=          4.82 s
+ NC=    5100 T= 7.4631E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.80 s  REMAINING TIME=          4.71 s
+ NC=    5200 T= 7.6094E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.83 s  REMAINING TIME=          4.61 s
+ NC=    5300 T= 7.7557E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.86 s  REMAINING TIME=          4.51 s
+ NC=    5400 T= 7.9020E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.89 s  REMAINING TIME=          4.42 s
+ NC=    5500 T= 8.0484E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.91 s  REMAINING TIME=          4.33 s
+ NC=    5600 T= 8.1947E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.94 s  REMAINING TIME=          4.24 s
+ NC=    5700 T= 8.3410E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.97 s  REMAINING TIME=          4.15 s
+ NC=    5800 T= 8.4874E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.00 s  REMAINING TIME=          4.06 s
+ NC=    5900 T= 8.6337E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.02 s  REMAINING TIME=          3.98 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    6000 T= 8.7800E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.05 s  REMAINING TIME=          3.90 s
+ NC=    6100 T= 8.9263E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.08 s  REMAINING TIME=          3.82 s
+ NC=    6200 T= 9.0727E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.11 s  REMAINING TIME=          3.74 s
+ NC=    6300 T= 9.2190E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.13 s  REMAINING TIME=          3.67 s
+ NC=    6400 T= 9.3653E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.16 s  REMAINING TIME=          3.59 s
+ NC=    6500 T= 9.5116E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.19 s  REMAINING TIME=          3.52 s
+ NC=    6600 T= 9.6580E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.22 s  REMAINING TIME=          3.45 s
+ NC=    6700 T= 9.8043E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.24 s  REMAINING TIME=          3.37 s
+ NC=    6800 T= 9.9506E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.27 s  REMAINING TIME=          3.30 s
+ NC=    6900 T= 1.0097E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.30 s  REMAINING TIME=          3.23 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    7000 T= 1.0243E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.33 s  REMAINING TIME=          3.17 s
+ NC=    7100 T= 1.0390E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.36 s  REMAINING TIME=          3.10 s
+ NC=    7200 T= 1.0536E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.38 s  REMAINING TIME=          3.04 s
+ NC=    7300 T= 1.0682E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.41 s  REMAINING TIME=          2.97 s
+ NC=    7400 T= 1.0829E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.44 s  REMAINING TIME=          2.91 s
+ NC=    7500 T= 1.0975E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.46 s  REMAINING TIME=          2.85 s
+ NC=    7600 T= 1.1121E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.49 s  REMAINING TIME=          2.79 s
+ NC=    7700 T= 1.1267E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.52 s  REMAINING TIME=          2.73 s
+ NC=    7800 T= 1.1414E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.54 s  REMAINING TIME=          2.67 s
+ NC=    7900 T= 1.1560E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.57 s  REMAINING TIME=          2.61 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    8000 T= 1.1706E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.60 s  REMAINING TIME=          2.55 s
+ NC=    8100 T= 1.1853E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.63 s  REMAINING TIME=          2.49 s
+ NC=    8200 T= 1.1999E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.65 s  REMAINING TIME=          2.44 s
+ NC=    8300 T= 1.2145E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.68 s  REMAINING TIME=          2.38 s
+ NC=    8400 T= 1.2292E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.71 s  REMAINING TIME=          2.33 s
+ NC=    8500 T= 1.2438E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.74 s  REMAINING TIME=          2.27 s
+ NC=    8600 T= 1.2584E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.76 s  REMAINING TIME=          2.22 s
+ NC=    8700 T= 1.2731E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.79 s  REMAINING TIME=          2.17 s
+ NC=    8800 T= 1.2877E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.82 s  REMAINING TIME=          2.11 s
+ NC=    8900 T= 1.3023E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.85 s  REMAINING TIME=          2.06 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    9000 T= 1.3170E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.88 s  REMAINING TIME=          2.01 s
+ NC=    9100 T= 1.3316E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.90 s  REMAINING TIME=          1.96 s
+ NC=    9200 T= 1.3462E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.93 s  REMAINING TIME=          1.91 s
+ NC=    9300 T= 1.3609E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.96 s  REMAINING TIME=          1.86 s
+ NC=    9400 T= 1.3755E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.99 s  REMAINING TIME=          1.81 s
+ NC=    9500 T= 1.3901E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.02 s  REMAINING TIME=          1.76 s
+ NC=    9600 T= 1.4048E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.04 s  REMAINING TIME=          1.71 s
+ NC=    9700 T= 1.4194E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.07 s  REMAINING TIME=          1.66 s
+ NC=    9800 T= 1.4340E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.10 s  REMAINING TIME=          1.62 s
+ NC=    9900 T= 1.4486E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.13 s  REMAINING TIME=          1.57 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   10000 T= 1.4633E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.16 s  REMAINING TIME=          1.52 s
+ NC=   10100 T= 1.4779E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.18 s  REMAINING TIME=          1.48 s
+ NC=   10200 T= 1.4925E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.21 s  REMAINING TIME=          1.43 s
+ NC=   10300 T= 1.5072E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.24 s  REMAINING TIME=          1.39 s
+ NC=   10400 T= 1.5218E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.27 s  REMAINING TIME=          1.34 s
+ NC=   10500 T= 1.5364E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.30 s  REMAINING TIME=          1.30 s
+ NC=   10600 T= 1.5511E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.32 s  REMAINING TIME=          1.25 s
+ NC=   10700 T= 1.5657E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.35 s  REMAINING TIME=          1.21 s
+ NC=   10800 T= 1.5803E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.38 s  REMAINING TIME=          1.16 s
+ NC=   10900 T= 1.5950E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.41 s  REMAINING TIME=          1.12 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   11000 T= 1.6096E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.43 s  REMAINING TIME=          1.08 s
+ NC=   11100 T= 1.6242E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.46 s  REMAINING TIME=          1.03 s
+ NC=   11200 T= 1.6389E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.49 s  REMAINING TIME=          0.99 s
+ NC=   11300 T= 1.6535E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.52 s  REMAINING TIME=          0.95 s
+ NC=   11400 T= 1.6681E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.55 s  REMAINING TIME=          0.90 s
+ NC=   11500 T= 1.6827E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.57 s  REMAINING TIME=          0.86 s
+ NC=   11600 T= 1.6974E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.60 s  REMAINING TIME=          0.82 s
+ NC=   11700 T= 1.7120E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.63 s  REMAINING TIME=          0.78 s
+ NC=   11800 T= 1.7266E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.66 s  REMAINING TIME=          0.74 s
+ NC=   11900 T= 1.7413E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.69 s  REMAINING TIME=          0.70 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   12000 T= 1.7559E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.72 s  REMAINING TIME=          0.66 s
+ NC=   12100 T= 1.7705E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.75 s  REMAINING TIME=          0.62 s
+ NC=   12200 T= 1.7852E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.77 s  REMAINING TIME=          0.57 s
+ NC=   12300 T= 1.7998E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.80 s  REMAINING TIME=          0.53 s
+ NC=   12400 T= 1.8144E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.83 s  REMAINING TIME=          0.49 s
+ NC=   12500 T= 1.8291E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.86 s  REMAINING TIME=          0.45 s
+ NC=   12600 T= 1.8437E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.89 s  REMAINING TIME=          0.41 s
+ NC=   12700 T= 1.8583E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.91 s  REMAINING TIME=          0.37 s
+ NC=   12800 T= 1.8730E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.94 s  REMAINING TIME=          0.34 s
+ NC=   12900 T= 1.8876E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.97 s  REMAINING TIME=          0.30 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   13000 T= 1.9022E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.00 s  REMAINING TIME=          0.26 s
+ NC=   13100 T= 1.9168E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.03 s  REMAINING TIME=          0.22 s
+ NC=   13200 T= 1.9315E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.06 s  REMAINING TIME=          0.18 s
+ NC=   13300 T= 1.9461E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.08 s  REMAINING TIME=          0.14 s
+ NC=   13400 T= 1.9607E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.11 s  REMAINING TIME=          0.10 s
+ NC=   13500 T= 1.9754E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.14 s  REMAINING TIME=          0.06 s
+ NC=   13600 T= 1.9900E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.17 s  REMAINING TIME=          0.03 s
+     RESTART FILES: stage09_A_crossply_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage09_A_crossply_exx_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .4734E+02 .9044E+00 .2838E+01 .1368E+01 .4912E+01 .1446E+01 .6016E+02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1818E-01     0.03 % 
+ ELEMENT FORCES..............: .4734E+02    78.68 % 
+ KINEMATIC COND..............: .9044E+00     1.50 % 
+ INTEGRATION.................: .2838E+01     4.72 % 
+ ASSEMBLING..................: .1446E+01     2.40 % 
+ OTHERS (including I/O)......: .7618E+01    12.66 % 
+ TOTAL.......................: .6016E+02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      162 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      162 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      162 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      162 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          5.19 s
+                          0:00:05
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :   13670
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_A_crossply_exx_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_A_crossply_eyy_law12_type6_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 09 A_crossply eyy LAW12 TYPE6
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:44:04
+ EXECUTION COMPLETED    :      2026/04/29  19:44:04
+  
+ ELAPSED TIME...........=          0.25 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage09_A_crossply_eyy_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage09_A_crossply_eyy_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 1.4634E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.44 s  REMAINING TIME=        195.73 s
+ NC=     200 T= 2.9268E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.47 s  REMAINING TIME=         99.24 s
+ NC=     300 T= 4.3902E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.50 s  REMAINING TIME=         67.00 s
+ NC=     400 T= 5.8536E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.53 s  REMAINING TIME=         50.82 s
+ NC=     500 T= 7.3170E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.56 s  REMAINING TIME=         41.11 s
+ NC=     600 T= 8.7804E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.59 s  REMAINING TIME=         34.65 s
+ NC=     700 T= 1.0244E-05 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.62 s  REMAINING TIME=         30.02 s
+ NC=     800 T= 1.1707E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.65 s  REMAINING TIME=         26.52 s
+ NC=     900 T= 1.3171E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.68 s  REMAINING TIME=         23.79 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    1000 T= 1.4634E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.71 s  REMAINING TIME=         21.64 s
+ NC=    1100 T= 1.6097E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.74 s  REMAINING TIME=         19.83 s
+ NC=    1200 T= 1.7561E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.76 s  REMAINING TIME=         18.30 s
+ NC=    1300 T= 1.9024E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.79 s  REMAINING TIME=         17.01 s
+ NC=    1400 T= 2.0488E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.82 s  REMAINING TIME=         15.91 s
+ NC=    1500 T= 2.1951E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.84 s  REMAINING TIME=         14.94 s
+ NC=    1600 T= 2.3414E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.87 s  REMAINING TIME=         14.09 s
+ NC=    1700 T= 2.4878E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.89 s  REMAINING TIME=         13.33 s
+ NC=    1800 T= 2.6341E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.92 s  REMAINING TIME=         12.67 s
+ NC=    1900 T= 2.7804E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.95 s  REMAINING TIME=         12.07 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    2000 T= 2.9268E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.98 s  REMAINING TIME=         11.53 s
+ NC=    2100 T= 3.0731E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.00 s  REMAINING TIME=         11.04 s
+ NC=    2200 T= 3.2194E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.03 s  REMAINING TIME=         10.59 s
+ NC=    2300 T= 3.3658E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.06 s  REMAINING TIME=         10.17 s
+ NC=    2400 T= 3.5121E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.08 s  REMAINING TIME=          9.79 s
+ NC=    2500 T= 3.6585E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.11 s  REMAINING TIME=          9.43 s
+ NC=    2600 T= 3.8048E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.14 s  REMAINING TIME=          9.09 s
+ NC=    2700 T= 3.9511E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.17 s  REMAINING TIME=          8.80 s
+ NC=    2800 T= 4.0975E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.19 s  REMAINING TIME=          8.51 s
+ NC=    2900 T= 4.2438E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.22 s  REMAINING TIME=          8.24 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    3000 T= 4.3901E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.25 s  REMAINING TIME=          7.99 s
+ NC=    3100 T= 4.5365E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.28 s  REMAINING TIME=          7.76 s
+ NC=    3200 T= 4.6828E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.31 s  REMAINING TIME=          7.54 s
+ NC=    3300 T= 4.8291E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.33 s  REMAINING TIME=          7.33 s
+ NC=    3400 T= 4.9755E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.36 s  REMAINING TIME=          7.12 s
+ NC=    3500 T= 5.1218E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.39 s  REMAINING TIME=          6.94 s
+ NC=    3600 T= 5.2681E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.41 s  REMAINING TIME=          6.75 s
+ NC=    3700 T= 5.4145E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.44 s  REMAINING TIME=          6.57 s
+ NC=    3800 T= 5.5608E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.47 s  REMAINING TIME=          6.41 s
+ NC=    3900 T= 5.7071E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.50 s  REMAINING TIME=          6.25 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    4000 T= 5.8534E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.52 s  REMAINING TIME=          6.10 s
+ NC=    4100 T= 5.9998E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.55 s  REMAINING TIME=          5.96 s
+ NC=    4200 T= 6.1461E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.58 s  REMAINING TIME=          5.82 s
+ NC=    4300 T= 6.2924E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.61 s  REMAINING TIME=          5.68 s
+ NC=    4400 T= 6.4388E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.63 s  REMAINING TIME=          5.55 s
+ NC=    4500 T= 6.5851E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.66 s  REMAINING TIME=          5.42 s
+ NC=    4600 T= 6.7314E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.69 s  REMAINING TIME=          5.30 s
+ NC=    4700 T= 6.8778E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.72 s  REMAINING TIME=          5.18 s
+ NC=    4800 T= 7.0241E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.74 s  REMAINING TIME=          5.07 s
+ NC=    4900 T= 7.1704E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.77 s  REMAINING TIME=          4.96 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    5000 T= 7.3167E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.80 s  REMAINING TIME=          4.85 s
+ NC=    5100 T= 7.4631E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.83 s  REMAINING TIME=          4.75 s
+ NC=    5200 T= 7.6094E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.86 s  REMAINING TIME=          4.65 s
+ NC=    5300 T= 7.7557E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.88 s  REMAINING TIME=          4.55 s
+ NC=    5400 T= 7.9021E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.91 s  REMAINING TIME=          4.45 s
+ NC=    5500 T= 8.0484E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.94 s  REMAINING TIME=          4.36 s
+ NC=    5600 T= 8.1947E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.97 s  REMAINING TIME=          4.27 s
+ NC=    5700 T= 8.3410E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.99 s  REMAINING TIME=          4.18 s
+ NC=    5800 T= 8.4874E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.02 s  REMAINING TIME=          4.09 s
+ NC=    5900 T= 8.6337E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.05 s  REMAINING TIME=          4.01 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    6000 T= 8.7800E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.08 s  REMAINING TIME=          3.93 s
+ NC=    6100 T= 8.9263E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.10 s  REMAINING TIME=          3.85 s
+ NC=    6200 T= 9.0727E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.13 s  REMAINING TIME=          3.77 s
+ NC=    6300 T= 9.2190E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.16 s  REMAINING TIME=          3.69 s
+ NC=    6400 T= 9.3653E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.18 s  REMAINING TIME=          3.62 s
+ NC=    6500 T= 9.5116E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.21 s  REMAINING TIME=          3.54 s
+ NC=    6600 T= 9.6580E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.24 s  REMAINING TIME=          3.47 s
+ NC=    6700 T= 9.8043E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.27 s  REMAINING TIME=          3.40 s
+ NC=    6800 T= 9.9506E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.29 s  REMAINING TIME=          3.33 s
+ NC=    6900 T= 1.0097E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.32 s  REMAINING TIME=          3.26 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    7000 T= 1.0243E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.35 s  REMAINING TIME=          3.19 s
+ NC=    7100 T= 1.0390E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.38 s  REMAINING TIME=          3.12 s
+ NC=    7200 T= 1.0536E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.40 s  REMAINING TIME=          3.06 s
+ NC=    7300 T= 1.0682E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.43 s  REMAINING TIME=          2.99 s
+ NC=    7400 T= 1.0829E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.46 s  REMAINING TIME=          2.93 s
+ NC=    7500 T= 1.0975E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.49 s  REMAINING TIME=          2.87 s
+ NC=    7600 T= 1.1121E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.51 s  REMAINING TIME=          2.80 s
+ NC=    7700 T= 1.1268E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.54 s  REMAINING TIME=          2.74 s
+ NC=    7800 T= 1.1414E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.57 s  REMAINING TIME=          2.69 s
+ NC=    7900 T= 1.1560E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.60 s  REMAINING TIME=          2.63 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    8000 T= 1.1706E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.63 s  REMAINING TIME=          2.57 s
+ NC=    8100 T= 1.1853E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.66 s  REMAINING TIME=          2.51 s
+ NC=    8200 T= 1.1999E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.68 s  REMAINING TIME=          2.45 s
+ NC=    8300 T= 1.2145E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.71 s  REMAINING TIME=          2.40 s
+ NC=    8400 T= 1.2292E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.74 s  REMAINING TIME=          2.34 s
+ NC=    8500 T= 1.2438E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.76 s  REMAINING TIME=          2.29 s
+ NC=    8600 T= 1.2584E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.79 s  REMAINING TIME=          2.23 s
+ NC=    8700 T= 1.2731E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.82 s  REMAINING TIME=          2.18 s
+ NC=    8800 T= 1.2877E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.85 s  REMAINING TIME=          2.13 s
+ NC=    8900 T= 1.3023E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.87 s  REMAINING TIME=          2.08 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    9000 T= 1.3170E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.90 s  REMAINING TIME=          2.02 s
+ NC=    9100 T= 1.3316E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.93 s  REMAINING TIME=          1.97 s
+ NC=    9200 T= 1.3462E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.96 s  REMAINING TIME=          1.92 s
+ NC=    9300 T= 1.3609E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.99 s  REMAINING TIME=          1.87 s
+ NC=    9400 T= 1.3755E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.01 s  REMAINING TIME=          1.82 s
+ NC=    9500 T= 1.3901E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.04 s  REMAINING TIME=          1.77 s
+ NC=    9600 T= 1.4048E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.07 s  REMAINING TIME=          1.72 s
+ NC=    9700 T= 1.4194E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.10 s  REMAINING TIME=          1.68 s
+ NC=    9800 T= 1.4340E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.12 s  REMAINING TIME=          1.63 s
+ NC=    9900 T= 1.4486E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.15 s  REMAINING TIME=          1.58 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   10000 T= 1.4633E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.18 s  REMAINING TIME=          1.53 s
+ NC=   10100 T= 1.4779E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.21 s  REMAINING TIME=          1.49 s
+ NC=   10200 T= 1.4925E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.24 s  REMAINING TIME=          1.44 s
+ NC=   10300 T= 1.5072E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.26 s  REMAINING TIME=          1.39 s
+ NC=   10400 T= 1.5218E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.29 s  REMAINING TIME=          1.35 s
+ NC=   10500 T= 1.5364E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.32 s  REMAINING TIME=          1.30 s
+ NC=   10600 T= 1.5511E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.34 s  REMAINING TIME=          1.26 s
+ NC=   10700 T= 1.5657E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.37 s  REMAINING TIME=          1.21 s
+ NC=   10800 T= 1.5803E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.40 s  REMAINING TIME=          1.17 s
+ NC=   10900 T= 1.5950E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.43 s  REMAINING TIME=          1.12 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   11000 T= 1.6096E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.45 s  REMAINING TIME=          1.08 s
+ NC=   11100 T= 1.6242E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.48 s  REMAINING TIME=          1.04 s
+ NC=   11200 T= 1.6389E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.51 s  REMAINING TIME=          0.99 s
+ NC=   11300 T= 1.6535E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.54 s  REMAINING TIME=          0.95 s
+ NC=   11400 T= 1.6681E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.56 s  REMAINING TIME=          0.91 s
+ NC=   11500 T= 1.6827E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.59 s  REMAINING TIME=          0.87 s
+ NC=   11600 T= 1.6974E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.62 s  REMAINING TIME=          0.82 s
+ NC=   11700 T= 1.7120E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.65 s  REMAINING TIME=          0.78 s
+ NC=   11800 T= 1.7266E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.67 s  REMAINING TIME=          0.74 s
+ NC=   11900 T= 1.7413E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.70 s  REMAINING TIME=          0.70 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   12000 T= 1.7559E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.73 s  REMAINING TIME=          0.66 s
+ NC=   12100 T= 1.7705E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.76 s  REMAINING TIME=          0.62 s
+ NC=   12200 T= 1.7852E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.78 s  REMAINING TIME=          0.58 s
+ NC=   12300 T= 1.7998E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.81 s  REMAINING TIME=          0.54 s
+ NC=   12400 T= 1.8144E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.84 s  REMAINING TIME=          0.49 s
+ NC=   12500 T= 1.8291E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.87 s  REMAINING TIME=          0.45 s
+ NC=   12600 T= 1.8437E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.89 s  REMAINING TIME=          0.41 s
+ NC=   12700 T= 1.8583E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.92 s  REMAINING TIME=          0.38 s
+ NC=   12800 T= 1.8730E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.95 s  REMAINING TIME=          0.34 s
+ NC=   12900 T= 1.8876E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.97 s  REMAINING TIME=          0.30 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   13000 T= 1.9022E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.00 s  REMAINING TIME=          0.26 s
+ NC=   13100 T= 1.9168E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.03 s  REMAINING TIME=          0.22 s
+ NC=   13200 T= 1.9315E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.06 s  REMAINING TIME=          0.18 s
+ NC=   13300 T= 1.9461E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.09 s  REMAINING TIME=          0.14 s
+ NC=   13400 T= 1.9607E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.11 s  REMAINING TIME=          0.10 s
+ NC=   13500 T= 1.9754E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.14 s  REMAINING TIME=          0.06 s
+ NC=   13600 T= 1.9900E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.17 s  REMAINING TIME=          0.03 s
+     RESTART FILES: stage09_A_crossply_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage09_A_crossply_eyy_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .4720E+02 .9354E+00 .2599E+01 .1317E+01 .4934E+01 .1448E+01 .5980E+02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1194E-01     0.02 % 
+ ELEMENT FORCES..............: .4720E+02    78.92 % 
+ KINEMATIC COND..............: .9354E+00     1.56 % 
+ INTEGRATION.................: .2599E+01     4.35 % 
+ ASSEMBLING..................: .1448E+01     2.42 % 
+ OTHERS (including I/O)......: .7613E+01    12.73 % 
+ TOTAL.......................: .5980E+02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      163 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      163 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      163 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      163 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          5.20 s
+                          0:00:05
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :   13670
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_A_crossply_eyy_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_A_crossply_gxy_law12_type6_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 09 A_crossply gxy LAW12 TYPE6
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:44:09
+ EXECUTION COMPLETED    :      2026/04/29  19:44:10
+  
+ ELAPSED TIME...........=          0.25 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage09_A_crossply_gxy_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage09_A_crossply_gxy_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 1.4634E-06 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.39 s  REMAINING TIME=        188.95 s
+ NC=     200 T= 2.9268E-06 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=         95.70 s
+ NC=     300 T= 4.3903E-06 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=         64.62 s
+ NC=     400 T= 5.8537E-06 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=         49.07 s
+ NC=     500 T= 7.3171E-06 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=         39.75 s
+ NC=     600 T= 8.7805E-06 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=         33.50 s
+ NC=     700 T= 1.0244E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.57 s  REMAINING TIME=         29.02 s
+ NC=     800 T= 1.1707E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.60 s  REMAINING TIME=         25.66 s
+ NC=     900 T= 1.3171E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.62 s  REMAINING TIME=         23.04 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    1000 T= 1.4634E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.65 s  REMAINING TIME=         20.95 s
+ NC=    1100 T= 1.6098E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.68 s  REMAINING TIME=         19.23 s
+ NC=    1200 T= 1.7561E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.71 s  REMAINING TIME=         17.79 s
+ NC=    1300 T= 1.9024E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.74 s  REMAINING TIME=         16.56 s
+ NC=    1400 T= 2.0488E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.77 s  REMAINING TIME=         15.49 s
+ NC=    1500 T= 2.1951E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.80 s  REMAINING TIME=         14.56 s
+ NC=    1600 T= 2.3415E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.82 s  REMAINING TIME=         13.76 s
+ NC=    1700 T= 2.4878E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.85 s  REMAINING TIME=         13.04 s
+ NC=    1800 T= 2.6342E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.88 s  REMAINING TIME=         12.40 s
+ NC=    1900 T= 2.7805E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.91 s  REMAINING TIME=         11.82 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    2000 T= 2.9268E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.94 s  REMAINING TIME=         11.32 s
+ NC=    2100 T= 3.0732E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.97 s  REMAINING TIME=         10.85 s
+ NC=    2200 T= 3.2195E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.00 s  REMAINING TIME=         10.42 s
+ NC=    2300 T= 3.3659E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.03 s  REMAINING TIME=         10.02 s
+ NC=    2400 T= 3.5122E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.06 s  REMAINING TIME=          9.66 s
+ NC=    2500 T= 3.6585E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.09 s  REMAINING TIME=          9.32 s
+ NC=    2600 T= 3.8049E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.12 s  REMAINING TIME=          9.00 s
+ NC=    2700 T= 3.9512E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.14 s  REMAINING TIME=          8.71 s
+ NC=    2800 T= 4.0976E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.17 s  REMAINING TIME=          8.44 s
+ NC=    2900 T= 4.2439E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.20 s  REMAINING TIME=          8.17 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    3000 T= 4.3903E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.23 s  REMAINING TIME=          7.94 s
+ NC=    3100 T= 4.5366E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.26 s  REMAINING TIME=          7.70 s
+ NC=    3200 T= 4.6829E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.29 s  REMAINING TIME=          7.49 s
+ NC=    3300 T= 4.8293E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.32 s  REMAINING TIME=          7.28 s
+ NC=    3400 T= 4.9756E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.35 s  REMAINING TIME=          7.08 s
+ NC=    3500 T= 5.1220E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.38 s  REMAINING TIME=          6.90 s
+ NC=    3600 T= 5.2683E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.40 s  REMAINING TIME=          6.72 s
+ NC=    3700 T= 5.4147E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.43 s  REMAINING TIME=          6.55 s
+ NC=    3800 T= 5.5610E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.46 s  REMAINING TIME=          6.39 s
+ NC=    3900 T= 5.7073E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.49 s  REMAINING TIME=          6.23 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    4000 T= 5.8537E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.52 s  REMAINING TIME=          6.09 s
+ NC=    4100 T= 6.0000E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.55 s  REMAINING TIME=          5.95 s
+ NC=    4200 T= 6.1464E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.58 s  REMAINING TIME=          5.81 s
+ NC=    4300 T= 6.2927E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.61 s  REMAINING TIME=          5.68 s
+ NC=    4400 T= 6.4390E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.64 s  REMAINING TIME=          5.55 s
+ NC=    4500 T= 6.5854E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.66 s  REMAINING TIME=          5.43 s
+ NC=    4600 T= 6.7317E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.69 s  REMAINING TIME=          5.30 s
+ NC=    4700 T= 6.8781E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.72 s  REMAINING TIME=          5.19 s
+ NC=    4800 T= 7.0244E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.75 s  REMAINING TIME=          5.08 s
+ NC=    4900 T= 7.1708E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.78 s  REMAINING TIME=          4.97 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    5000 T= 7.3171E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.81 s  REMAINING TIME=          4.86 s
+ NC=    5100 T= 7.4634E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.83 s  REMAINING TIME=          4.76 s
+ NC=    5200 T= 7.6098E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.86 s  REMAINING TIME=          4.66 s
+ NC=    5300 T= 7.7561E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.89 s  REMAINING TIME=          4.57 s
+ NC=    5400 T= 7.9025E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.92 s  REMAINING TIME=          4.47 s
+ NC=    5500 T= 8.0488E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.95 s  REMAINING TIME=          4.38 s
+ NC=    5600 T= 8.1951E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.98 s  REMAINING TIME=          4.29 s
+ NC=    5700 T= 8.3415E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.00 s  REMAINING TIME=          4.20 s
+ NC=    5800 T= 8.4878E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.03 s  REMAINING TIME=          4.11 s
+ NC=    5900 T= 8.6342E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.06 s  REMAINING TIME=          4.03 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    6000 T= 8.7805E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.09 s  REMAINING TIME=          3.95 s
+ NC=    6100 T= 8.9269E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.12 s  REMAINING TIME=          3.87 s
+ NC=    6200 T= 9.0732E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.14 s  REMAINING TIME=          3.79 s
+ NC=    6300 T= 9.2195E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.17 s  REMAINING TIME=          3.71 s
+ NC=    6400 T= 9.3659E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.20 s  REMAINING TIME=          3.63 s
+ NC=    6500 T= 9.5122E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.23 s  REMAINING TIME=          3.56 s
+ NC=    6600 T= 9.6586E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.26 s  REMAINING TIME=          3.49 s
+ NC=    6700 T= 9.8049E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.29 s  REMAINING TIME=          3.42 s
+ NC=    6800 T= 9.9513E-05 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.32 s  REMAINING TIME=          3.35 s
+ NC=    6900 T= 1.0098E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.34 s  REMAINING TIME=          3.28 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    7000 T= 1.0244E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.37 s  REMAINING TIME=          3.21 s
+ NC=    7100 T= 1.0390E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.40 s  REMAINING TIME=          3.15 s
+ NC=    7200 T= 1.0537E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.43 s  REMAINING TIME=          3.08 s
+ NC=    7300 T= 1.0683E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.46 s  REMAINING TIME=          3.02 s
+ NC=    7400 T= 1.0829E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.49 s  REMAINING TIME=          2.95 s
+ NC=    7500 T= 1.0976E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.51 s  REMAINING TIME=          2.89 s
+ NC=    7600 T= 1.1122E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.54 s  REMAINING TIME=          2.83 s
+ NC=    7700 T= 1.1268E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.57 s  REMAINING TIME=          2.77 s
+ NC=    7800 T= 1.1415E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.60 s  REMAINING TIME=          2.71 s
+ NC=    7900 T= 1.1561E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.63 s  REMAINING TIME=          2.65 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    8000 T= 1.1707E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.66 s  REMAINING TIME=          2.59 s
+ NC=    8100 T= 1.1854E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.69 s  REMAINING TIME=          2.53 s
+ NC=    8200 T= 1.2000E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.71 s  REMAINING TIME=          2.48 s
+ NC=    8300 T= 1.2146E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.74 s  REMAINING TIME=          2.42 s
+ NC=    8400 T= 1.2293E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.77 s  REMAINING TIME=          2.36 s
+ NC=    8500 T= 1.2439E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.80 s  REMAINING TIME=          2.31 s
+ NC=    8600 T= 1.2585E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.83 s  REMAINING TIME=          2.25 s
+ NC=    8700 T= 1.2732E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.85 s  REMAINING TIME=          2.20 s
+ NC=    8800 T= 1.2878E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.88 s  REMAINING TIME=          2.15 s
+ NC=    8900 T= 1.3024E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.91 s  REMAINING TIME=          2.09 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    9000 T= 1.3171E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.94 s  REMAINING TIME=          2.04 s
+ NC=    9100 T= 1.3317E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.97 s  REMAINING TIME=          1.99 s
+ NC=    9200 T= 1.3463E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.00 s  REMAINING TIME=          1.94 s
+ NC=    9300 T= 1.3610E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.03 s  REMAINING TIME=          1.89 s
+ NC=    9400 T= 1.3756E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.05 s  REMAINING TIME=          1.84 s
+ NC=    9500 T= 1.3902E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.08 s  REMAINING TIME=          1.79 s
+ NC=    9600 T= 1.4049E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.11 s  REMAINING TIME=          1.74 s
+ NC=    9700 T= 1.4195E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.14 s  REMAINING TIME=          1.69 s
+ NC=    9800 T= 1.4342E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.17 s  REMAINING TIME=          1.64 s
+ NC=    9900 T= 1.4488E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.20 s  REMAINING TIME=          1.60 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   10000 T= 1.4634E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.23 s  REMAINING TIME=          1.55 s
+ NC=   10100 T= 1.4781E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.26 s  REMAINING TIME=          1.50 s
+ NC=   10200 T= 1.4927E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.28 s  REMAINING TIME=          1.46 s
+ NC=   10300 T= 1.5073E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.31 s  REMAINING TIME=          1.41 s
+ NC=   10400 T= 1.5220E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.34 s  REMAINING TIME=          1.36 s
+ NC=   10500 T= 1.5366E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.37 s  REMAINING TIME=          1.32 s
+ NC=   10600 T= 1.5512E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.40 s  REMAINING TIME=          1.27 s
+ NC=   10700 T= 1.5659E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.42 s  REMAINING TIME=          1.23 s
+ NC=   10800 T= 1.5805E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.45 s  REMAINING TIME=          1.18 s
+ NC=   10900 T= 1.5951E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.48 s  REMAINING TIME=          1.14 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   11000 T= 1.6098E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.51 s  REMAINING TIME=          1.09 s
+ NC=   11100 T= 1.6244E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.54 s  REMAINING TIME=          1.05 s
+ NC=   11200 T= 1.6390E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.57 s  REMAINING TIME=          1.01 s
+ NC=   11300 T= 1.6537E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.60 s  REMAINING TIME=          0.96 s
+ NC=   11400 T= 1.6683E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.62 s  REMAINING TIME=          0.92 s
+ NC=   11500 T= 1.6829E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.65 s  REMAINING TIME=          0.88 s
+ NC=   11600 T= 1.6976E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.68 s  REMAINING TIME=          0.83 s
+ NC=   11700 T= 1.7122E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.71 s  REMAINING TIME=          0.79 s
+ NC=   11800 T= 1.7268E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.74 s  REMAINING TIME=          0.75 s
+ NC=   11900 T= 1.7415E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.76 s  REMAINING TIME=          0.71 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   12000 T= 1.7561E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.79 s  REMAINING TIME=          0.67 s
+ NC=   12100 T= 1.7707E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.82 s  REMAINING TIME=          0.62 s
+ NC=   12200 T= 1.7854E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.85 s  REMAINING TIME=          0.58 s
+ NC=   12300 T= 1.8000E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.88 s  REMAINING TIME=          0.54 s
+ NC=   12400 T= 1.8146E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.91 s  REMAINING TIME=          0.50 s
+ NC=   12500 T= 1.8293E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.94 s  REMAINING TIME=          0.46 s
+ NC=   12600 T= 1.8439E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.96 s  REMAINING TIME=          0.42 s
+ NC=   12700 T= 1.8585E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.99 s  REMAINING TIME=          0.38 s
+ NC=   12800 T= 1.8732E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.02 s  REMAINING TIME=          0.34 s
+ NC=   12900 T= 1.8878E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.05 s  REMAINING TIME=          0.30 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   13000 T= 1.9024E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.08 s  REMAINING TIME=          0.26 s
+ NC=   13100 T= 1.9171E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.10 s  REMAINING TIME=          0.22 s
+ NC=   13200 T= 1.9317E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.13 s  REMAINING TIME=          0.18 s
+ NC=   13300 T= 1.9463E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.16 s  REMAINING TIME=          0.14 s
+ NC=   13400 T= 1.9610E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.19 s  REMAINING TIME=          0.10 s
+ NC=   13500 T= 1.9756E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.22 s  REMAINING TIME=          0.06 s
+ NC=   13600 T= 1.9903E-04 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.24 s  REMAINING TIME=          0.03 s
+     RESTART FILES: stage09_A_crossply_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage09_A_crossply_gxy_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .4794E+02 .9567E+00 .3173E+01 .1383E+01 .5197E+01 .1533E+01 .6169E+02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1636E-01     0.03 % 
+ ELEMENT FORCES..............: .4794E+02    77.71 % 
+ KINEMATIC COND..............: .9567E+00     1.55 % 
+ INTEGRATION.................: .3173E+01     5.14 % 
+ ASSEMBLING..................: .1533E+01     2.48 % 
+ OTHERS (including I/O)......: .8071E+01    13.08 % 
+ TOTAL.......................: .6169E+02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      163 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      163 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      163 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      163 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          5.27 s
+                          0:00:05
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :   13668
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_A_crossply_gxy_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_B_quasiiso_exx_law12_type6_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 09 B_quasiiso exx LAW12 TYPE6
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:44:15
+ EXECUTION COMPLETED    :      2026/04/29  19:44:15
+  
+ ELAPSED TIME...........=          0.26 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage09_B_quasiiso_exx_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage09_B_quasiiso_exx_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 1.4634E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=        192.53 s
+ NC=     200 T= 2.9268E-06 DT= 1.4634E-08 ERR= -0.2% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=         97.63 s
+ NC=     300 T= 4.3902E-06 DT= 1.4634E-08 ERR= -0.2% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=         65.96 s
+ NC=     400 T= 5.8536E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=         50.11 s
+ NC=     500 T= 7.3170E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=         40.63 s
+ NC=     600 T= 8.7804E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.57 s  REMAINING TIME=         34.25 s
+ NC=     700 T= 1.0244E-05 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.60 s  REMAINING TIME=         29.69 s
+ NC=     800 T= 1.1707E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.63 s  REMAINING TIME=         26.26 s
+ NC=     900 T= 1.3171E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.66 s  REMAINING TIME=         23.61 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    1000 T= 1.4634E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.70 s  REMAINING TIME=         21.49 s
+ NC=    1100 T= 1.6097E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.73 s  REMAINING TIME=         19.73 s
+ NC=    1200 T= 1.7561E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.76 s  REMAINING TIME=         18.27 s
+ NC=    1300 T= 1.9024E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.79 s  REMAINING TIME=         17.01 s
+ NC=    1400 T= 2.0488E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.82 s  REMAINING TIME=         15.93 s
+ NC=    1500 T= 2.1951E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.85 s  REMAINING TIME=         14.99 s
+ NC=    1600 T= 2.3414E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.88 s  REMAINING TIME=         14.18 s
+ NC=    1700 T= 2.4878E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.91 s  REMAINING TIME=         13.45 s
+ NC=    1800 T= 2.6341E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.94 s  REMAINING TIME=         12.80 s
+ NC=    1900 T= 2.7804E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.97 s  REMAINING TIME=         12.21 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    2000 T= 2.9268E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.01 s  REMAINING TIME=         11.70 s
+ NC=    2100 T= 3.0731E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.04 s  REMAINING TIME=         11.22 s
+ NC=    2200 T= 3.2194E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.07 s  REMAINING TIME=         10.77 s
+ NC=    2300 T= 3.3658E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.10 s  REMAINING TIME=         10.37 s
+ NC=    2400 T= 3.5121E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.13 s  REMAINING TIME=         10.00 s
+ NC=    2500 T= 3.6584E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.16 s  REMAINING TIME=          9.65 s
+ NC=    2600 T= 3.8048E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.19 s  REMAINING TIME=          9.33 s
+ NC=    2700 T= 3.9511E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.22 s  REMAINING TIME=          9.03 s
+ NC=    2800 T= 4.0974E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.25 s  REMAINING TIME=          8.75 s
+ NC=    2900 T= 4.2438E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.28 s  REMAINING TIME=          8.48 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    3000 T= 4.3901E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.32 s  REMAINING TIME=          8.24 s
+ NC=    3100 T= 4.5364E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.35 s  REMAINING TIME=          8.01 s
+ NC=    3200 T= 4.6828E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.38 s  REMAINING TIME=          7.78 s
+ NC=    3300 T= 4.8291E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.41 s  REMAINING TIME=          7.57 s
+ NC=    3400 T= 4.9754E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.44 s  REMAINING TIME=          7.37 s
+ NC=    3500 T= 5.1218E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.47 s  REMAINING TIME=          7.18 s
+ NC=    3600 T= 5.2681E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.50 s  REMAINING TIME=          6.99 s
+ NC=    3700 T= 5.4144E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.53 s  REMAINING TIME=          6.81 s
+ NC=    3800 T= 5.5608E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.56 s  REMAINING TIME=          6.65 s
+ NC=    3900 T= 5.7071E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.59 s  REMAINING TIME=          6.49 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    4000 T= 5.8534E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.62 s  REMAINING TIME=          6.34 s
+ NC=    4100 T= 5.9997E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.65 s  REMAINING TIME=          6.19 s
+ NC=    4200 T= 6.1461E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.69 s  REMAINING TIME=          6.05 s
+ NC=    4300 T= 6.2924E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.72 s  REMAINING TIME=          5.92 s
+ NC=    4400 T= 6.4387E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.75 s  REMAINING TIME=          5.78 s
+ NC=    4500 T= 6.5851E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.78 s  REMAINING TIME=          5.65 s
+ NC=    4600 T= 6.7314E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.81 s  REMAINING TIME=          5.53 s
+ NC=    4700 T= 6.8777E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.84 s  REMAINING TIME=          5.41 s
+ NC=    4800 T= 7.0240E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.87 s  REMAINING TIME=          5.29 s
+ NC=    4900 T= 7.1704E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.90 s  REMAINING TIME=          5.18 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    5000 T= 7.3167E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.93 s  REMAINING TIME=          5.08 s
+ NC=    5100 T= 7.4630E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.96 s  REMAINING TIME=          4.97 s
+ NC=    5200 T= 7.6093E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.99 s  REMAINING TIME=          4.87 s
+ NC=    5300 T= 7.7557E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.02 s  REMAINING TIME=          4.77 s
+ NC=    5400 T= 7.9020E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.05 s  REMAINING TIME=          4.67 s
+ NC=    5500 T= 8.0483E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.08 s  REMAINING TIME=          4.57 s
+ NC=    5600 T= 8.1946E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.11 s  REMAINING TIME=          4.48 s
+ NC=    5700 T= 8.3410E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.14 s  REMAINING TIME=          4.39 s
+ NC=    5800 T= 8.4873E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.17 s  REMAINING TIME=          4.30 s
+ NC=    5900 T= 8.6336E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.20 s  REMAINING TIME=          4.21 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    6000 T= 8.7799E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.23 s  REMAINING TIME=          4.13 s
+ NC=    6100 T= 8.9263E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.26 s  REMAINING TIME=          4.05 s
+ NC=    6200 T= 9.0726E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.29 s  REMAINING TIME=          3.97 s
+ NC=    6300 T= 9.2189E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.32 s  REMAINING TIME=          3.89 s
+ NC=    6400 T= 9.3652E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.35 s  REMAINING TIME=          3.81 s
+ NC=    6500 T= 9.5116E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.38 s  REMAINING TIME=          3.73 s
+ NC=    6600 T= 9.6579E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.41 s  REMAINING TIME=          3.66 s
+ NC=    6700 T= 9.8042E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.44 s  REMAINING TIME=          3.58 s
+ NC=    6800 T= 9.9505E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.48 s  REMAINING TIME=          3.51 s
+ NC=    6900 T= 1.0097E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.51 s  REMAINING TIME=          3.44 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    7000 T= 1.0243E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.54 s  REMAINING TIME=          3.37 s
+ NC=    7100 T= 1.0389E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.57 s  REMAINING TIME=          3.30 s
+ NC=    7200 T= 1.0536E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.60 s  REMAINING TIME=          3.23 s
+ NC=    7300 T= 1.0682E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.63 s  REMAINING TIME=          3.17 s
+ NC=    7400 T= 1.0828E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.66 s  REMAINING TIME=          3.10 s
+ NC=    7500 T= 1.0975E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.69 s  REMAINING TIME=          3.03 s
+ NC=    7600 T= 1.1121E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.72 s  REMAINING TIME=          2.97 s
+ NC=    7700 T= 1.1267E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.75 s  REMAINING TIME=          2.91 s
+ NC=    7800 T= 1.1414E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.78 s  REMAINING TIME=          2.85 s
+ NC=    7900 T= 1.1560E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.81 s  REMAINING TIME=          2.78 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    8000 T= 1.1706E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.85 s  REMAINING TIME=          2.73 s
+ NC=    8100 T= 1.1853E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.88 s  REMAINING TIME=          2.67 s
+ NC=    8200 T= 1.1999E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.91 s  REMAINING TIME=          2.61 s
+ NC=    8300 T= 1.2145E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.94 s  REMAINING TIME=          2.55 s
+ NC=    8400 T= 1.2292E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.97 s  REMAINING TIME=          2.49 s
+ NC=    8500 T= 1.2438E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.00 s  REMAINING TIME=          2.43 s
+ NC=    8600 T= 1.2584E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.03 s  REMAINING TIME=          2.37 s
+ NC=    8700 T= 1.2731E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.06 s  REMAINING TIME=          2.32 s
+ NC=    8800 T= 1.2877E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.09 s  REMAINING TIME=          2.26 s
+ NC=    8900 T= 1.3023E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.12 s  REMAINING TIME=          2.21 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    9000 T= 1.3170E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.15 s  REMAINING TIME=          2.15 s
+ NC=    9100 T= 1.3316E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.18 s  REMAINING TIME=          2.10 s
+ NC=    9200 T= 1.3462E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.21 s  REMAINING TIME=          2.05 s
+ NC=    9300 T= 1.3608E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.24 s  REMAINING TIME=          1.99 s
+ NC=    9400 T= 1.3755E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.27 s  REMAINING TIME=          1.94 s
+ NC=    9500 T= 1.3901E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.30 s  REMAINING TIME=          1.89 s
+ NC=    9600 T= 1.4047E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.33 s  REMAINING TIME=          1.84 s
+ NC=    9700 T= 1.4194E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.36 s  REMAINING TIME=          1.79 s
+ NC=    9800 T= 1.4340E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.39 s  REMAINING TIME=          1.73 s
+ NC=    9900 T= 1.4486E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.42 s  REMAINING TIME=          1.68 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   10000 T= 1.4633E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.46 s  REMAINING TIME=          1.63 s
+ NC=   10100 T= 1.4779E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.49 s  REMAINING TIME=          1.58 s
+ NC=   10200 T= 1.4925E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.52 s  REMAINING TIME=          1.54 s
+ NC=   10300 T= 1.5072E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.55 s  REMAINING TIME=          1.49 s
+ NC=   10400 T= 1.5218E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.58 s  REMAINING TIME=          1.44 s
+ NC=   10500 T= 1.5364E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.61 s  REMAINING TIME=          1.39 s
+ NC=   10600 T= 1.5510E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.64 s  REMAINING TIME=          1.34 s
+ NC=   10700 T= 1.5657E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.67 s  REMAINING TIME=          1.30 s
+ NC=   10800 T= 1.5803E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.70 s  REMAINING TIME=          1.25 s
+ NC=   10900 T= 1.5949E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.73 s  REMAINING TIME=          1.20 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   11000 T= 1.6096E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.77 s  REMAINING TIME=          1.16 s
+ NC=   11100 T= 1.6242E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.79 s  REMAINING TIME=          1.11 s
+ NC=   11200 T= 1.6388E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.82 s  REMAINING TIME=          1.06 s
+ NC=   11300 T= 1.6535E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.86 s  REMAINING TIME=          1.02 s
+ NC=   11400 T= 1.6681E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.89 s  REMAINING TIME=          0.97 s
+ NC=   11500 T= 1.6827E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.92 s  REMAINING TIME=          0.93 s
+ NC=   11600 T= 1.6974E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.95 s  REMAINING TIME=          0.88 s
+ NC=   11700 T= 1.7120E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.97 s  REMAINING TIME=          0.84 s
+ NC=   11800 T= 1.7266E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.01 s  REMAINING TIME=          0.79 s
+ NC=   11900 T= 1.7412E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.04 s  REMAINING TIME=          0.75 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   12000 T= 1.7559E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.07 s  REMAINING TIME=          0.70 s
+ NC=   12100 T= 1.7705E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.10 s  REMAINING TIME=          0.66 s
+ NC=   12200 T= 1.7851E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.13 s  REMAINING TIME=          0.62 s
+ NC=   12300 T= 1.7998E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.16 s  REMAINING TIME=          0.57 s
+ NC=   12400 T= 1.8144E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.19 s  REMAINING TIME=          0.53 s
+ NC=   12500 T= 1.8290E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.22 s  REMAINING TIME=          0.49 s
+ NC=   12600 T= 1.8437E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.25 s  REMAINING TIME=          0.45 s
+ NC=   12700 T= 1.8583E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.28 s  REMAINING TIME=          0.40 s
+ NC=   12800 T= 1.8729E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.31 s  REMAINING TIME=          0.36 s
+ NC=   12900 T= 1.8876E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.35 s  REMAINING TIME=          0.32 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   13000 T= 1.9022E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.38 s  REMAINING TIME=          0.28 s
+ NC=   13100 T= 1.9168E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.41 s  REMAINING TIME=          0.23 s
+ NC=   13200 T= 1.9314E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.44 s  REMAINING TIME=          0.19 s
+ NC=   13300 T= 1.9461E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.47 s  REMAINING TIME=          0.15 s
+ NC=   13400 T= 1.9607E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.50 s  REMAINING TIME=          0.11 s
+ NC=   13500 T= 1.9753E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.53 s  REMAINING TIME=          0.07 s
+ NC=   13600 T= 1.9900E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.56 s  REMAINING TIME=          0.03 s
+     RESTART FILES: stage09_B_quasiiso_exx_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage09_B_quasiiso_exx_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .3040E+02 .2451E+02 .2488E+01 .1553E+01 .3672E+01 .2002E+01 .6664E+02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1914E-01     0.03 % 
+ ELEMENT FORCES..............: .3040E+02    45.63 % 
+ KINEMATIC COND..............: .2451E+02    36.78 % 
+ INTEGRATION.................: .2488E+01     3.73 % 
+ ASSEMBLING..................: .2002E+01     3.00 % 
+ OTHERS (including I/O)......: .7215E+01    10.83 % 
+ TOTAL.......................: .6664E+02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      164 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      164 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      164 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      164 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          1 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          1 MB
+  
+ ELAPSED TIME     =          5.59 s
+                          0:00:05
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :   13670
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_B_quasiiso_exx_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_B_quasiiso_eyy_law12_type6_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 09 B_quasiiso eyy LAW12 TYPE6
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:44:21
+ EXECUTION COMPLETED    :      2026/04/29  19:44:21
+  
+ ELAPSED TIME...........=          0.25 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage09_B_quasiiso_eyy_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage09_B_quasiiso_eyy_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 1.4634E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=        196.58 s
+ NC=     200 T= 2.9268E-06 DT= 1.4634E-08 ERR= -0.2% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=         99.84 s
+ NC=     300 T= 4.3902E-06 DT= 1.4634E-08 ERR= -0.2% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=         67.44 s
+ NC=     400 T= 5.8536E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=         51.22 s
+ NC=     500 T= 7.3170E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.58 s  REMAINING TIME=         41.49 s
+ NC=     600 T= 8.7804E-06 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.61 s  REMAINING TIME=         35.03 s
+ NC=     700 T= 1.0244E-05 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.64 s  REMAINING TIME=         30.38 s
+ NC=     800 T= 1.1707E-05 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.67 s  REMAINING TIME=         26.89 s
+ NC=     900 T= 1.3171E-05 DT= 1.4634E-08 ERR= -0.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.70 s  REMAINING TIME=         24.17 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    1000 T= 1.4634E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.74 s  REMAINING TIME=         22.02 s
+ NC=    1100 T= 1.6097E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.77 s  REMAINING TIME=         20.22 s
+ NC=    1200 T= 1.7561E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.80 s  REMAINING TIME=         18.71 s
+ NC=    1300 T= 1.9024E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.83 s  REMAINING TIME=         17.45 s
+ NC=    1400 T= 2.0488E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.87 s  REMAINING TIME=         16.34 s
+ NC=    1500 T= 2.1951E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.90 s  REMAINING TIME=         15.38 s
+ NC=    1600 T= 2.3414E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.93 s  REMAINING TIME=         14.54 s
+ NC=    1700 T= 2.4878E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.96 s  REMAINING TIME=         13.80 s
+ NC=    1800 T= 2.6341E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.99 s  REMAINING TIME=         13.13 s
+ NC=    1900 T= 2.7804E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.02 s  REMAINING TIME=         12.53 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    2000 T= 2.9268E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.06 s  REMAINING TIME=         12.00 s
+ NC=    2100 T= 3.0731E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.09 s  REMAINING TIME=         11.51 s
+ NC=    2200 T= 3.2194E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.12 s  REMAINING TIME=         11.05 s
+ NC=    2300 T= 3.3658E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.15 s  REMAINING TIME=         10.63 s
+ NC=    2400 T= 3.5121E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.18 s  REMAINING TIME=         10.25 s
+ NC=    2500 T= 3.6584E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.21 s  REMAINING TIME=          9.89 s
+ NC=    2600 T= 3.8048E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.25 s  REMAINING TIME=          9.56 s
+ NC=    2700 T= 3.9511E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.28 s  REMAINING TIME=          9.24 s
+ NC=    2800 T= 4.0974E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.31 s  REMAINING TIME=          8.96 s
+ NC=    2900 T= 4.2438E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.34 s  REMAINING TIME=          8.68 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    3000 T= 4.3901E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.37 s  REMAINING TIME=          8.43 s
+ NC=    3100 T= 4.5364E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.40 s  REMAINING TIME=          8.18 s
+ NC=    3200 T= 4.6828E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.43 s  REMAINING TIME=          7.96 s
+ NC=    3300 T= 4.8291E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.46 s  REMAINING TIME=          7.74 s
+ NC=    3400 T= 4.9754E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.49 s  REMAINING TIME=          7.53 s
+ NC=    3500 T= 5.1218E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.52 s  REMAINING TIME=          7.33 s
+ NC=    3600 T= 5.2681E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.56 s  REMAINING TIME=          7.15 s
+ NC=    3700 T= 5.4144E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.59 s  REMAINING TIME=          6.96 s
+ NC=    3800 T= 5.5608E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.61 s  REMAINING TIME=          6.79 s
+ NC=    3900 T= 5.7071E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.65 s  REMAINING TIME=          6.63 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    4000 T= 5.8534E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.68 s  REMAINING TIME=          6.48 s
+ NC=    4100 T= 5.9998E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.71 s  REMAINING TIME=          6.32 s
+ NC=    4200 T= 6.1461E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.74 s  REMAINING TIME=          6.18 s
+ NC=    4300 T= 6.2924E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.77 s  REMAINING TIME=          6.04 s
+ NC=    4400 T= 6.4387E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.80 s  REMAINING TIME=          5.90 s
+ NC=    4500 T= 6.5851E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.83 s  REMAINING TIME=          5.77 s
+ NC=    4600 T= 6.7314E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.86 s  REMAINING TIME=          5.64 s
+ NC=    4700 T= 6.8777E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.89 s  REMAINING TIME=          5.52 s
+ NC=    4800 T= 7.0241E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.92 s  REMAINING TIME=          5.40 s
+ NC=    4900 T= 7.1704E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.95 s  REMAINING TIME=          5.28 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    5000 T= 7.3167E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.98 s  REMAINING TIME=          5.17 s
+ NC=    5100 T= 7.4630E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.02 s  REMAINING TIME=          5.07 s
+ NC=    5200 T= 7.6094E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.05 s  REMAINING TIME=          4.96 s
+ NC=    5300 T= 7.7557E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.07 s  REMAINING TIME=          4.85 s
+ NC=    5400 T= 7.9020E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.10 s  REMAINING TIME=          4.75 s
+ NC=    5500 T= 8.0483E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.13 s  REMAINING TIME=          4.65 s
+ NC=    5600 T= 8.1947E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.16 s  REMAINING TIME=          4.56 s
+ NC=    5700 T= 8.3410E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.19 s  REMAINING TIME=          4.46 s
+ NC=    5800 T= 8.4873E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.22 s  REMAINING TIME=          4.37 s
+ NC=    5900 T= 8.6336E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.25 s  REMAINING TIME=          4.28 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    6000 T= 8.7800E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.28 s  REMAINING TIME=          4.20 s
+ NC=    6100 T= 8.9263E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.31 s  REMAINING TIME=          4.11 s
+ NC=    6200 T= 9.0726E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.35 s  REMAINING TIME=          4.03 s
+ NC=    6300 T= 9.2189E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.37 s  REMAINING TIME=          3.95 s
+ NC=    6400 T= 9.3653E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.40 s  REMAINING TIME=          3.86 s
+ NC=    6500 T= 9.5116E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.43 s  REMAINING TIME=          3.78 s
+ NC=    6600 T= 9.6579E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.46 s  REMAINING TIME=          3.71 s
+ NC=    6700 T= 9.8042E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.49 s  REMAINING TIME=          3.63 s
+ NC=    6800 T= 9.9505E-05 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.52 s  REMAINING TIME=          3.56 s
+ NC=    6900 T= 1.0097E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.55 s  REMAINING TIME=          3.48 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    7000 T= 1.0243E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.59 s  REMAINING TIME=          3.41 s
+ NC=    7100 T= 1.0390E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.62 s  REMAINING TIME=          3.34 s
+ NC=    7200 T= 1.0536E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.64 s  REMAINING TIME=          3.27 s
+ NC=    7300 T= 1.0682E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.68 s  REMAINING TIME=          3.21 s
+ NC=    7400 T= 1.0828E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.71 s  REMAINING TIME=          3.14 s
+ NC=    7500 T= 1.0975E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.74 s  REMAINING TIME=          3.07 s
+ NC=    7600 T= 1.1121E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.76 s  REMAINING TIME=          3.01 s
+ NC=    7700 T= 1.1267E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.80 s  REMAINING TIME=          2.94 s
+ NC=    7800 T= 1.1414E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.83 s  REMAINING TIME=          2.88 s
+ NC=    7900 T= 1.1560E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.86 s  REMAINING TIME=          2.82 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    8000 T= 1.1706E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.89 s  REMAINING TIME=          2.75 s
+ NC=    8100 T= 1.1853E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.92 s  REMAINING TIME=          2.69 s
+ NC=    8200 T= 1.1999E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.95 s  REMAINING TIME=          2.63 s
+ NC=    8300 T= 1.2145E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.98 s  REMAINING TIME=          2.57 s
+ NC=    8400 T= 1.2292E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.01 s  REMAINING TIME=          2.52 s
+ NC=    8500 T= 1.2438E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.04 s  REMAINING TIME=          2.46 s
+ NC=    8600 T= 1.2584E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.07 s  REMAINING TIME=          2.40 s
+ NC=    8700 T= 1.2731E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.10 s  REMAINING TIME=          2.34 s
+ NC=    8800 T= 1.2877E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.13 s  REMAINING TIME=          2.29 s
+ NC=    8900 T= 1.3023E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.17 s  REMAINING TIME=          2.23 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    9000 T= 1.3170E-04 DT= 1.4632E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.20 s  REMAINING TIME=          2.18 s
+ NC=    9100 T= 1.3316E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.23 s  REMAINING TIME=          2.12 s
+ NC=    9200 T= 1.3462E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.26 s  REMAINING TIME=          2.07 s
+ NC=    9300 T= 1.3608E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.29 s  REMAINING TIME=          2.01 s
+ NC=    9400 T= 1.3755E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.32 s  REMAINING TIME=          1.96 s
+ NC=    9500 T= 1.3901E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.35 s  REMAINING TIME=          1.91 s
+ NC=    9600 T= 1.4047E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.38 s  REMAINING TIME=          1.86 s
+ NC=    9700 T= 1.4194E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.41 s  REMAINING TIME=          1.80 s
+ NC=    9800 T= 1.4340E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.44 s  REMAINING TIME=          1.75 s
+ NC=    9900 T= 1.4486E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.47 s  REMAINING TIME=          1.70 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   10000 T= 1.4633E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.50 s  REMAINING TIME=          1.65 s
+ NC=   10100 T= 1.4779E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.53 s  REMAINING TIME=          1.60 s
+ NC=   10200 T= 1.4925E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.56 s  REMAINING TIME=          1.55 s
+ NC=   10300 T= 1.5072E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.59 s  REMAINING TIME=          1.50 s
+ NC=   10400 T= 1.5218E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.62 s  REMAINING TIME=          1.45 s
+ NC=   10500 T= 1.5364E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.65 s  REMAINING TIME=          1.40 s
+ NC=   10600 T= 1.5511E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.68 s  REMAINING TIME=          1.36 s
+ NC=   10700 T= 1.5657E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.71 s  REMAINING TIME=          1.31 s
+ NC=   10800 T= 1.5803E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.74 s  REMAINING TIME=          1.26 s
+ NC=   10900 T= 1.5949E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.77 s  REMAINING TIME=          1.21 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   11000 T= 1.6096E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.80 s  REMAINING TIME=          1.17 s
+ NC=   11100 T= 1.6242E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.84 s  REMAINING TIME=          1.12 s
+ NC=   11200 T= 1.6388E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.87 s  REMAINING TIME=          1.07 s
+ NC=   11300 T= 1.6535E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.90 s  REMAINING TIME=          1.03 s
+ NC=   11400 T= 1.6681E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.93 s  REMAINING TIME=          0.98 s
+ NC=   11500 T= 1.6827E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.96 s  REMAINING TIME=          0.93 s
+ NC=   11600 T= 1.6974E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.99 s  REMAINING TIME=          0.89 s
+ NC=   11700 T= 1.7120E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.01 s  REMAINING TIME=          0.84 s
+ NC=   11800 T= 1.7266E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.04 s  REMAINING TIME=          0.80 s
+ NC=   11900 T= 1.7413E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.07 s  REMAINING TIME=          0.75 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   12000 T= 1.7559E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.11 s  REMAINING TIME=          0.71 s
+ NC=   12100 T= 1.7705E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.14 s  REMAINING TIME=          0.67 s
+ NC=   12200 T= 1.7851E-04 DT= 1.4631E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.17 s  REMAINING TIME=          0.62 s
+ NC=   12300 T= 1.7998E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.20 s  REMAINING TIME=          0.58 s
+ NC=   12400 T= 1.8144E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.23 s  REMAINING TIME=          0.53 s
+ NC=   12500 T= 1.8290E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.26 s  REMAINING TIME=          0.49 s
+ NC=   12600 T= 1.8437E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.29 s  REMAINING TIME=          0.45 s
+ NC=   12700 T= 1.8583E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.32 s  REMAINING TIME=          0.41 s
+ NC=   12800 T= 1.8729E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.35 s  REMAINING TIME=          0.36 s
+ NC=   12900 T= 1.8876E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.37 s  REMAINING TIME=          0.32 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   13000 T= 1.9022E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.41 s  REMAINING TIME=          0.28 s
+ NC=   13100 T= 1.9168E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.44 s  REMAINING TIME=          0.24 s
+ NC=   13200 T= 1.9314E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.47 s  REMAINING TIME=          0.19 s
+ NC=   13300 T= 1.9461E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.50 s  REMAINING TIME=          0.15 s
+ NC=   13400 T= 1.9607E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.53 s  REMAINING TIME=          0.11 s
+ NC=   13500 T= 1.9753E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.56 s  REMAINING TIME=          0.07 s
+ NC=   13600 T= 1.9900E-04 DT= 1.4630E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.59 s  REMAINING TIME=          0.03 s
+     RESTART FILES: stage09_B_quasiiso_eyy_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage09_B_quasiiso_eyy_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .4699E+02 .2254E+01 .4531E+01 .1773E+01 .6445E+01 .2714E+01 .6662E+02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1468E-01     0.02 % 
+ ELEMENT FORCES..............: .4699E+02    70.52 % 
+ KINEMATIC COND..............: .2254E+01     3.38 % 
+ INTEGRATION.................: .4531E+01     6.80 % 
+ ASSEMBLING..................: .2714E+01     4.07 % 
+ OTHERS (including I/O)......: .1012E+02    15.19 % 
+ TOTAL.......................: .6662E+02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      164 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      164 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      164 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      164 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          1 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          1 MB
+  
+ ELAPSED TIME     =          5.62 s
+                          0:00:05
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :   13670
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_B_quasiiso_eyy_law12_type6A001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage09_B_quasiiso_gxy_law12_type6_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         4                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 09 B_quasiiso gxy LAW12 TYPE6
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:44:27
+ EXECUTION COMPLETED    :      2026/04/29  19:44:27
+  
+ ELAPSED TIME...........=          0.28 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage09_B_quasiiso_gxy_law12_type6_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage09_B_quasiiso_gxy_law12_type6  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 1.4634E-06 DT= 1.4634E-08 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.43 s  REMAINING TIME=        193.37 s
+ NC=     200 T= 2.9268E-06 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.46 s  REMAINING TIME=         98.06 s
+ NC=     300 T= 4.3902E-06 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.49 s  REMAINING TIME=         66.34 s
+ NC=     400 T= 5.8537E-06 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.52 s  REMAINING TIME=         50.36 s
+ NC=     500 T= 7.3171E-06 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.55 s  REMAINING TIME=         40.78 s
+ NC=     600 T= 8.7805E-06 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.58 s  REMAINING TIME=         34.36 s
+ NC=     700 T= 1.0244E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.61 s  REMAINING TIME=         29.82 s
+ NC=     800 T= 1.1707E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.64 s  REMAINING TIME=         26.38 s
+ NC=     900 T= 1.3171E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.67 s  REMAINING TIME=         23.68 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    1000 T= 1.4634E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.70 s  REMAINING TIME=         21.56 s
+ NC=    1100 T= 1.6098E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.73 s  REMAINING TIME=         19.81 s
+ NC=    1200 T= 1.7561E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.76 s  REMAINING TIME=         18.33 s
+ NC=    1300 T= 1.9024E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.79 s  REMAINING TIME=         17.07 s
+ NC=    1400 T= 2.0488E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.83 s  REMAINING TIME=         15.99 s
+ NC=    1500 T= 2.1951E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.86 s  REMAINING TIME=         15.06 s
+ NC=    1600 T= 2.3415E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.89 s  REMAINING TIME=         14.22 s
+ NC=    1700 T= 2.4878E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.92 s  REMAINING TIME=         13.48 s
+ NC=    1800 T= 2.6341E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.95 s  REMAINING TIME=         12.83 s
+ NC=    1900 T= 2.7805E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.98 s  REMAINING TIME=         12.24 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    2000 T= 2.9268E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.01 s  REMAINING TIME=         11.71 s
+ NC=    2100 T= 3.0732E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.04 s  REMAINING TIME=         11.22 s
+ NC=    2200 T= 3.2195E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.07 s  REMAINING TIME=         10.78 s
+ NC=    2300 T= 3.3658E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.10 s  REMAINING TIME=         10.37 s
+ NC=    2400 T= 3.5122E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.13 s  REMAINING TIME=          9.99 s
+ NC=    2500 T= 3.6585E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.16 s  REMAINING TIME=          9.64 s
+ NC=    2600 T= 3.8049E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.19 s  REMAINING TIME=          9.31 s
+ NC=    2700 T= 3.9512E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.22 s  REMAINING TIME=          9.01 s
+ NC=    2800 T= 4.0975E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.25 s  REMAINING TIME=          8.72 s
+ NC=    2900 T= 4.2439E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.28 s  REMAINING TIME=          8.45 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    3000 T= 4.3902E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.31 s  REMAINING TIME=          8.22 s
+ NC=    3100 T= 4.5365E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.34 s  REMAINING TIME=          7.98 s
+ NC=    3200 T= 4.6829E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.37 s  REMAINING TIME=          7.75 s
+ NC=    3300 T= 4.8292E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.40 s  REMAINING TIME=          7.54 s
+ NC=    3400 T= 4.9756E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.43 s  REMAINING TIME=          7.34 s
+ NC=    3500 T= 5.1219E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.46 s  REMAINING TIME=          7.15 s
+ NC=    3600 T= 5.2682E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.49 s  REMAINING TIME=          6.96 s
+ NC=    3700 T= 5.4146E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.52 s  REMAINING TIME=          6.79 s
+ NC=    3800 T= 5.5609E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.55 s  REMAINING TIME=          6.62 s
+ NC=    3900 T= 5.7072E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.58 s  REMAINING TIME=          6.46 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    4000 T= 5.8536E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.61 s  REMAINING TIME=          6.32 s
+ NC=    4100 T= 5.9999E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.65 s  REMAINING TIME=          6.17 s
+ NC=    4200 T= 6.1463E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.68 s  REMAINING TIME=          6.03 s
+ NC=    4300 T= 6.2926E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.70 s  REMAINING TIME=          5.89 s
+ NC=    4400 T= 6.4389E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.74 s  REMAINING TIME=          5.76 s
+ NC=    4500 T= 6.5853E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.77 s  REMAINING TIME=          5.64 s
+ NC=    4600 T= 6.7316E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.80 s  REMAINING TIME=          5.51 s
+ NC=    4700 T= 6.8779E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.83 s  REMAINING TIME=          5.39 s
+ NC=    4800 T= 7.0243E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.86 s  REMAINING TIME=          5.28 s
+ NC=    4900 T= 7.1706E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.89 s  REMAINING TIME=          5.16 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    5000 T= 7.3170E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.92 s  REMAINING TIME=          5.06 s
+ NC=    5100 T= 7.4633E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.95 s  REMAINING TIME=          4.95 s
+ NC=    5200 T= 7.6096E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.98 s  REMAINING TIME=          4.85 s
+ NC=    5300 T= 7.7560E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.01 s  REMAINING TIME=          4.75 s
+ NC=    5400 T= 7.9023E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.04 s  REMAINING TIME=          4.65 s
+ NC=    5500 T= 8.0486E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.07 s  REMAINING TIME=          4.55 s
+ NC=    5600 T= 8.1950E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.10 s  REMAINING TIME=          4.46 s
+ NC=    5700 T= 8.3413E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.13 s  REMAINING TIME=          4.37 s
+ NC=    5800 T= 8.4876E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.16 s  REMAINING TIME=          4.28 s
+ NC=    5900 T= 8.6340E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.19 s  REMAINING TIME=          4.20 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    6000 T= 8.7803E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.22 s  REMAINING TIME=          4.12 s
+ NC=    6100 T= 8.9267E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.25 s  REMAINING TIME=          4.03 s
+ NC=    6200 T= 9.0730E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.28 s  REMAINING TIME=          3.95 s
+ NC=    6300 T= 9.2193E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.31 s  REMAINING TIME=          3.87 s
+ NC=    6400 T= 9.3657E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.34 s  REMAINING TIME=          3.79 s
+ NC=    6500 T= 9.5120E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.37 s  REMAINING TIME=          3.71 s
+ NC=    6600 T= 9.6583E-05 DT= 1.4634E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.40 s  REMAINING TIME=          3.64 s
+ NC=    6700 T= 9.8047E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.43 s  REMAINING TIME=          3.56 s
+ NC=    6800 T= 9.9510E-05 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.46 s  REMAINING TIME=          3.49 s
+ NC=    6900 T= 1.0097E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.49 s  REMAINING TIME=          3.42 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    7000 T= 1.0244E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.52 s  REMAINING TIME=          3.36 s
+ NC=    7100 T= 1.0390E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.55 s  REMAINING TIME=          3.29 s
+ NC=    7200 T= 1.0536E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.59 s  REMAINING TIME=          3.22 s
+ NC=    7300 T= 1.0683E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.61 s  REMAINING TIME=          3.15 s
+ NC=    7400 T= 1.0829E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.64 s  REMAINING TIME=          3.09 s
+ NC=    7500 T= 1.0975E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.67 s  REMAINING TIME=          3.02 s
+ NC=    7600 T= 1.1122E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.70 s  REMAINING TIME=          2.96 s
+ NC=    7700 T= 1.1268E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.73 s  REMAINING TIME=          2.89 s
+ NC=    7800 T= 1.1414E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.76 s  REMAINING TIME=          2.83 s
+ NC=    7900 T= 1.1561E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.79 s  REMAINING TIME=          2.77 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    8000 T= 1.1707E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.83 s  REMAINING TIME=          2.71 s
+ NC=    8100 T= 1.1853E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.85 s  REMAINING TIME=          2.65 s
+ NC=    8200 T= 1.2000E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.88 s  REMAINING TIME=          2.59 s
+ NC=    8300 T= 1.2146E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.92 s  REMAINING TIME=          2.53 s
+ NC=    8400 T= 1.2292E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.95 s  REMAINING TIME=          2.47 s
+ NC=    8500 T= 1.2439E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          3.97 s  REMAINING TIME=          2.42 s
+ NC=    8600 T= 1.2585E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.01 s  REMAINING TIME=          2.36 s
+ NC=    8700 T= 1.2731E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.04 s  REMAINING TIME=          2.31 s
+ NC=    8800 T= 1.2878E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.07 s  REMAINING TIME=          2.25 s
+ NC=    8900 T= 1.3024E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.10 s  REMAINING TIME=          2.19 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=    9000 T= 1.3170E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.13 s  REMAINING TIME=          2.14 s
+ NC=    9100 T= 1.3317E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.16 s  REMAINING TIME=          2.09 s
+ NC=    9200 T= 1.3463E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.19 s  REMAINING TIME=          2.04 s
+ NC=    9300 T= 1.3609E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.22 s  REMAINING TIME=          1.98 s
+ NC=    9400 T= 1.3756E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.25 s  REMAINING TIME=          1.93 s
+ NC=    9500 T= 1.3902E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.28 s  REMAINING TIME=          1.88 s
+ NC=    9600 T= 1.4048E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.31 s  REMAINING TIME=          1.83 s
+ NC=    9700 T= 1.4195E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.34 s  REMAINING TIME=          1.78 s
+ NC=    9800 T= 1.4341E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.37 s  REMAINING TIME=          1.72 s
+ NC=    9900 T= 1.4487E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.40 s  REMAINING TIME=          1.67 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   10000 T= 1.4634E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.43 s  REMAINING TIME=          1.63 s
+ NC=   10100 T= 1.4780E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.46 s  REMAINING TIME=          1.58 s
+ NC=   10200 T= 1.4926E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.49 s  REMAINING TIME=          1.53 s
+ NC=   10300 T= 1.5073E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.52 s  REMAINING TIME=          1.48 s
+ NC=   10400 T= 1.5219E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.55 s  REMAINING TIME=          1.43 s
+ NC=   10500 T= 1.5365E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.58 s  REMAINING TIME=          1.38 s
+ NC=   10600 T= 1.5512E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.61 s  REMAINING TIME=          1.33 s
+ NC=   10700 T= 1.5658E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.64 s  REMAINING TIME=          1.29 s
+ NC=   10800 T= 1.5804E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.67 s  REMAINING TIME=          1.24 s
+ NC=   10900 T= 1.5951E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.70 s  REMAINING TIME=          1.19 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   11000 T= 1.6097E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.73 s  REMAINING TIME=          1.15 s
+ NC=   11100 T= 1.6243E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.76 s  REMAINING TIME=          1.10 s
+ NC=   11200 T= 1.6390E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.79 s  REMAINING TIME=          1.06 s
+ NC=   11300 T= 1.6536E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.82 s  REMAINING TIME=          1.01 s
+ NC=   11400 T= 1.6682E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.85 s  REMAINING TIME=          0.97 s
+ NC=   11500 T= 1.6829E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.88 s  REMAINING TIME=          0.92 s
+ NC=   11600 T= 1.6975E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.91 s  REMAINING TIME=          0.88 s
+ NC=   11700 T= 1.7121E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.94 s  REMAINING TIME=          0.83 s
+ NC=   11800 T= 1.7268E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          4.97 s  REMAINING TIME=          0.79 s
+ NC=   11900 T= 1.7414E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.00 s  REMAINING TIME=          0.74 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   12000 T= 1.7560E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.03 s  REMAINING TIME=          0.70 s
+ NC=   12100 T= 1.7707E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.06 s  REMAINING TIME=          0.66 s
+ NC=   12200 T= 1.7853E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.09 s  REMAINING TIME=          0.61 s
+ NC=   12300 T= 1.7999E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.12 s  REMAINING TIME=          0.57 s
+ NC=   12400 T= 1.8146E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.15 s  REMAINING TIME=          0.53 s
+ NC=   12500 T= 1.8292E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.18 s  REMAINING TIME=          0.48 s
+ NC=   12600 T= 1.8438E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.21 s  REMAINING TIME=          0.44 s
+ NC=   12700 T= 1.8585E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.24 s  REMAINING TIME=          0.40 s
+ NC=   12800 T= 1.8731E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.27 s  REMAINING TIME=          0.36 s
+ NC=   12900 T= 1.8877E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.30 s  REMAINING TIME=          0.32 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+ NC=   13000 T= 1.9024E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.33 s  REMAINING TIME=          0.27 s
+ NC=   13100 T= 1.9170E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.36 s  REMAINING TIME=          0.23 s
+ NC=   13200 T= 1.9316E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.39 s  REMAINING TIME=          0.19 s
+ NC=   13300 T= 1.9463E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.42 s  REMAINING TIME=          0.15 s
+ NC=   13400 T= 1.9609E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.45 s  REMAINING TIME=          0.11 s
+ NC=   13500 T= 1.9755E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.48 s  REMAINING TIME=          0.07 s
+ NC=   13600 T= 1.9902E-04 DT= 1.4633E-08 ERR= -0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          5.51 s  REMAINING TIME=          0.03 s
+     RESTART FILES: stage09_B_quasiiso_gxy_law12_type6_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage09_B_quasiiso_gxy_law12_type6A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .4443E+02 .4095E+01 .4485E+01 .1874E+01 .6151E+01 .2581E+01 .6574E+02
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .2998E-01     0.05 % 
+ ELEMENT FORCES..............: .4443E+02    67.58 % 
+ KINEMATIC COND..............: .4095E+01     6.23 % 
+ INTEGRATION.................: .4485E+01     6.82 % 
+ ASSEMBLING..................: .2581E+01     3.93 % 
+ OTHERS (including I/O)......: .1012E+02    15.39 % 
+ TOTAL.......................: .6574E+02   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      164 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      164 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      164 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      164 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          1 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          1 MB
+  
+ ELAPSED TIME     =          5.54 s
+                          0:00:05
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :   13669
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_09_laminate_solid_CLT/runs/stage09_B_quasiiso_gxy_law12_type6A001
+[exit 0]

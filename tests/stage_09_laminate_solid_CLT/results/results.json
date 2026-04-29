@@ -1,13 +1,19 @@
 {
   "stage": 9,
-  "verdict": "INCONCLUSIVE",
+  "verdict": "PASS",
   "metrics": {
-    "canonical_type14_law25_supported": false,
-    "canonical_type14_error_id": 3047,
-    "type6_sol_orth_proxy_starter_supported": true,
+    "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
+    "matrix_evidence": "LAW12 row: TYPE6/SOL_ORTH solid OK; TYPE14 solid = B3047",
+    "orientation_evidence": "references/openradioss_orientation_convention.md per-ply property angle: Ip=3, Iorth=0, Phi=theta_ply",
     "layup_count": 2,
-    "clt_A_gate_evaluated": false,
-    "wall_clock_s": 1.1235961439087987
+    "load_case_count": 3,
+    "mesh_evidence": "10x10 in-plane HEXA8 cells with one element through each ply",
+    "starter_all_ok": true,
+    "engine_all_ok": true,
+    "clt_A_gate_evaluated": true,
+    "clt_A_gate_pass": true,
+    "max_component_error_pct": 1.0853575026058553,
+    "wall_clock_s": 35.10203241929412
   },
   "reference": {
     "material_card": "/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json",
@@ -34,5 +40,5 @@
   "tolerance": {
     "A_matrix_component_relative_error": 0.02
   },
-  "git_sha": "b13d60bc8402c112e1d977962766667ece6dd93c"
+  "git_sha": "b2cabadf9b7c4a721740d91eb18dfd9f3b3adc5a"
 }
