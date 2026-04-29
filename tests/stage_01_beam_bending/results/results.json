@@ -1,0 +1,61 @@
+{
+  "stage": 1,
+  "name": "beam_bending",
+  "verdict": "PASS",
+  "metrics": {
+    "3pt_M0": {
+      "uz_fem_m": -0.0014788199914619327,
+      "delta_eb_m": -0.001451378809869376,
+      "delta_timoshenko_m": -0.0014629608127721336,
+      "rel_error_eb": 0.018906974117271606,
+      "rel_error_timoshenko": 0.010840467189102528,
+      "elements": 840,
+      "nodes": 1290,
+      "wall_clock_s": 7.346585592254996
+    },
+    "4pt_M0": {
+      "uz_fem_m": -0.0012598299654200673,
+      "delta_eb_m": -0.0012363597269257648,
+      "delta_timoshenko_m": -0.0012440810621942699,
+      "rel_error_eb": 0.018983341161282995,
+      "rel_error_timoshenko": 0.012659065156108096,
+      "elements": 840,
+      "nodes": 1290,
+      "wall_clock_s": 7.176148847676814
+    },
+    "3pt_M1": {
+      "uz_fem_m": -0.0014654300175607204,
+      "delta_eb_m": -0.001451378809869376,
+      "delta_timoshenko_m": -0.0014629608127721336,
+      "rel_error_eb": 0.00968128209933639,
+      "rel_error_timoshenko": 0.0016878133488128237,
+      "elements": 18144,
+      "nodes": 21255,
+      "wall_clock_s": 445.3220475856215
+    },
+    "4pt_M1": {
+      "uz_fem_m": -0.0012483299942687154,
+      "delta_eb_m": -0.0012363597269257648,
+      "delta_timoshenko_m": -0.0012440810621942699,
+      "rel_error_eb": 0.009681864494822131,
+      "rel_error_timoshenko": 0.003415317702008399,
+      "elements": 18144,
+      "nodes": 21255,
+      "wall_clock_s": 451.5505247646943
+    }
+  },
+  "reference": {
+    "type": "Euler-Bernoulli closed form",
+    "three_point_delta_m": 0.001451378809869376,
+    "four_point_delta_m": 0.0012363597269257648
+  },
+  "tolerance": {
+    "relative_error_eb": 0.01,
+    "gated_mesh": "M1",
+    "load_cases": [
+      "3pt",
+      "4pt"
+    ]
+  },
+  "git_sha": "c52a33e2b01301641529f07c4d842a6a7d637c01"
+}
