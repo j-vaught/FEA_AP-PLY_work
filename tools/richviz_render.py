@@ -350,7 +350,7 @@ def render_xsection(
         f"{config.title}\nmid-span cross-section, warp {config.warp_factor:g}x",
         position="upper_left",
         font_size=12,
-        color=WHITE,
+        color=WHITE if config.stage == 1 else CHARCOAL,
         font="courier",
     )
     plotter.screenshot(str(out_png))
