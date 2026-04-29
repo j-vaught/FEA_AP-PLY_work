@@ -1,0 +1,132 @@
+{
+  "stage": 5,
+  "name": "dogbone_damage",
+  "verdict": "PASS",
+  "metrics": {
+    "coarse": {
+      "label": "coarse",
+      "h_ligament_mm": 1.0,
+      "elements": 9504,
+      "nodes": 12103,
+      "wall_clock_s": 325.89783581439406,
+      "force_source": "Reaction_Forces",
+      "peak_force_N": 18637.07123565674,
+      "peak_displacement_m": 0.0003125100047327578,
+      "final_force_N": 843.3142116069794,
+      "final_displacement_m": 0.006000000052154064,
+      "vtk_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_05_dogbone_damage/runs/stage05_coarse/stage05_coarseA060.vtk",
+      "vtk_first_frame_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_05_dogbone_damage/runs/stage05_coarse/stage05_coarseA001.vtk",
+      "vtk_frame_count": 60,
+      "ligament_sigma_x_mean_Pa": 6420926.827314212,
+      "ligament_sigma_x_max_Pa": 177714000.0,
+      "ligament_epsp_max": 0.12280800193548203,
+      "ligament_epsp_mean": 0.0510361919205586
+    },
+    "medium": {
+      "label": "medium",
+      "h_ligament_mm": 0.5,
+      "elements": 27136,
+      "nodes": 32589,
+      "wall_clock_s": 709.645058083348,
+      "force_source": "Reaction_Forces",
+      "peak_force_N": 18518.295330047607,
+      "peak_displacement_m": 0.00031250700703822076,
+      "final_force_N": 529.9013984799385,
+      "final_displacement_m": 0.006000009831041098,
+      "vtk_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_05_dogbone_damage/runs/stage05_medium/stage05_mediumA060.vtk",
+      "vtk_first_frame_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_05_dogbone_damage/runs/stage05_medium/stage05_mediumA001.vtk",
+      "vtk_frame_count": 60,
+      "ligament_sigma_x_mean_Pa": 2536161.830054283,
+      "ligament_sigma_x_max_Pa": 241347008.0,
+      "ligament_epsp_max": 0.12294100224971771,
+      "ligament_epsp_mean": 0.043330127030984655
+    },
+    "fine": {
+      "label": "fine",
+      "h_ligament_mm": 0.25,
+      "elements": 56000,
+      "nodes": 64911,
+      "wall_clock_s": 1340.4505794299766,
+      "force_source": "Reaction_Forces",
+      "peak_force_N": 18575.055070877075,
+      "peak_displacement_m": 0.0003124999930150807,
+      "final_force_N": 975.3690918684006,
+      "final_displacement_m": 0.006000000052154064,
+      "vtk_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_05_dogbone_damage/runs/stage05_fine/stage05_fineA060.vtk",
+      "vtk_first_frame_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_05_dogbone_damage/runs/stage05_fine/stage05_fineA001.vtk",
+      "vtk_frame_count": 60,
+      "ligament_sigma_x_mean_Pa": 4172274.194638403,
+      "ligament_sigma_x_max_Pa": 183442000.0,
+      "ligament_epsp_max": 0.12277600169181824,
+      "ligament_epsp_mean": 0.04274311245160983
+    }
+  },
+  "checks": {
+    "pre_onset_rmse_coarse_medium": {
+      "pass": true,
+      "value": 0.048428496013137465,
+      "tolerance": 0.05,
+      "gating": true
+    },
+    "pre_onset_rmse_medium_fine": {
+      "pass": true,
+      "value": 0.03735996205005811,
+      "tolerance": 0.05,
+      "gating": true
+    },
+    "damage_region_reached": {
+      "pass": true,
+      "value_epsp_max_medium": 0.12294100224971771,
+      "eps_damage": 0.05,
+      "gating": true
+    },
+    "post_onset_rmse_coarse_medium": {
+      "pass": true,
+      "value": 0.0495687893882467,
+      "tolerance": 0.05,
+      "gating": false,
+      "note": "reported only; LAW22 local damage softening is expected to be mesh dependent after localization"
+    },
+    "post_onset_rmse_medium_fine": {
+      "pass": true,
+      "value": 0.03276462387086556,
+      "tolerance": 0.05,
+      "gating": false,
+      "note": "reported only; LAW22 local damage softening is expected to be mesh dependent after localization"
+    }
+  },
+  "reference": {
+    "type": "LAW22 mesh self-consistency through pre-onset/pre-localization window",
+    "material": {
+      "name": "A36_LAW22",
+      "rho": 7850.0,
+      "young": 200000000000.0,
+      "nu": 0.3,
+      "sigma_y": 250000000.0,
+      "hard_b": 275000000.0,
+      "hard_n": 0.36,
+      "eps_max": 0.5,
+      "sigma_max": 450000000.0,
+      "eps_damage": 0.05,
+      "damage_softening_slope": -5000000000.0
+    },
+    "geometry": {
+      "length": 0.2,
+      "gauge_length": 0.06,
+      "gauge_width": 0.0125,
+      "net_width": 0.008,
+      "notch_radius": 0.00225,
+      "grip_width": 0.025,
+      "fillet_length": 0.0125,
+      "thickness": 0.006,
+      "u_end": 0.006
+    },
+    "u_damage_onset_proxy_m": 0.003075,
+    "F_peak_medium_N": 18518.295330047607,
+    "damage_onset_note": "The LAW22 damage tensor is not consistently exposed by this build's anim_to_vtk output; the material plastic-strain damage threshold mapped to gauge displacement is used as the pre-localization window proxy."
+  },
+  "tolerance": {
+    "pre_onset_rmse": 0.05
+  },
+  "git_sha": "51b03785a557e41d0c65523cca81b4134e6d80cd"
+}

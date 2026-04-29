@@ -1,915 +1,1019 @@
-"""
-Stage 05 runner: notched dogbone with isotropic ductile damage (LAW22).
+"""Stage 05 runner: notched dogbone with isotropic ductile damage.
 
-Author: J.C. Vaught
-Date: 2026-04-29
-
-Runs three mesh-density variants of the notched dogbone deck (coarse / medium /
-fine), invokes OpenRadioss starter and engine for each, reads back the
-load-displacement history and per-element damage variable, and computes the
-windowed RMS difference between the curves up to damage onset. The mesh-
-objectivity verdict (PASS or FAIL) is printed at the end.
-
-The pre-damage-onset window is the principal pass criterion: the LAW22 card is
-a local (non-regularized) CDM model, so post-peak softening is mesh-dependent
-by construction. The runner reports the post-peak RMSE for transparency, but
-the verdict is decided exclusively on the [0, u_D] window. See spec.md sections
-5 and 8 for the rationale tying this to the OpenRadioss audit MARGINAL verdict.
-
-Toolchain. GMSH (Python API) builds the geometry and writes an Abaqus .inp.
-OpenRadioss inp2rad converts to .rad. OpenRadioss starter and engine run the
-job inside Lima on macOS, or natively on Linux. Vortex-Radioss reads the T01
-time history and the .anim damage field. Numpy and pandas do the postprocessing.
-
-This script does not draw figures; per project preference, plots are authored
-in Typst + CeTZ from the CSV the runner writes.
-
-Usage examples.
-
-    python runner.py                         # default: all three meshes, A36
-    python runner.py --metal dp780           # alternate parameter block
-    python runner.py --only medium           # run a single mesh
-    python runner.py --skip-solve            # postprocess existing T01 files
-    python runner.py --engine-cores 8        # parallel engine
-    python runner.py --solver explicit       # force the dynamic-relaxation path
-
-The runner is deliberately a single file; per stage 1 / 2 conventions in the
-test suite, each stage owns its own runner with no cross-stage imports beyond
-the standard library plus numpy / pandas / vortex-radioss / gmsh.
+This runner builds structured all-HEXA8 notched dogbones, writes native
+OpenRadioss decks using /MAT/LAW22, solves three mesh densities with explicit
+dynamic relaxation, extracts load-displacement histories, and evaluates the
+pre-onset mesh-objectivity RMSE. Post-peak divergence is reported, not gated,
+because LAW22 is a local damage model without nonlocal regularization.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
+import dataclasses
+import gzip
 import json
 import math
 import os
+import pathlib
+import re
 import shutil
 import subprocess
 import sys
 import time
-from dataclasses import dataclass, asdict, field
-from pathlib import Path
-from typing import Optional
+from typing import Iterable
 
-import numpy as np
-import pandas as pd
 
-# ---------------------------------------------------------------------------
-# Paths and constants
-# ---------------------------------------------------------------------------
-
-STAGE_DIR = Path(__file__).resolve().parent
-WORK_DIR = STAGE_DIR / "work"
+STAGE = 5
+STAGE_NAME = "dogbone_damage"
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+STAGE_DIR = pathlib.Path(__file__).resolve().parent
+RUNS_DIR = STAGE_DIR / "runs"
 RESULTS_DIR = STAGE_DIR / "results"
+FIGURES_DIR = STAGE_DIR / "figures"
+RUN_LOG = STAGE_DIR / "run.log"
 
-# Lima VM name from master_plan.md section 7.
-LIMA_VM = os.environ.get("OR_LIMA_VM", "or")
+OR_DIR = pathlib.Path(os.environ.get("OR", "/mnt/storage/j-vaught/openradioss/OpenRadioss"))
+STARTER = OR_DIR / "exec" / "starter_linux64_gf"
+ENGINE = OR_DIR / "exec" / "engine_linux64_gf"
+ANIM_TO_VTK = OR_DIR / "exec" / "anim_to_vtk_linux64_gf"
+TH_TO_CSV = OR_DIR / "exec" / "th_to_csv_linux64_gf"
 
-# OpenRadioss binary names (Linux ARM64 inside Lima per audit section 4.2).
-STARTER_BIN = os.environ.get("OR_STARTER_BIN", "starter_linuxa64")
-ENGINE_BIN = os.environ.get("OR_ENGINE_BIN", "engine_linuxa64")
-INP2RAD_BIN = os.environ.get("OR_INP2RAD_BIN", "inp2rad")
 
-# Mesh resolutions from spec.md section 4.
-MESH_SIZES_MM = {
-    "coarse": 1.00,
-    "medium": 0.50,
-    "fine": 0.25,
+@dataclasses.dataclass(frozen=True)
+class Material:
+    name: str = "A36_LAW22"
+    rho: float = 7850.0
+    young: float = 2.0e11
+    nu: float = 0.30
+    sigma_y: float = 2.50e8
+    hard_b: float = 2.75e8
+    hard_n: float = 0.36
+    eps_max: float = 0.50
+    sigma_max: float = 4.50e8
+    eps_damage: float = 0.05
+    damage_softening_slope: float = -5.0e9
+
+
+@dataclasses.dataclass(frozen=True)
+class Geometry:
+    length: float = 0.200
+    gauge_length: float = 0.060
+    gauge_width: float = 0.0125
+    net_width: float = 0.0080
+    notch_radius: float = 0.00225
+    grip_width: float = 0.025
+    fillet_length: float = 0.0125
+    thickness: float = 0.006
+    u_end: float = 0.006
+
+    @property
+    def grip_length(self) -> float:
+        return 0.5 * (self.length - self.gauge_length - 2.0 * self.fillet_length)
+
+    @property
+    def net_area(self) -> float:
+        return self.net_width * self.thickness
+
+    def width_at(self, x: float) -> float:
+        """Dogbone width at centered axial coordinate x."""
+        half_gauge = 0.5 * self.gauge_length
+        ax = abs(x)
+        if ax <= self.notch_radius:
+            cut = math.sqrt(max(self.notch_radius**2 - ax**2, 0.0))
+            return self.gauge_width - 2.0 * cut
+        if ax <= half_gauge:
+            return self.gauge_width
+        if ax >= half_gauge + self.fillet_length:
+            return self.grip_width
+        s = (ax - half_gauge) / self.fillet_length
+        return self.gauge_width + 0.5 * (1.0 - math.cos(math.pi * s)) * (
+            self.grip_width - self.gauge_width
+        )
+
+
+@dataclasses.dataclass(frozen=True)
+class MeshSpec:
+    label: str
+    n_grip: int
+    n_fillet: int
+    n_gauge_side: int
+    n_notch: int
+    ny: int
+    nz: int
+    h_ligament_mm: float
+
+
+MESHES = {
+    "coarse": MeshSpec("coarse", 16, 6, 36, 16, 12, 6, 1.00),
+    "medium": MeshSpec("medium", 24, 8, 60, 28, 16, 8, 0.50),
+    "fine": MeshSpec("fine", 32, 10, 80, 36, 20, 10, 0.25),
 }
 
-# Damage-onset detection threshold per spec.md section 8.
-D_ONSET_THRESHOLD = 0.01
 
-# Mesh-objectivity tolerance per spec.md section 8.
-RMSE_PASS_TOLERANCE = 0.05  # 5% of peak load
-
-
-# ---------------------------------------------------------------------------
-# Material parameter blocks (spec.md section 5)
-# ---------------------------------------------------------------------------
-
-@dataclass(frozen=True)
-class MaterialCard:
-    """LAW22 material parameters in consistent SI (kg, m, s, Pa)."""
-
-    name: str
-    rho: float           # density, kg/m^3
-    E: float             # Young's modulus, Pa
-    nu: float            # Poisson ratio
-    sigma_y: float       # yield stress, Pa
-    hardening_pts: list  # list of (eps_p, sigma) tuples in Pa
-    eps_p_d: float       # damage onset plastic strain
-    eps_p_r: float       # full-damage / element-deletion plastic strain
-    d_max: float = 0.999
+@dataclasses.dataclass
+class MeshData:
+    spec: MeshSpec
+    nodes: dict[int, tuple[float, float, float]]
+    bricks: list[tuple[int, tuple[int, int, int, int, int, int, int, int]]]
+    node_sets: dict[str, list[int]]
+    ligament_elements: list[int]
+    gauge_x_neg: float
+    gauge_x_pos: float
 
 
-def material_a36() -> MaterialCard:
-    return MaterialCard(
-        name="A36",
-        rho=7850.0,
-        E=2.00e11,
-        nu=0.30,
-        sigma_y=2.50e8,
-        hardening_pts=[
-            (0.000, 2.50e8),
-            (0.020, 3.00e8),
-            (0.050, 3.50e8),
-            (0.100, 4.00e8),
-            (0.200, 4.50e8),
-            (0.500, 4.50e8),
-        ],
-        eps_p_d=0.05,
-        eps_p_r=0.50,
+class Logger:
+    def __init__(self, path: pathlib.Path) -> None:
+        self.path = path
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._fh = self.path.open("w", encoding="utf-8")
+
+    def close(self) -> None:
+        self._fh.close()
+
+    def log(self, text: str = "") -> None:
+        print(text, flush=True)
+        self._fh.write(text + "\n")
+        self._fh.flush()
+
+    def run(self, argv: list[str], cwd: pathlib.Path, env: dict[str, str]) -> subprocess.CompletedProcess[str]:
+        self.log("$ " + " ".join(argv))
+        proc = subprocess.run(
+            argv,
+            cwd=str(cwd),
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+        if proc.stdout:
+            self._fh.write(proc.stdout)
+            self._fh.flush()
+            if len(proc.stdout) <= 5000:
+                print(proc.stdout, end="", flush=True)
+            else:
+                print(f"[captured {len(proc.stdout)} bytes in {self.path}]", flush=True)
+        self.log(f"[exit {proc.returncode}]")
+        return proc
+
+
+def radioss_env() -> dict[str, str]:
+    env = os.environ.copy()
+    env["OR"] = str(OR_DIR)
+    env["RAD_CFG_PATH"] = str(OR_DIR / "hm_cfg_files")
+    env["RAD_H3D_PATH"] = str(OR_DIR / "extlib" / "h3d" / "lib" / "linux64")
+    hm_reader = str(OR_DIR / "extlib" / "hm_reader" / "linux64")
+    env["LD_LIBRARY_PATH"] = hm_reader + ":" + env.get("LD_LIBRARY_PATH", "")
+    return env
+
+
+def fmt_i(*values: int) -> str:
+    return "".join(f"{v:10d}" for v in values)
+
+
+def fmt_f(*values: float) -> str:
+    return "".join(f"{v:20.12g}" for v in values)
+
+
+def node_group_block(group_id: int, name: str, nodes: Iterable[int]) -> list[str]:
+    ids = list(nodes)
+    lines = [f"/GRNOD/NODE/{group_id}", name]
+    for i in range(0, len(ids), 10):
+        lines.append(fmt_i(*ids[i : i + 10]))
+    return lines
+
+
+def brick_group_block(group_id: int, name: str, elems: Iterable[int]) -> list[str]:
+    ids = list(elems)
+    lines = [f"/GRBRIC/BRIC/{group_id}", name]
+    for i in range(0, len(ids), 10):
+        lines.append(fmt_i(*ids[i : i + 10]))
+    return lines
+
+
+def axis_points(geom: Geometry, spec: MeshSpec) -> list[float]:
+    half = 0.5 * geom.length
+    half_gauge = 0.5 * geom.gauge_length
+    rn = geom.notch_radius
+    segments = [
+        (-half, -half_gauge - geom.fillet_length, spec.n_grip),
+        (-half_gauge - geom.fillet_length, -half_gauge, spec.n_fillet),
+        (-half_gauge, -rn, spec.n_gauge_side),
+        (-rn, rn, spec.n_notch),
+        (rn, half_gauge, spec.n_gauge_side),
+        (half_gauge, half_gauge + geom.fillet_length, spec.n_fillet),
+        (half_gauge + geom.fillet_length, half, spec.n_grip),
+    ]
+    xs: list[float] = []
+    for start, stop, count in segments:
+        xs.extend(start + (stop - start) * i / count for i in range(count))
+    xs.append(half)
+    return xs
+
+
+def build_mesh_data(geom: Geometry, spec: MeshSpec) -> MeshData:
+    xs = axis_points(geom, spec)
+    zs = [-0.5 * geom.thickness + geom.thickness * k / spec.nz for k in range(spec.nz + 1)]
+    nodes: dict[int, tuple[float, float, float]] = {}
+
+    def nid(i: int, j: int, k: int) -> int:
+        return 1 + k * (spec.ny + 1) * len(xs) + j * len(xs) + i
+
+    for k, z in enumerate(zs):
+        for j in range(spec.ny + 1):
+            eta = -1.0 + 2.0 * j / spec.ny
+            for i, x in enumerate(xs):
+                y = 0.5 * geom.width_at(x) * eta
+                nodes[nid(i, j, k)] = (x, y, z)
+
+    bricks: list[tuple[int, tuple[int, int, int, int, int, int, int, int]]] = []
+    ligament_elements: list[int] = []
+    eid = 1
+    for k in range(spec.nz):
+        for j in range(spec.ny):
+            for i in range(len(xs) - 1):
+                conn = (
+                    nid(i, j, k),
+                    nid(i + 1, j, k),
+                    nid(i + 1, j + 1, k),
+                    nid(i, j + 1, k),
+                    nid(i, j, k + 1),
+                    nid(i + 1, j, k + 1),
+                    nid(i + 1, j + 1, k + 1),
+                    nid(i, j + 1, k + 1),
+                )
+                bricks.append((eid, conn))
+                cx = 0.5 * (xs[i] + xs[i + 1])
+                if abs(cx) <= 1.5 * geom.notch_radius:
+                    ligament_elements.append(eid)
+                eid += 1
+
+    i_left = 0
+    i_right = len(xs) - 1
+    i_gauge_neg = min(range(len(xs)), key=lambda idx: abs(xs[idx] + 0.5 * geom.gauge_length))
+    i_gauge_pos = min(range(len(xs)), key=lambda idx: abs(xs[idx] - 0.5 * geom.gauge_length))
+    j_mid = spec.ny // 2
+    k_mid = spec.nz // 2
+
+    left = [nid(i_left, j, k) for k in range(spec.nz + 1) for j in range(spec.ny + 1)]
+    right = [nid(i_right, j, k) for k in range(spec.nz + 1) for j in range(spec.ny + 1)]
+    right_anchor = [nid(i_right, j_mid, k_mid)]
+    right_probe = [nid(i_right, j_mid, k_mid)]
+    all_nodes = list(nodes)
+    return MeshData(
+        spec=spec,
+        nodes=nodes,
+        bricks=bricks,
+        node_sets={
+            "left": left,
+            "right": right,
+            "right_anchor": right_anchor,
+            "right_probe": right_probe,
+            "all_nodes": all_nodes,
+        },
+        ligament_elements=ligament_elements,
+        gauge_x_neg=xs[i_gauge_neg],
+        gauge_x_pos=xs[i_gauge_pos],
     )
 
 
-def material_dp780() -> MaterialCard:
-    return MaterialCard(
-        name="DP780",
-        rho=7850.0,
-        E=2.00e11,
-        nu=0.30,
-        sigma_y=5.00e8,
-        hardening_pts=[
-            (0.000, 5.00e8),
-            (0.020, 6.20e8),
-            (0.050, 7.00e8),
-            (0.100, 7.80e8),
-            (0.200, 7.80e8),
-        ],
-        eps_p_d=0.04,
-        eps_p_r=0.20,
-    )
+def write_gmsh_mesh(mesh: MeshData, out_msh: pathlib.Path) -> None:
+    import gmsh  # type: ignore[import-not-found]
 
-
-# ---------------------------------------------------------------------------
-# Geometry parameters (spec.md section 3) -- millimetres
-# ---------------------------------------------------------------------------
-
-@dataclass(frozen=True)
-class Geometry:
-    L_tot_mm: float = 200.0
-    L_g_mm: float = 60.0
-    w_g_mm: float = 12.5
-    w_n_mm: float = 8.0
-    r_n_mm: float = 2.25
-    w_grip_mm: float = 25.0
-    r_f_mm: float = 12.5
-    t_mm: float = 6.0
-
-
-GEOM = Geometry()
-
-
-# ---------------------------------------------------------------------------
-# GMSH meshing
-# ---------------------------------------------------------------------------
-
-def build_mesh(h_mm: float, out_inp: Path) -> dict:
-    """Build the notched-dogbone HEXA8 mesh and export an Abaqus .inp.
-
-    Returns a small dict with element count, node count, and a few derived
-    quantities used by inp2rad sanity checks.
-
-    The geometry is built as a 2D outline with the pair of semicircular notches
-    at midspan, then extruded through-thickness to HEXA8 with the number of
-    layers chosen to keep aspect ratio near unity in the ligament.
-    """
-    import gmsh
-
-    gmsh.initialize()
+    gmsh.initialize(["-nopopup"])
     try:
-        gmsh.option.setNumber("General.Terminal", 0)
-        gmsh.model.add(f"stage05_h{h_mm:.2f}")
-
-        g = GEOM
-        # 2D outline points (mm). Half the dogbone is mirrored about y=0; we
-        # build the full outline directly so the mesh is symmetric without
-        # any explicit symmetry plane (see spec.md section 3 rationale).
-        L = g.L_tot_mm
-        Lg = g.L_g_mm
-        wg = g.w_g_mm
-        wn = g.w_n_mm
-        rn = g.r_n_mm
-        wgrip = g.w_grip_mm
-        rf = g.r_f_mm
-
-        # x-coordinates of key transitions
-        x_grip_R = (L - Lg) / 2.0 - rf      # end of straight grip (left)
-        x_gauge_L = (L - Lg) / 2.0          # start of gauge straight
-        x_notch_C = L / 2.0                 # notch center
-        x_gauge_R = (L + Lg) / 2.0          # end of gauge straight
-        x_grip_L2 = (L + Lg) / 2.0 + rf     # start of straight grip (right)
-
-        # Build half-outline (top, y>0) and mirror by adding y<0 points later.
-        # Use OpenCASCADE for boolean cuts of the semicircular notches.
-        occ = gmsh.model.occ
-
-        # Base rectangle at grip width
-        grip_L = occ.addRectangle(0.0, -wgrip / 2.0, 0.0, x_grip_R, wgrip)
-        grip_R = occ.addRectangle(x_grip_L2, -wgrip / 2.0, 0.0, L - x_grip_L2, wgrip)
-
-        # Gauge rectangle (reduced width)
-        gauge = occ.addRectangle(x_gauge_L, -wg / 2.0, 0.0, Lg, wg)
-
-        # Fillet trapezoids: build each shoulder as a rectangle then subtract
-        # the fillet quarter-disks.  This is a stable OCC pattern that does
-        # not produce sliver faces.
-        shL_x = x_grip_R
-        shL_w = x_gauge_L - x_grip_R
-        shoulder_L = occ.addRectangle(shL_x, -wgrip / 2.0, 0.0, shL_w, wgrip)
-        shoulder_R = occ.addRectangle(x_gauge_R, -wgrip / 2.0, 0.0, shL_w, wgrip)
-
-        # Subtract fillet quarter-disks on the four shoulder corners.
-        # Top-left fillet: disk centered at (x_grip_R + rf, +wg/2 + rf)
-        d1 = occ.addDisk(x_grip_R + rf, +wg / 2.0 + rf, 0.0, rf, rf)
-        d2 = occ.addDisk(x_grip_R + rf, -wg / 2.0 - rf, 0.0, rf, rf)
-        d3 = occ.addDisk(x_gauge_R - rf, +wg / 2.0 + rf, 0.0, rf, rf)
-        d4 = occ.addDisk(x_gauge_R - rf, -wg / 2.0 - rf, 0.0, rf, rf)
-
-        # Fuse the base shapes
-        all_outline, _ = occ.fuse(
-            [(2, grip_L), (2, gauge), (2, grip_R), (2, shoulder_L), (2, shoulder_R)],
-            [],
-            removeObject=True, removeTool=True,
-        )
-        # Subtract the four corner disks to form fillets. Note: only the
-        # quadrants that cut into the grip rectangle should be inverted; this
-        # is an approximation acceptable at the verification-mesh resolution.
-        outline_after_fillet, _ = occ.cut(
-            all_outline,
-            [(2, d1), (2, d2), (2, d3), (2, d4)],
-            removeObject=True, removeTool=True,
-        )
-
-        # Subtract the symmetric notches at midspan.
-        notch_top = occ.addDisk(x_notch_C, +wg / 2.0, 0.0, rn, rn)
-        notch_bot = occ.addDisk(x_notch_C, -wg / 2.0, 0.0, rn, rn)
-        outline_final, _ = occ.cut(
-            outline_after_fillet,
-            [(2, notch_top), (2, notch_bot)],
-            removeObject=True, removeTool=True,
-        )
-
-        occ.synchronize()
-
-        # Extrude through-thickness to solids.
-        n_through = max(int(round(g.t_mm / h_mm)), 4)
-        # Mesh-size policy: refine in the gauge ligament, coarsen in grips.
-        # We do this via a Box field around the notch ligament.
-        gmsh.model.mesh.field.add("Box", 1)
-        gmsh.model.mesh.field.setNumber(1, "VIn", h_mm)
-        gmsh.model.mesh.field.setNumber(1, "VOut", max(2.0 * h_mm, 1.5))
-        gmsh.model.mesh.field.setNumber(1, "XMin", x_notch_C - 1.5 * Lg / 4.0)
-        gmsh.model.mesh.field.setNumber(1, "XMax", x_notch_C + 1.5 * Lg / 4.0)
-        gmsh.model.mesh.field.setNumber(1, "YMin", -wg / 2.0)
-        gmsh.model.mesh.field.setNumber(1, "YMax", +wg / 2.0)
-        gmsh.model.mesh.field.setAsBackgroundMesh(1)
-        gmsh.option.setNumber("Mesh.Algorithm", 8)        # Frontal-Delaunay for quads
-        gmsh.option.setNumber("Mesh.RecombineAll", 1)     # quads then hexes on extrude
-        gmsh.option.setNumber("Mesh.RecombinationAlgorithm", 3)
-
-        # Extrude: returns list of (dim, tag) of generated entities.
-        extruded = occ.extrude(
-            outline_final, 0.0, 0.0, g.t_mm,
-            numElements=[n_through], recombine=True,
-        )
-        occ.synchronize()
-
-        # Physical groups for boundary condition tagging.
-        # Left grip face: x = 0 plane
-        # Right grip face: x = L plane
-        eps_tol = 1e-3
-        bnd = gmsh.model.getEntities(2)
-        left_faces, right_faces = [], []
-        for dim, tag in bnd:
-            xmin, ymin, zmin, xmax, ymax, zmax = gmsh.model.getBoundingBox(dim, tag)
-            if abs(xmin - 0.0) < eps_tol and abs(xmax - 0.0) < eps_tol:
-                left_faces.append(tag)
-            elif abs(xmin - L) < eps_tol and abs(xmax - L) < eps_tol:
-                right_faces.append(tag)
-        if not left_faces or not right_faces:
-            raise RuntimeError(
-                "GMSH could not identify left/right grip faces by bounding-box "
-                "filter. Tighten eps_tol or inspect the OCC model."
-            )
-        gmsh.model.addPhysicalGroup(2, left_faces, tag=101, name="LEFT_GRIP")
-        gmsh.model.addPhysicalGroup(2, right_faces, tag=102, name="RIGHT_GRIP")
-
-        # Volume physical group (the part).
-        vols = [t for d, t in gmsh.model.getEntities(3)]
-        gmsh.model.addPhysicalGroup(3, vols, tag=1, name="DOGBONE")
-
-        gmsh.model.mesh.generate(3)
-        # Convert tetrahedra (if any sneaked in) to hexes via subdivide:
-        # GMSH 4.x subdivision of HEX-EXTRUSION should already be all-hex;
-        # we leave a guard in case the OCC topology produced wedges.
-        try:
-            gmsh.model.mesh.recombine()
-        except Exception:
-            pass
-
-        # Counts
-        node_tags, _, _ = gmsh.model.mesh.getNodes()
-        elem_types, elem_tags, _ = gmsh.model.mesh.getElements(3)
-        n_nodes = int(len(node_tags))
-        n_elems = int(sum(len(t) for t in elem_tags))
-
-        out_inp.parent.mkdir(parents=True, exist_ok=True)
-        gmsh.write(str(out_inp))
-
+        gmsh.model.add(f"stage05_{mesh.spec.label}")
+        gmsh.model.addDiscreteEntity(3, 1)
+        node_tags = list(mesh.nodes)
+        coords: list[float] = []
+        for node_id in node_tags:
+            coords.extend(mesh.nodes[node_id])
+        elem_tags = [eid for eid, _ in mesh.bricks]
+        elem_conn = [node for _, conn in mesh.bricks for node in conn]
+        gmsh.model.mesh.addNodes(3, 1, node_tags, coords)
+        gmsh.model.mesh.addElementsByType(1, 5, elem_tags, elem_conn)
+        gmsh.model.addPhysicalGroup(3, [1], tag=1, name="DOGBONE_DAMAGE_SOLID")
+        gmsh.option.setNumber("Mesh.MshFileVersion", 4.1)
+        gmsh.option.setNumber("Mesh.Binary", 0)
+        gmsh.write(str(out_msh))
     finally:
         gmsh.finalize()
 
-    return {"n_nodes": n_nodes, "n_elems": n_elems}
 
+def write_starter(
+    geom: Geometry,
+    mat: Material,
+    mesh: MeshData,
+    out_rad: pathlib.Path,
+    run_time: float,
+    damping_alpha: float,
+) -> None:
+    job = out_rad.name.removesuffix("_0000.rad")
+    lines: list[str] = [
+        "#RADIOSS STARTER",
+        "/BEGIN",
+        job,
+        fmt_i(2019, 0),
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        "/TITLE",
+        f"Stage 05 LAW22 notched dogbone {mesh.spec.label}",
+        "/DEF_SOLID",
+        "#  I_SOLID    ISMSTR             ISTRAIN                                  IFRAME",
+        fmt_i(24, 4) + f"{0:20d}" + f"{2:40d}",
+        "/RANDOM",
+        fmt_f(0.0) + f"{0:20d}",
+        "/SPMD",
+        fmt_i(0, 0) + f"{0:20d}{1:20d}",
+        "/SHFRA/V4",
+        "/DAMP/1",
+        "global_mass_damping",
+        "#              alpha                beta  grnod_ID   skew_ID              Tstart               Tstop",
+        fmt_f(damping_alpha, 0.0) + fmt_i(300, 0) + fmt_f(0.0, run_time),
+        "/MAT/LAW22/1",
+        mat.name,
+        "#        Init. dens.          Ref. dens.",
+        fmt_f(mat.rho, 0.0),
+        "#                  E                  Nu",
+        fmt_f(mat.young, mat.nu),
+        "#                  a                   b                   n             Eps_max           SIGMA_max",
+        fmt_f(mat.sigma_y, mat.hard_b, mat.hard_n, mat.eps_max, mat.sigma_max),
+        "#                  c           Eps_dot_0       ICC",
+        fmt_f(0.0, 0.0) + fmt_i(0),
+        "#            Eps_dam                 E_t",
+        fmt_f(mat.eps_damage, mat.damage_softening_slope),
+        "/NODE",
+    ]
+    for nid, (x, y, z) in mesh.nodes.items():
+        lines.append(f"{nid:10d}{x:20.12g}{y:20.12g}{z:20.12g}")
 
-# ---------------------------------------------------------------------------
-# Deck templating
-# ---------------------------------------------------------------------------
+    lines.extend(["/PART/1", "dogbone_damage_part", fmt_i(1, 1, 0), "/BRICK/1"])
+    for eid, conn in mesh.bricks:
+        lines.append(fmt_i(eid, *conn))
 
-STARTER_TEMPLATE = """\
-#RADIOSS STARTER
-/BEGIN
-Stage 05 dogbone with isotropic ductile damage (LAW22) -- mesh {mesh_label}
-      0       0
-/UNIT/1
-kg                  m                   s
-/MAT/LAW22/1
-{mat_name}_LAW22
-{rho:>20.6e}{E:>20.6e}{nu:>20.6f}
-{sigma_y:>20.6e}{eps_p_d:>20.6f}{eps_p_r:>20.6f}{d_max:>20.6f}
-# (hardening function 1 referenced below)
-/FUNCT/1
-HARDENING_{mat_name}
-{hardening_pairs}
-/PROP/TYPE14/1
-SOLID_GENERAL
-{ihkt:>10d}{isolid:>10d}{ismstr:>10d}
-/PART/1
-DOGBONE_PART     1     1
-# nodes and bricks below come from inp2rad conversion
-#include "mesh_block.rad"
-/GRNOD/SURF/1
-LEFT_GRIP_NODES   101
-/GRNOD/SURF/2
-RIGHT_GRIP_NODES  102
-/BCS/1
-LEFT_ENCASTRE
-1 1 1 1 1 1                 1
-/BCS/2
-RIGHT_TRANSV_FIX
-0 1 1 0 0 0                 2
-/IMPDISP/1
-RIGHT_X_PULL
-1 0 0                       2       3
-# function 3 is the displacement ramp, end value u_end (m)
-/FUNCT/3
-DISP_RAMP
-              0.0                 0.0
-              1.0     {u_end_m:.6e}
-{solver_block}
-/TH/PART/1
-PART_OUTPUT       1
-DEF DISP FORC ENER
-/TH/NODE/1
-GRIP_NODE
-{control_node:>10d}
-DEF DISP FORC
-/ANIM/ELEM/DAMA
-/H3D/ELEM/DAMA
-/END
-"""
-
-ENGINE_TEMPLATE = """\
-#RADIOSS ENGINE
-/RUN/STAGE05_{mesh_label}/1
-              1.0
-/TFILE
-            0.001
-/ANIM/DT
-             0.02
-/H3D/DT
-             0.02
-/STOP
-/END
-"""
-
-SOLVER_BLOCK_IMPL = """\
-/IMPL/QSTAT
-/IMPL/SOLVER/MUMPS
-/IMPL/NONLIN/SMDISP
-       1                                    50      1.0e-3
-/IMPL/DT/STOP
-       1.0e-4              1.0
-"""
-
-SOLVER_BLOCK_EXPL = """\
-/DT/BRICK/1
-              0.9          1.0e-7
-/DAMP/1
-GLOBAL_RAYLEIGH
-              0.05            0.0
-/MASS/SCAL
-              1.0e-7
-"""
-
-
-def render_starter(
-    mat: MaterialCard,
-    mesh_label: str,
-    u_end_m: float,
-    solver: str,
-    control_node: int,
-) -> str:
-    """Render the starter deck text. Field widths follow Radioss fixed format."""
-    hardening_pairs = "\n".join(
-        f"{ep:>20.6e}{sig:>20.6e}" for ep, sig in mat.hardening_pts
+    lines.extend(
+        [
+            "/PROP/SOLID/1",
+            "heph_large_strain",
+            "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
+            fmt_i(24, 4) + f"{1:20d}{0:20d}{0:10d}{0:10d}{0:20d}",
+            "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
+            fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
+            "#             dt_min   istrain      IHKT",
+            fmt_f(0.0) + fmt_i(0, 0),
+            "/BCS/1",
+            "left_encastre",
+            "#  Tra rot   skew_ID  grnod_ID",
+            f"   111 000{0:10d}{100:10d}",
+            "/BCS/2",
+            "right_anchor_yz",
+            "#  Tra rot   skew_ID  grnod_ID",
+            f"   011 000{0:10d}{102:10d}",
+            "/FUNCT/1",
+            "right_displacement_ramp",
+            "#                  X                   Y",
+            fmt_f(0.0, 0.0),
+            fmt_f(0.25, 0.15625),
+            fmt_f(0.50, 0.50),
+            fmt_f(0.75, 0.84375),
+            fmt_f(1.0, 1.0),
+            "/IMPDISP/1",
+            "right_grip_pull_x",
+            "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+            f"{1:10d}{'X':>10}{0:10d}{0:10d}{101:10d}{0:10d}{0:10d}",
+            "#            Scale_x             Scale_y              Tstart               Tstop",
+            fmt_f(run_time, geom.u_end, 0.0, 0.0),
+        ]
     )
-    if solver == "implicit":
-        solver_block = SOLVER_BLOCK_IMPL
-    elif solver == "explicit":
-        solver_block = SOLVER_BLOCK_EXPL
-    else:
-        raise ValueError(f"unknown solver mode {solver!r}")
-    return STARTER_TEMPLATE.format(
-        mesh_label=mesh_label,
-        mat_name=mat.name,
-        rho=mat.rho,
-        E=mat.E,
-        nu=mat.nu,
-        sigma_y=mat.sigma_y,
-        eps_p_d=mat.eps_p_d,
-        eps_p_r=mat.eps_p_r,
-        d_max=mat.d_max,
-        hardening_pairs=hardening_pairs,
-        ihkt=2,             # tabulated isotropic hardening
-        isolid=14,          # /PROP/TYPE14 solid
-        ismstr=10,          # large strain solid formulation
-        u_end_m=u_end_m,
-        solver_block=solver_block,
-        control_node=control_node,
+    lines.extend(node_group_block(100, "left_grip", mesh.node_sets["left"]))
+    lines.extend(node_group_block(101, "right_grip", mesh.node_sets["right"]))
+    lines.extend(node_group_block(102, "right_anchor", mesh.node_sets["right_anchor"]))
+    lines.extend(node_group_block(103, "right_probe", mesh.node_sets["right_probe"]))
+    lines.extend(node_group_block(300, "all_nodes", mesh.node_sets["all_nodes"]))
+    lines.extend(brick_group_block(200, "notch_ligament", mesh.ligament_elements))
+    lines.extend(
+        [
+            "/TH/NODE/1",
+            "right_probe",
+            "DEF",
+        ]
     )
+    for node_id in mesh.node_sets["right_probe"]:
+        lines.append(f"{node_id:10d}{0:10d}right_probe_{node_id}")
+    lines.extend(["/TH/NODE/2", "right_reaction_x", "REACX"])
+    for node_id in mesh.node_sets["right"]:
+        lines.append(f"{node_id:10d}{0:10d}right_{node_id}")
+    lines.extend(["/TH/NODE/3", "left_reaction_x", "REACX"])
+    for node_id in mesh.node_sets["left"]:
+        lines.append(f"{node_id:10d}{0:10d}left_{node_id}")
+    lines.extend(["/END", ""])
+    out_rad.write_text("\n".join(lines), encoding="utf-8")
 
 
-def render_engine(mesh_label: str) -> str:
-    return ENGINE_TEMPLATE.format(mesh_label=mesh_label)
+def write_engine(job: str, out_rad: pathlib.Path, run_time: float, dt_noda: float) -> None:
+    anim_dt = run_time / 60.0
+    lines = [
+        "#RADIOSS ENGINE",
+        "/ANIM/DT",
+        fmt_f(anim_dt, anim_dt),
+        "/ANIM/VECT/DISP",
+        "/ANIM/VECT/VEL",
+        "/ANIM/VECT/FREAC",
+        "/ANIM/VECT/FINT",
+        "/ANIM/BRICK/TENS/STRESS/ALL",
+        "/ANIM/BRICK/TENS/STRAIN/ALL",
+        "/ANIM/BRICK/TENS/DAMA",
+        "/ANIM/ELEM/EPSP",
+        "/ANIM/GZIP",
+        "/TFILE/4",
+        fmt_f(run_time / 240.0),
+        "/RFILE",
+        fmt_i(5000),
+        "/PRINT/-100/55",
+        "/KEREL",
+        "/DT/NODA/CST",
+        fmt_f(0.0, dt_noda),
+        f"/RUN/{job}/1",
+        fmt_f(run_time),
+        "/VERS/2019",
+        "",
+    ]
+    out_rad.write_text("\n".join(lines), encoding="utf-8")
 
 
-# ---------------------------------------------------------------------------
-# Toolchain invocation (Lima + OpenRadioss)
-# ---------------------------------------------------------------------------
-
-def _have_lima() -> bool:
-    return shutil.which("limactl") is not None
+def gunzip_keep(src: pathlib.Path, dst: pathlib.Path) -> None:
+    with gzip.open(src, "rb") as f_in, dst.open("wb") as f_out:
+        shutil.copyfileobj(f_in, f_out)
 
 
-def _have_native_or() -> bool:
-    return shutil.which(STARTER_BIN) is not None and shutil.which(ENGINE_BIN) is not None
+def _anim_frame_indices(job: str, workdir: pathlib.Path) -> list[int]:
+    pattern = re.compile(re.escape(job) + r"A(\d{3})(?:\.gz)?$")
+    indices: set[int] = set()
+    for path in workdir.glob(f"{job}A*"):
+        match = pattern.match(path.name)
+        if match:
+            indices.add(int(match.group(1)))
+    return sorted(indices)
 
 
-def _or_command(argv: list[str], cwd: Path) -> subprocess.CompletedProcess:
-    """Run an OpenRadioss command natively or inside Lima."""
-    if _have_native_or():
-        return subprocess.run(argv, cwd=str(cwd), capture_output=True, text=True)
-    if _have_lima():
-        full = ["limactl", "shell", LIMA_VM, "--workdir", str(cwd), "--"] + argv
-        return subprocess.run(full, capture_output=True, text=True)
-    raise RuntimeError(
-        "Neither native OpenRadioss binaries nor Lima detected. Install per "
-        "master_plan.md section 7."
+def convert_anim_frame_to_vtk(
+    job: str,
+    workdir: pathlib.Path,
+    frame_index: int,
+    log: Logger,
+    env: dict[str, str],
+) -> pathlib.Path:
+    anim = workdir / f"{job}A{frame_index:03d}"
+    gz = anim.with_suffix(anim.suffix + ".gz")
+    if gz.exists() and (not anim.exists() or gz.stat().st_mtime > anim.stat().st_mtime):
+        gunzip_keep(gz, anim)
+    if not anim.exists():
+        raise FileNotFoundError(f"animation frame not found: {anim} or {gz}")
+    vtk = workdir / f"{job}A{frame_index:03d}.vtk"
+    log.log("$ " + " ".join([str(ANIM_TO_VTK), str(anim)]))
+    proc = subprocess.run(
+        [str(ANIM_TO_VTK), str(anim)],
+        cwd=str(workdir),
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
     )
-
-
-def detect_implicit_capability() -> bool:
-    """Probe the engine binary for MUMPS / implicit support.
-
-    Heuristic: invoke `engine -h` and grep for IMPL keywords. If unavailable,
-    return False so the runner falls back to explicit dynamic relaxation per
-    spec.md section 6 Option B.
-    """
-    try:
-        proc = _or_command([ENGINE_BIN, "-h"], cwd=STAGE_DIR)
-    except Exception:
-        return False
-    text = (proc.stdout or "") + (proc.stderr or "")
-    return "IMPL" in text.upper() and "MUMPS" in text.upper()
-
-
-def run_inp2rad(inp_path: Path, rad_out: Path) -> None:
-    """Convert Abaqus .inp to OpenRadioss .rad via OpenRadioss inp2rad."""
-    cwd = inp_path.parent
-    proc = _or_command([INP2RAD_BIN, str(inp_path.name)], cwd=cwd)
     if proc.returncode != 0:
-        raise RuntimeError(
-            f"inp2rad failed:\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
-        )
-    # inp2rad writes <name>_0000.rad next to the .inp; we standardize the name.
-    converted = cwd / (inp_path.stem + "_0000.rad")
-    if not converted.exists():
-        # Some inp2rad versions name it differently; fall back to glob.
-        candidates = sorted(cwd.glob(inp_path.stem + "*.rad"))
+        if proc.stdout:
+            log.log(proc.stdout.decode("utf-8", errors="replace").rstrip())
+        if proc.stderr:
+            log.log(proc.stderr.decode("utf-8", errors="replace").rstrip())
+        raise RuntimeError(f"anim_to_vtk failed for {anim}")
+    if proc.stdout and proc.stdout.lstrip().startswith(b"# vtk"):
+        vtk.write_bytes(proc.stdout)
+    elif not vtk.exists():
+        candidates = sorted(workdir.glob("*.vtk"))
         if not candidates:
-            raise RuntimeError("inp2rad produced no .rad output")
-        converted = candidates[0]
-    rad_out.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy(converted, rad_out)
+            raise FileNotFoundError(f"anim_to_vtk produced no VTK for {job}")
+        candidates[0].replace(vtk)
+    log.log(f"[exit {proc.returncode}] wrote {vtk}")
+    return vtk
 
 
-def run_starter(deck_0000: Path, n_threads: int = 1) -> None:
-    proc = _or_command(
-        [STARTER_BIN, "-i", deck_0000.name, "-nt", str(n_threads)],
-        cwd=deck_0000.parent,
+def convert_all_anim_to_vtk(job: str, workdir: pathlib.Path, log: Logger, env: dict[str, str]) -> list[pathlib.Path]:
+    indices = _anim_frame_indices(job, workdir)
+    if not indices:
+        indices = [1]
+    log.log(f"[{job}] converting {len(indices)} animation frame(s) to VTK")
+    return [convert_anim_frame_to_vtk(job, workdir, idx, log, env) for idx in indices]
+
+
+def convert_t01_to_csv(job: str, workdir: pathlib.Path, log: Logger, env: dict[str, str]) -> pathlib.Path:
+    t01 = workdir / f"{job}T01"
+    gz = t01.with_suffix(t01.suffix + ".gz")
+    if gz.exists() and (not t01.exists() or gz.stat().st_mtime > t01.stat().st_mtime):
+        gunzip_keep(gz, t01)
+    if not t01.exists():
+        candidates = sorted(workdir.glob("*T01"))
+        if not candidates:
+            raise FileNotFoundError(f"T01 file not found for {job}")
+        t01 = candidates[0]
+    log.log("$ " + " ".join([str(TH_TO_CSV), str(t01)]))
+    proc = subprocess.run(
+        [str(TH_TO_CSV), str(t01)],
+        cwd=str(workdir),
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
     )
+    if proc.stdout:
+        log.log(proc.stdout.rstrip())
     if proc.returncode != 0:
-        raise RuntimeError(
-            f"OpenRadioss starter failed on {deck_0000}:\n"
-            f"STDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
-        )
+        raise RuntimeError(f"th_to_csv failed for {t01}")
+    csv_path = pathlib.Path(str(t01) + ".csv")
+    if not csv_path.exists():
+        raise FileNotFoundError(f"th_to_csv did not write {csv_path}")
+    return csv_path
 
 
-def run_engine(deck_0001: Path, n_threads: int = 4) -> None:
-    proc = _or_command(
-        [ENGINE_BIN, "-i", deck_0001.name, "-nt", str(n_threads)],
-        cwd=deck_0001.parent,
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(
-            f"OpenRadioss engine failed on {deck_0001}:\n"
-            f"STDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
-        )
-
-
-# ---------------------------------------------------------------------------
-# Time-history extraction (Vortex-Radioss reader)
-# ---------------------------------------------------------------------------
-
-def read_time_history(t01_path: Path) -> pd.DataFrame:
-    """Return DataFrame with columns ('time_s', 'displacement_m', 'force_N').
-
-    The runner pulls the right-grip control-node displacement and the
-    right-grip resultant reaction force.
-    """
-    try:
-        from vortex_radioss import T01Reader  # type: ignore
-    except ImportError:
-        # Fallback: parse the ASCII T01 dump if Vortex-Radioss is unavailable.
-        return _read_time_history_ascii(t01_path)
-
-    reader = T01Reader(str(t01_path))
-    df = reader.as_dataframe()
-    # Expected columns include Node DX and Node FX for the control node;
-    # exact column naming depends on Vortex-Radioss version.
-    disp_col = next(c for c in df.columns if "DX" in c.upper() and "GRIP" in c.upper())
-    force_col = next(c for c in df.columns if "FX" in c.upper() and "GRIP" in c.upper())
-    out = pd.DataFrame({
-        "time_s": df["time"].to_numpy(),
-        "displacement_m": df[disp_col].to_numpy(),
-        "force_N": df[force_col].to_numpy(),
-    })
-    return out
-
-
-def _read_time_history_ascii(t01_path: Path) -> pd.DataFrame:
-    """Fallback ASCII T01 parser; conservative regex on whitespace columns."""
-    rows = []
-    with open(t01_path, "r", errors="ignore") as fh:
-        for line in fh:
-            parts = line.strip().split()
-            if len(parts) < 3:
-                continue
-            try:
-                t = float(parts[0]); u = float(parts[1]); f = float(parts[2])
-            except ValueError:
-                continue
-            rows.append((t, u, f))
-    if not rows:
-        raise RuntimeError(f"No parseable rows in {t01_path}")
-    return pd.DataFrame(rows, columns=["time_s", "displacement_m", "force_N"])
-
-
-def read_max_damage(anim_path: Path) -> np.ndarray:
-    """Return array of max(D) over the gauge ligament at each animation frame.
-
-    Tries Vortex-Radioss; falls back to returning a synthetic zero array (so
-    the runner can still report load-displacement objectivity if the damage
-    output is unreadable for any reason).
-    """
-    try:
-        from vortex_radioss import AnimReader  # type: ignore
-    except ImportError:
-        return np.zeros(0)
-    reader = AnimReader(str(anim_path))
-    frames = reader.frames()
-    out = np.zeros(len(frames))
-    for k, fr in enumerate(frames):
-        d = fr.scalar("DAMA")
-        if d is None or len(d) == 0:
-            out[k] = 0.0
+def read_force_curve(csv_path: pathlib.Path, geom: Geometry, run_time: float) -> dict[str, object]:
+    with csv_path.open(newline="", encoding="utf-8", errors="replace") as f:
+        reader = csv.DictReader(f)
+        columns = reader.fieldnames or []
+        reaction_cols = [c for c in columns if "right_reaction_x" in c]
+        if reaction_cols:
+            force_source = "right_reaction_x"
         else:
-            out[k] = float(np.max(d))
-    return out
+            reaction_cols = [c for c in columns if "left_reaction_x" in c]
+            force_source = "left_reaction_x"
+        if not reaction_cols:
+            raise KeyError("reaction columns not found in T01 CSV")
+        time_s: list[float] = []
+        disp_m: list[float] = []
+        force_n: list[float] = []
+        for row in reader:
+            t = float(row["time"])
+            reaction = sum(float(row[c]) for c in reaction_cols if row.get(c, ""))
+            time_s.append(t)
+            disp_m.append(geom.u_end * min(max(t / run_time, 0.0), 1.0))
+            force_n.append(abs(reaction))
+    if len(time_s) < 3:
+        raise RuntimeError(f"not enough T01 rows in {csv_path}")
+    return {"time_s": time_s, "displacement_m": disp_m, "force_N": force_n, "force_source": force_source}
 
 
-# ---------------------------------------------------------------------------
-# Mesh-objectivity computation (spec.md section 8)
-# ---------------------------------------------------------------------------
+def read_anim_force_curve(
+    vtk_paths: list[pathlib.Path],
+    mesh: MeshData,
+    geom: Geometry,
+    run_time: float,
+) -> dict[str, object]:
+    import numpy as np
+    import pyvista as pv  # type: ignore[import-not-found]
 
-def windowed_rmse(
-    u_a: np.ndarray, f_a: np.ndarray,
-    u_b: np.ndarray, f_b: np.ndarray,
-    u_lo: float, u_hi: float,
-    f_norm: float,
-) -> float:
-    """Compute RMSE of f_a(u) vs f_b(u) over [u_lo, u_hi], normalized by f_norm.
+    time_s = [0.0]
+    disp_m = [0.0]
+    force_n = [0.0]
+    force_source = ""
+    right_nodes = set(mesh.node_sets["right"])
+    for frame_i, vtk_path in enumerate(vtk_paths, start=1):
+        grid = pv.read(str(vtk_path))
+        node_ids = grid.point_data.get("NODE_ID")
+        disp = grid.point_data.get("Displacement")
+        if node_ids is None or disp is None:
+            raise KeyError(f"NODE_ID or Displacement missing from {vtk_path}")
+        right_idx = [i for i, node_id in enumerate(node_ids) if int(node_id) in right_nodes]
+        if not right_idx:
+            raise KeyError(f"right-grip nodes missing from {vtk_path}")
 
-    Both curves are resampled onto a shared monotone displacement grid via
-    linear interpolation (curves are monotone-non-decreasing in displacement
-    by construction of the imposed-displacement BC).
-    """
+        vector_name = None
+        for token in ("reaction", "freac"):
+            for name, array in grid.point_data.items():
+                if token in name.lower() and getattr(array, "ndim", 0) == 2 and array.shape[1] >= 3:
+                    vector_name = name
+                    break
+            if vector_name:
+                break
+        if vector_name is None:
+            for token in ("internal", "fint", "force"):
+                for name, array in grid.point_data.items():
+                    lname = name.lower()
+                    if token in lname and getattr(array, "ndim", 0) == 2 and array.shape[1] >= 3:
+                        vector_name = name
+                        break
+                if vector_name:
+                    break
+        if vector_name is None:
+            raise KeyError(f"no nodal force vector in {vtk_path}; point data={list(grid.point_data.keys())}")
+
+        force_vec = np.asarray(grid.point_data[vector_name], dtype=float)
+        u_vec = np.asarray(disp, dtype=float)
+        force_source = vector_name
+        time_s.append(run_time * frame_i / max(len(vtk_paths), 1))
+        disp_m.append(float(np.mean(u_vec[right_idx, 0])))
+        force_n.append(abs(float(np.sum(force_vec[right_idx, 0]))))
+
+    order = np.argsort(np.asarray(disp_m))
+    return {
+        "time_s": [float(time_s[i]) for i in order],
+        "displacement_m": [float(disp_m[i]) for i in order],
+        "force_N": [float(force_n[i]) for i in order],
+        "force_source": force_source,
+    }
+
+
+def _cell_array(grid, contains: str):
+    preferred = [name for name in grid.cell_data.keys() if contains in name and "Intg" in name]
+    if preferred:
+        return grid.cell_data[preferred[0]]
+    for name in grid.cell_data.keys():
+        if contains in name:
+            return grid.cell_data[name]
+    raise KeyError(f"no cell data containing {contains}; available={list(grid.cell_data.keys())}")
+
+
+def extract_final_metrics(vtk_path: pathlib.Path, mesh: MeshData) -> dict[str, float]:
+    import numpy as np
+    import pyvista as pv  # type: ignore[import-not-found]
+
+    grid = pv.read(str(vtk_path))
+    elem_ids = grid.cell_data.get("ELEMENT_ID")
+    if elem_ids is None:
+        raise KeyError("ELEMENT_ID missing from VTK")
+    ligament_mask = np.isin(elem_ids, np.asarray(mesh.ligament_elements, dtype=elem_ids.dtype))
+    stress = _cell_array(grid, "Strs")
+    epsp = None
+    for name in grid.cell_data.keys():
+        if "Plastic" in name or "EPSP" in name or "Epsp" in name:
+            epsp = grid.cell_data[name]
+            break
+    sigma_x = np.asarray(stress[ligament_mask, 0], dtype=float)
+    payload = {
+        "ligament_sigma_x_mean_Pa": float(np.mean(sigma_x)),
+        "ligament_sigma_x_max_Pa": float(np.max(sigma_x)),
+    }
+    if epsp is not None:
+        epsp_lig = np.asarray(epsp[ligament_mask], dtype=float)
+        payload["ligament_epsp_max"] = float(np.max(epsp_lig))
+        payload["ligament_epsp_mean"] = float(np.mean(epsp_lig))
+    else:
+        payload["ligament_epsp_max"] = float("nan")
+        payload["ligament_epsp_mean"] = float("nan")
+    return payload
+
+
+def run_case(
+    geom: Geometry,
+    mat: Material,
+    spec: MeshSpec,
+    run_time: float,
+    damping_alpha: float,
+    dt_noda: float,
+    n_threads: int,
+    log: Logger,
+    env: dict[str, str],
+) -> dict[str, object]:
+    mesh = build_mesh_data(geom, spec)
+    job = f"stage05_{spec.label}"
+    workdir = RUNS_DIR / job
+    if workdir.exists():
+        shutil.rmtree(workdir)
+    workdir.mkdir(parents=True, exist_ok=True)
+    starter = workdir / f"{job}_0000.rad"
+    engine = workdir / f"{job}_0001.rad"
+    msh = workdir / f"{job}.msh"
+    log.log(f"[{job}] elements={len(mesh.bricks)} nodes={len(mesh.nodes)} h={spec.h_ligament_mm:.2f} mm")
+    write_gmsh_mesh(mesh, msh)
+    write_starter(geom, mat, mesh, starter, run_time, damping_alpha)
+    write_engine(job, engine, run_time, dt_noda)
+
+    start = time.perf_counter()
+    proc = log.run([str(STARTER), "-i", str(starter), "-nt", str(n_threads)], cwd=workdir, env=env)
+    if proc.returncode != 0:
+        raise RuntimeError(f"starter failed for {job}")
+    proc = log.run([str(ENGINE), "-i", str(engine), "-nt", str(n_threads)], cwd=workdir, env=env)
+    if proc.returncode != 0:
+        raise RuntimeError(f"engine failed for {job}")
+    vtk_paths = convert_all_anim_to_vtk(job, workdir, log, env)
+    th_csv = convert_t01_to_csv(job, workdir, log, env)
+    try:
+        curve = read_anim_force_curve(vtk_paths, mesh, geom, run_time)
+    except Exception as exc:
+        log.log(f"[{job}] animation force extraction failed ({exc}); falling back to T01 reactions")
+        curve = read_force_curve(th_csv, geom, run_time)
+    final = extract_final_metrics(vtk_paths[-1], mesh)
+    force = curve["force_N"]
+    disp = curve["displacement_m"]
+    peak_i = max(range(len(force)), key=lambda i: force[i])
+    result: dict[str, object] = {
+        "label": spec.label,
+        "h_ligament_mm": spec.h_ligament_mm,
+        "elements": len(mesh.bricks),
+        "nodes": len(mesh.nodes),
+        "wall_clock_s": time.perf_counter() - start,
+        "curve": curve,
+        "force_source": curve["force_source"],
+        "peak_force_N": force[peak_i],
+        "peak_displacement_m": disp[peak_i],
+        "final_force_N": force[-1],
+        "final_displacement_m": disp[-1],
+        "vtk_path": str(vtk_paths[-1]),
+        "vtk_first_frame_path": str(vtk_paths[0]),
+        "vtk_frame_count": len(vtk_paths),
+        **final,
+    }
+    log.log(
+        f"[{job}] peak={force[peak_i]:.6g} N at u={disp[peak_i]:.6g} m "
+        f"final_epsp={result['ligament_epsp_max']:.6g}"
+    )
+    return result
+
+
+def interp_force(row: dict[str, object], u_grid):
+    import numpy as np
+
+    curve = row["curve"]
+    assert isinstance(curve, dict)
+    return np.interp(u_grid, curve["displacement_m"], curve["force_N"])
+
+
+def windowed_rmse(a: dict[str, object], b: dict[str, object], u_hi: float, f_norm: float) -> float:
+    import numpy as np
+
+    if u_hi <= 0.0:
+        return float("nan")
+    u_grid = np.linspace(0.0, u_hi, 256)
+    fa = interp_force(a, u_grid)
+    fb = interp_force(b, u_grid)
+    return float(np.sqrt(np.mean(((fa - fb) / max(abs(f_norm), 1.0)) ** 2)))
+
+
+def post_rmse(a: dict[str, object], b: dict[str, object], u_lo: float, u_hi: float, f_norm: float) -> float:
+    import numpy as np
+
     if u_hi <= u_lo:
         return float("nan")
     u_grid = np.linspace(u_lo, u_hi, 256)
-    fa = np.interp(u_grid, u_a, f_a)
-    fb = np.interp(u_grid, u_b, f_b)
-    diff = (fa - fb) / max(abs(f_norm), 1e-30)
-    return float(np.sqrt(np.mean(diff * diff)))
+    fa = interp_force(a, u_grid)
+    fb = interp_force(b, u_grid)
+    return float(np.sqrt(np.mean(((fa - fb) / max(abs(f_norm), 1.0)) ** 2)))
 
 
-def detect_damage_onset_disp(
-    u_medium: np.ndarray, dmax_medium_per_t: np.ndarray, t_medium: np.ndarray,
-) -> float:
-    """Return the displacement (m) at which max(D) first exceeds threshold,
-    interpolated against the medium-mesh time history. If damage data are
-    unavailable (empty array), returns the displacement at peak load on the
-    medium mesh as a documented fallback.
-    """
-    if dmax_medium_per_t.size == 0:
-        # No damage data; use peak-load displacement as the proxy onset.
-        return float(u_medium[int(np.argmax(np.abs(np.gradient(u_medium))))])
-    # Find first index where damage crosses threshold.
-    idx = np.argmax(dmax_medium_per_t > D_ONSET_THRESHOLD)
-    if dmax_medium_per_t[idx] <= D_ONSET_THRESHOLD:
-        # Threshold never crossed; return last displacement.
-        return float(u_medium[-1])
-    # Interpolate between idx-1 and idx in time, then map to displacement.
-    if idx == 0:
-        return float(u_medium[0])
-    t_cross = np.interp(
-        D_ONSET_THRESHOLD,
-        [dmax_medium_per_t[idx - 1], dmax_medium_per_t[idx]],
-        [t_medium[idx - 1], t_medium[idx]],
-    )
-    return float(np.interp(t_cross, t_medium, u_medium))
-
-
-# ---------------------------------------------------------------------------
-# Per-mesh orchestration
-# ---------------------------------------------------------------------------
-
-@dataclass
-class MeshRun:
-    label: str
-    h_mm: float
-    work_dir: Path
-    inp_path: Path
-    rad_starter: Path
-    rad_engine: Path
-    t01_path: Path
-    anim_path: Path
-    n_nodes: int = 0
-    n_elems: int = 0
-    solver: str = "explicit"
-    fd_curve: Optional[pd.DataFrame] = None
-    dmax_per_t: np.ndarray = field(default_factory=lambda: np.zeros(0))
-
-
-def run_one_mesh(
-    label: str, h_mm: float, mat: MaterialCard, solver: str,
-    engine_cores: int, skip_solve: bool,
-) -> MeshRun:
-    work = WORK_DIR / label
-    work.mkdir(parents=True, exist_ok=True)
-    inp = work / f"dogbone_{label}.inp"
-    starter = work / f"job_{label}_0000.rad"
-    engine_deck = work / f"job_{label}_0001.rad"
-    t01 = work / f"job_{label}T01"
-    anim = work / f"job_{label}A001"
-
-    run = MeshRun(
-        label=label, h_mm=h_mm, work_dir=work, inp_path=inp,
-        rad_starter=starter, rad_engine=engine_deck,
-        t01_path=t01, anim_path=anim, solver=solver,
-    )
-
-    if not skip_solve:
-        # 1. Build mesh.
-        meta = build_mesh(h_mm, inp)
-        run.n_nodes = meta["n_nodes"]
-        run.n_elems = meta["n_elems"]
-        # 2. Convert to OpenRadioss .rad.
-        mesh_block = work / "mesh_block.rad"
-        run_inp2rad(inp, mesh_block)
-        # 3. Render starter and engine decks.
-        starter_text = render_starter(
-            mat, label, u_end_m=6.0e-3, solver=solver, control_node=1,
-        )
-        starter.write_text(starter_text)
-        engine_deck.write_text(render_engine(label))
-        # 4. Run starter then engine.
-        run_starter(starter, n_threads=1)
-        run_engine(engine_deck, n_threads=engine_cores)
-
-    # 5. Read time history.
-    if t01.exists():
-        run.fd_curve = read_time_history(t01)
-    else:
-        # Locate any T01-suffixed file in the workdir
-        candidates = sorted(work.glob("*T01*"))
-        if candidates:
-            run.fd_curve = read_time_history(candidates[0])
-        else:
-            print(f"  [warn] {label}: no T01 file found", file=sys.stderr)
-            run.fd_curve = pd.DataFrame(columns=["time_s", "displacement_m", "force_N"])
-
-    if anim.exists():
-        run.dmax_per_t = read_max_damage(anim)
-    else:
-        candidates = sorted(work.glob("*A0*"))
-        if candidates:
-            run.dmax_per_t = read_max_damage(candidates[0])
-
-    return run
-
-
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
-
-def main(argv: Optional[list[str]] = None) -> int:
-    p = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    p.add_argument("--metal", choices=["a36", "dp780"], default="a36")
-    p.add_argument("--only", choices=list(MESH_SIZES_MM.keys()), default=None,
-                   help="run only one mesh (debug aid)")
-    p.add_argument("--skip-solve", action="store_true",
-                   help="skip GMSH/inp2rad/starter/engine; postprocess only")
-    p.add_argument("--engine-cores", type=int, default=4)
-    p.add_argument("--solver", choices=["auto", "implicit", "explicit"],
-                   default="auto",
-                   help="auto = probe MUMPS, fall back to explicit if absent")
-    args = p.parse_args(argv)
-
-    WORK_DIR.mkdir(parents=True, exist_ok=True)
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-
-    mat = material_a36() if args.metal == "a36" else material_dp780()
-
-    if args.solver == "auto":
-        if not args.skip_solve and detect_implicit_capability():
-            solver = "implicit"
-        else:
-            solver = "explicit"
-    else:
-        solver = args.solver
-    print(f"[stage 05] material = {mat.name}")
-    print(f"[stage 05] solver path = {solver} "
-          f"({'/IMPL/QSTAT' if solver == 'implicit' else 'explicit dynamic relaxation'})")
-
-    labels = [args.only] if args.only else list(MESH_SIZES_MM.keys())
-    runs: dict[str, MeshRun] = {}
-    for label in labels:
-        h = MESH_SIZES_MM[label]
-        print(f"[stage 05] running mesh '{label}' (h = {h:.2f} mm) ...")
-        t0 = time.time()
-        runs[label] = run_one_mesh(
-            label, h, mat, solver,
-            engine_cores=args.engine_cores, skip_solve=args.skip_solve,
-        )
-        dt = time.time() - t0
-        print(f"  done in {dt:.1f} s "
-              f"(nodes = {runs[label].n_nodes}, elems = {runs[label].n_elems})")
-
-    # ---- Mesh-objectivity analysis (only meaningful with all three) ----
-    if set(runs) != set(MESH_SIZES_MM):
-        print("[stage 05] partial mesh set; skipping objectivity verdict.")
-        return 0
-
-    coarse = runs["coarse"].fd_curve
-    medium = runs["medium"].fd_curve
-    fine = runs["fine"].fd_curve
-    if any(df is None or df.empty for df in (coarse, medium, fine)):
-        print("[stage 05] missing time-history data; cannot compute RMSE.",
-              file=sys.stderr)
-        return 2
-
-    # Damage-onset displacement from the medium mesh.
-    u_D = detect_damage_onset_disp(
-        medium["displacement_m"].to_numpy(),
-        runs["medium"].dmax_per_t,
-        medium["time_s"].to_numpy(),
-    )
-    # Peak load on the medium mesh used as normalization.
-    f_peak_medium = float(np.max(np.abs(medium["force_N"].to_numpy())))
-    u_max = min(
-        float(coarse["displacement_m"].max()),
-        float(medium["displacement_m"].max()),
-        float(fine["displacement_m"].max()),
-    )
-
-    rmse_pre_cm = windowed_rmse(
-        coarse["displacement_m"].to_numpy(), coarse["force_N"].to_numpy(),
-        medium["displacement_m"].to_numpy(), medium["force_N"].to_numpy(),
-        u_lo=0.0, u_hi=u_D, f_norm=f_peak_medium,
-    )
-    rmse_pre_mf = windowed_rmse(
-        medium["displacement_m"].to_numpy(), medium["force_N"].to_numpy(),
-        fine["displacement_m"].to_numpy(), fine["force_N"].to_numpy(),
-        u_lo=0.0, u_hi=u_D, f_norm=f_peak_medium,
-    )
-    rmse_post_cm = windowed_rmse(
-        coarse["displacement_m"].to_numpy(), coarse["force_N"].to_numpy(),
-        medium["displacement_m"].to_numpy(), medium["force_N"].to_numpy(),
-        u_lo=u_D, u_hi=u_max, f_norm=f_peak_medium,
-    )
-    rmse_post_mf = windowed_rmse(
-        medium["displacement_m"].to_numpy(), medium["force_N"].to_numpy(),
-        fine["displacement_m"].to_numpy(), fine["force_N"].to_numpy(),
-        u_lo=u_D, u_hi=u_max, f_norm=f_peak_medium,
-    )
-
-    pass_pre = (rmse_pre_cm <= RMSE_PASS_TOLERANCE) and \
-               (rmse_pre_mf <= RMSE_PASS_TOLERANCE)
-    verdict = "PASS" if pass_pre else "FAIL"
-
-    # Write CSV (combined load-displacement) and summary JSON for Typst+CeTZ.
-    u_grid = np.linspace(0.0, u_max, 1024)
-    fc = np.interp(u_grid, coarse["displacement_m"], coarse["force_N"])
-    fm = np.interp(u_grid, medium["displacement_m"], medium["force_N"])
-    ff = np.interp(u_grid, fine["displacement_m"],   fine["force_N"])
-    dc = np.interp(u_grid,
-                   np.linspace(0, u_max, runs["coarse"].dmax_per_t.size or 1),
-                   runs["coarse"].dmax_per_t if runs["coarse"].dmax_per_t.size
-                   else np.zeros(1))
-    dm = np.interp(u_grid,
-                   np.linspace(0, u_max, runs["medium"].dmax_per_t.size or 1),
-                   runs["medium"].dmax_per_t if runs["medium"].dmax_per_t.size
-                   else np.zeros(1))
-    df_ = np.interp(u_grid,
-                    np.linspace(0, u_max, runs["fine"].dmax_per_t.size or 1),
-                    runs["fine"].dmax_per_t if runs["fine"].dmax_per_t.size
-                    else np.zeros(1))
-
-    out_csv = RESULTS_DIR / "mesh_objectivity.csv"
-    pd.DataFrame({
-        "displacement_m": u_grid,
-        "F_coarse_N": fc, "F_medium_N": fm, "F_fine_N": ff,
-        "D_coarse": dc, "D_medium": dm, "D_fine": df_,
-    }).to_csv(out_csv, index=False)
-
-    summary = {
-        "stage": 5,
-        "material": mat.name,
-        "solver": solver,
-        "u_damage_onset_m": u_D,
-        "F_peak_medium_N": f_peak_medium,
-        "RMSE_pre_onset_coarse_vs_medium": rmse_pre_cm,
-        "RMSE_pre_onset_medium_vs_fine": rmse_pre_mf,
-        "RMSE_post_onset_coarse_vs_medium": rmse_post_cm,
-        "RMSE_post_onset_medium_vs_fine": rmse_post_mf,
-        "tolerance_pre_onset": RMSE_PASS_TOLERANCE,
-        "verdict_pre_onset": verdict,
-        "post_onset_divergence_expected": True,
-        "post_onset_divergence_note": (
-            "LAW22 is a local CDM model; mesh-dependent post-peak softening is "
-            "expected and is not part of the pass criterion. Nonlocal "
-            "regularization per Pijaudier-Cabot and Mazars 1989 is not "
-            "available in OpenRadioss (DOCUMENTATION NOT LOCATED, audit row 5)."
-        ),
+def evaluate(rows: list[dict[str, object]], mat: Material, geom: Geometry) -> tuple[str, dict[str, object]]:
+    by_label = {str(row["label"]): row for row in rows}
+    medium = by_label["medium"]
+    # The damage tensor is not consistently exposed in converted VTK on this
+    # build. Use the LAW22 plastic-strain damage threshold as the pre-onset
+    # window proxy, mapped through the 60 mm gauge length.
+    u_d = min(geom.gauge_length * (mat.sigma_y / mat.young + mat.eps_damage), geom.u_end)
+    f_peak = float(medium["peak_force_N"])
+    rmse_cm = windowed_rmse(by_label["coarse"], by_label["medium"], u_d, f_peak)
+    rmse_mf = windowed_rmse(by_label["medium"], by_label["fine"], u_d, f_peak)
+    rmse_post_cm = post_rmse(by_label["coarse"], by_label["medium"], u_d, geom.u_end, f_peak)
+    rmse_post_mf = post_rmse(by_label["medium"], by_label["fine"], u_d, geom.u_end, f_peak)
+    final_epsp = float(medium.get("ligament_epsp_max", float("nan")))
+    damage_reached = math.isfinite(final_epsp) and final_epsp >= mat.eps_damage
+    pre_pass = rmse_cm <= 0.05 and rmse_mf <= 0.05
+    verdict = "PASS" if pre_pass and damage_reached else "FAIL"
+    checks = {
+        "pre_onset_rmse_coarse_medium": {
+            "pass": rmse_cm <= 0.05,
+            "value": rmse_cm,
+            "tolerance": 0.05,
+            "gating": True,
+        },
+        "pre_onset_rmse_medium_fine": {
+            "pass": rmse_mf <= 0.05,
+            "value": rmse_mf,
+            "tolerance": 0.05,
+            "gating": True,
+        },
+        "damage_region_reached": {
+            "pass": damage_reached,
+            "value_epsp_max_medium": final_epsp,
+            "eps_damage": mat.eps_damage,
+            "gating": True,
+        },
+        "post_onset_rmse_coarse_medium": {
+            "pass": rmse_post_cm <= 0.05,
+            "value": rmse_post_cm,
+            "tolerance": 0.05,
+            "gating": False,
+            "note": "reported only; LAW22 local damage softening is expected to be mesh dependent after localization",
+        },
+        "post_onset_rmse_medium_fine": {
+            "pass": rmse_post_mf <= 0.05,
+            "value": rmse_post_mf,
+            "tolerance": 0.05,
+            "gating": False,
+            "note": "reported only; LAW22 local damage softening is expected to be mesh dependent after localization",
+        },
     }
-    out_json = RESULTS_DIR / "mesh_objectivity_summary.json"
-    out_json.write_text(json.dumps(summary, indent=2))
+    return verdict, {
+        "u_damage_onset_proxy_m": u_d,
+        "F_peak_medium_N": f_peak,
+        "checks": checks,
+    }
 
-    print()
-    print("=" * 72)
-    print(f"[stage 05] mesh-objectivity verdict (pre-damage-onset window)")
-    print("=" * 72)
-    print(f"  damage-onset displacement u_D = {u_D*1e3:.4f} mm")
-    print(f"  peak load (medium)             = {f_peak_medium:.3f} N")
-    print(f"  RMSE pre  (coarse vs medium)   = {rmse_pre_cm*100:.3f} % of peak")
-    print(f"  RMSE pre  (medium vs fine)     = {rmse_pre_mf*100:.3f} % of peak")
-    print(f"  tolerance                      = {RMSE_PASS_TOLERANCE*100:.1f} % of peak")
-    print(f"  VERDICT                        = {verdict}")
-    print()
-    print(f"  RMSE post (coarse vs medium)   = {rmse_post_cm*100:.3f} % of peak  "
-          f"[expected divergence; documented]")
-    print(f"  RMSE post (medium vs fine)     = {rmse_post_mf*100:.3f} % of peak  "
-          f"[expected divergence; documented]")
-    print()
-    print(f"  CSV:  {out_csv}")
-    print(f"  JSON: {out_json}")
 
-    return 0 if pass_pre else 1
+def git_sha() -> str:
+    proc = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(ROOT),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return proc.stdout.strip() if proc.returncode == 0 else "unknown"
+
+
+def write_timeseries(rows: list[dict[str, object]]) -> pathlib.Path:
+    import numpy as np
+
+    out = RESULTS_DIR / "timeseries.csv"
+    u_max = min(float(row["final_displacement_m"]) for row in rows)
+    u_grid = np.linspace(0.0, u_max, 400)
+    by_label = {str(row["label"]): row for row in rows}
+    with out.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f, lineterminator="\n")
+        writer.writerow(["stage", "displacement_m", "F_coarse_N", "F_medium_N", "F_fine_N"])
+        for u, fc, fm, ff in zip(
+            u_grid,
+            interp_force(by_label["coarse"], u_grid),
+            interp_force(by_label["medium"], u_grid),
+            interp_force(by_label["fine"], u_grid),
+        ):
+            writer.writerow([STAGE, u, fc, fm, ff])
+    mesh_csv = RESULTS_DIR / "mesh_objectivity.csv"
+    shutil.copy(out, mesh_csv)
+    return out
+
+
+def write_results_json(
+    rows: list[dict[str, object]],
+    verdict: str,
+    evaluation: dict[str, object],
+    mat: Material,
+    geom: Geometry,
+) -> pathlib.Path:
+    compact_rows = []
+    for row in rows:
+        compact = {k: v for k, v in row.items() if k != "curve"}
+        compact_rows.append(compact)
+    payload = {
+        "stage": STAGE,
+        "name": STAGE_NAME,
+        "verdict": verdict,
+        "metrics": {str(row["label"]): row for row in compact_rows},
+        "checks": evaluation["checks"],
+        "reference": {
+            "type": "LAW22 mesh self-consistency through pre-onset/pre-localization window",
+            "material": dataclasses.asdict(mat),
+            "geometry": dataclasses.asdict(geom),
+            "u_damage_onset_proxy_m": evaluation["u_damage_onset_proxy_m"],
+            "F_peak_medium_N": evaluation["F_peak_medium_N"],
+            "damage_onset_note": (
+                "The LAW22 damage tensor is not consistently exposed by this "
+                "build's anim_to_vtk output; the material plastic-strain damage "
+                "threshold mapped to gauge displacement is used as the "
+                "pre-localization window proxy."
+            ),
+        },
+        "tolerance": {"pre_onset_rmse": 0.05},
+        "git_sha": git_sha(),
+    }
+    out = RESULTS_DIR / "results.json"
+    out.write_text(json.dumps(payload, indent=2, allow_nan=True) + "\n", encoding="utf-8")
+    summary = RESULTS_DIR / "mesh_objectivity_summary.json"
+    summary.write_text(json.dumps(payload, indent=2, allow_nan=True) + "\n", encoding="utf-8")
+    return out
+
+
+def write_typst_figure(rows: list[dict[str, object]], verdict: str, evaluation: dict[str, object]) -> pathlib.Path:
+    out = FIGURES_DIR / "stage05_mesh_objectivity.typ"
+    checks = evaluation["checks"]
+    lines = [
+        '#import "@preview/cetz:0.3.4"',
+        "",
+        '#set page(width: 180mm, height: 116mm, margin: 10mm)',
+        '#set text(font: "Libertinus Serif", size: 9pt, fill: rgb("#363636"))',
+        '#let garnet = rgb("#73000A")',
+        '#let charcoal = rgb("#363636")',
+        '#let black10 = rgb("#ECECEC")',
+        '#let atlantic = rgb("#466A9F")',
+        '#let white = rgb("#FFFFFF")',
+        "",
+        "#align(center)[#text(size: 11pt, weight: \"bold\")[Stage 05 LAW22 Mesh Objectivity]]",
+        "#v(2mm)",
+        "#figure(",
+        "  table(",
+        "    columns: 5,",
+        "    [Mesh], [Elements], [Peak force (N)], [Final EPSP max], [Wall-clock (s)],",
+    ]
+    for row in rows:
+        lines.append(
+            f"    [{row['label']}], [{int(row['elements'])}], "
+            f"[{float(row['peak_force_N']):.2f}], "
+            f"[{float(row['ligament_epsp_max']):.4f}], "
+            f"[{float(row['wall_clock_s']):.2f}],"
+        )
+    lines.extend(
+        [
+            "  ),",
+            "  caption: [OpenRadioss LAW22 notched-dogbone mesh sweep.]",
+            ")",
+            "",
+            "#figure(",
+            "  table(",
+            "    columns: 4,",
+            "    [Check], [Value], [Tolerance], [Gating],",
+            f"    [Coarse-medium pre RMSE], [{100*checks['pre_onset_rmse_coarse_medium']['value']:.3f}\\%], [5.000\\%], [yes],",
+            f"    [Medium-fine pre RMSE], [{100*checks['pre_onset_rmse_medium_fine']['value']:.3f}\\%], [5.000\\%], [yes],",
+            f"    [Coarse-medium post RMSE], [{100*checks['post_onset_rmse_coarse_medium']['value']:.3f}\\%], [reported], [no],",
+            f"    [Medium-fine post RMSE], [{100*checks['post_onset_rmse_medium_fine']['value']:.3f}\\%], [reported], [no],",
+            "  ),",
+            f"  caption: [Verdict: {verdict}. Post-onset divergence is reported because LAW22 is local CDM.]",
+            ")",
+            "",
+        ]
+    )
+    out.write_text("\n".join(lines), encoding="utf-8")
+    return out
+
+
+def write_blocker(verdict: str) -> None:
+    (STAGE_DIR / "blocker.md").write_text(
+        "# Stage 05 Blocker: LAW22 Mesh-Objectivity Gate Failed\n\n"
+        "**Author.** J.C. Vaught\n\n"
+        f"Verdict: `{verdict}`\n\n"
+        "The OpenRadioss LAW22 runs completed, but the pre-onset RMSE gate or "
+        "damage-region reachability check failed. See `results/results.json` "
+        "and `run.log` for the measured values.\n",
+        encoding="utf-8",
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--meshes", default="coarse,medium,fine")
+    parser.add_argument("--run-time", type=float, default=0.03)
+    parser.add_argument("--dt-noda", type=float, default=1.0e-7)
+    parser.add_argument("--damping-alpha", type=float, default=8000.0)
+    parser.add_argument("--n-threads", type=int, default=16)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args(argv)
+
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+    geom = Geometry()
+    mat = Material()
+    labels = [v.strip() for v in args.meshes.split(",") if v.strip()]
+    if set(labels) != set(MESHES):
+        raise SystemExit("--meshes must include coarse,medium,fine for the stage verdict")
+
+    log = Logger(RUN_LOG)
+    try:
+        log.log(f"Stage 05 {STAGE_NAME}")
+        log.log(f"OpenRadioss root: {OR_DIR}")
+        log.log(f"LAW22 material: {mat.name}, eps_damage={mat.eps_damage:g}")
+        if args.dry_run:
+            for label in labels:
+                mesh = build_mesh_data(geom, MESHES[label])
+                log.log(f"dry-run {label}: elements={len(mesh.bricks)} nodes={len(mesh.nodes)}")
+            return 0
+
+        env = radioss_env()
+        rows = [
+            run_case(
+                geom,
+                mat,
+                MESHES[label],
+                args.run_time,
+                args.damping_alpha,
+                args.dt_noda,
+                args.n_threads,
+                log,
+                env,
+            )
+            for label in labels
+        ]
+        rows.sort(key=lambda row: ("coarse", "medium", "fine").index(str(row["label"])))
+        verdict, evaluation = evaluate(rows, mat, geom)
+        write_timeseries(rows)
+        write_results_json(rows, verdict, evaluation, mat, geom)
+        write_typst_figure(rows, verdict, evaluation)
+        if verdict == "FAIL":
+            write_blocker(verdict)
+        else:
+            blocker = STAGE_DIR / "blocker.md"
+            if blocker.exists():
+                blocker.unlink()
+        log.log(f"Stage 05 verdict: {verdict}")
+        return 0 if verdict == "PASS" else 1
+    finally:
+        log.close()
 
 
 if __name__ == "__main__":
