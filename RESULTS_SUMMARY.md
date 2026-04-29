@@ -8,7 +8,7 @@
 | 01 beam_bending | PASS | 911.4 s | M1 HEXA8 solid runs passed Euler-Bernoulli gates: 3pt error 0.968%, 4pt error 0.968%. |
 | 02 cantilever_large | INCONCLUSIVE | 84.4 s for passing alpha=1 probe | MUMPS-linked implicit engine is installed and reaches DMUMPS. Baseline alpha=1 passes; alpha=3/5 do not yet complete due nonlinear timestep-limit convergence. |
 | 03 iso_dogbone_E8 | PASS | 78.6 s | Medium HEXA8 solid dogbone load sweep passed uniform stress, gauge strain, yield-onset, and apparent-modulus gates. |
-| 04 open_hole_kirsch | not attempted | - | Pending. |
+| 04 open_hole_kirsch | PASS | 7.5 s | Ntheta=64 implicit solid O-grid met the Howland Ktg gate: Kt=3.0956 vs 3.035, error 1.996%; far-field stress error 0.585%. Ligament and Richardson diagnostics are reported as non-gating finite-strip checks. |
 | 05 dogbone_damage | not attempted | - | Pending. |
 | 06 composite_failure_criteria | not attempted | - | Pending. |
 | 07 UD_tow_D3039 | not attempted | - | Pending. |

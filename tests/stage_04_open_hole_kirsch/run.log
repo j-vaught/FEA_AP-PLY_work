@@ -1,0 +1,507 @@
+Stage 04 open_hole_kirsch
+OpenRadioss root: /mnt/storage/j-vaught/openradioss/OpenRadioss
+target uy=1.471190131e-04 m, Howland Kt=3.035000
+[stage04_ntheta032] elements=4352 nodes=5600 uy=1.471190131e-04 m
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta032/stage04_ntheta032_0000.rad -nt 8
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+Stage 04 open-hole tension Ntheta 32
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    8 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  15:53:20
+ EXECUTION COMPLETED    :      2026/04/29  15:53:20
+  
+ ELAPSED TIME...........=          0.30 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     NORMAL TERMINATION                                                                  
+     ------------------                                                                  
+              0 ERROR(S)            
+              0 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta032/stage04_ntheta032_0001.rad -nt 8
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage04_ntheta032  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     8
+ 29/04/2026
+
+           **************************
+           ** IMPLICIT OPTION USED **
+           **************************
+
+ NC=       0 T= 0.0000E+00 DT= 1.0000E+00 ERR=  0.0% DM/M= 0.0000E+00
+
+   *--------- STIFFNESS MATRIX SETUP ---------*
+ SYMBOLIC DIM : ND =   16800 NZ =    570048 NB_MAX =      26
+ FINAL    DIM : ND =   16737 NZ =    567344 NB_MAX =      26
+
+
+Entering DMUMPS 5.8.2 with JOB =  -2
+      executing #MPI =      1 and #OMP =      8
+
+ MUMPS    DIM : NNZ =    584081 NNZFR =         0
+
+  ** BEGIN LINEAR STATIC IMPLICIT COMPUTATION **
+
+ NC=       1 T= 1.0000E+00 DT= 1.0000E+00 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.55 s  REMAINING TIME=          0.00 s
+     ANIMATION FILE: stage04_ntheta032A001 WRITTEN
+     RESTART FILES: stage04_ntheta032_0001_[0001-0001].rst WRITTEN
+ NC=       2 T= 1.0000E+00 DT= 6.3354E-09 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.57 s  REMAINING TIME=         -0.00 s
+  
+                           ** CPU USER TIME **
+  
+  
+                      ** IMPLICIT  **
+  
+ #PROC  [K]SETUP  [M]SETUP  IMP_SOLV  IMP_TOT  
+   1   .1543E+00 .0000E+00 .0000E+00 .1014E+01
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .4459E-02 .1907E-04 .4017E-04 .1747E+00 .2004E-02 .2141E-02 .1223E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .9537E-06     0.00 % 
+ ELEMENT FORCES..............: .4459E-02     0.36 % 
+ KINEMATIC COND..............: .1907E-04     0.00 % 
+ INTEGRATION.................: .4017E-04     0.00 % 
+ ASSEMBLING..................: .2141E-02     0.18 % 
+ OTHERS (including I/O)......: .1216E+01    99.46 % 
+ TOTAL.......................: .1223E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      241 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      241 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      241 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      241 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:         97 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          2 MB
+ MUMPS INTERNAL FILE USAGE .................:         94 MB
+  
+ ELAPSED TIME     =          1.57 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :       3
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta032/stage04_ntheta032A001
+[exit 0] wrote /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta032/stage04_ntheta032A001.vtk
+[stage04_ntheta032] Kt=3.045649 Howland_err=0.351% far_err=0.606% ligament=3.322%
+[stage04_ntheta064] elements=8704 nodes=11200 uy=1.471190131e-04 m
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta064/stage04_ntheta064_0000.rad -nt 8
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+Stage 04 open-hole tension Ntheta 64
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    8 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  15:53:22
+ EXECUTION COMPLETED    :      2026/04/29  15:53:22
+  
+ ELAPSED TIME...........=          0.31 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     NORMAL TERMINATION                                                                  
+     ------------------                                                                  
+              0 ERROR(S)            
+              0 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta064/stage04_ntheta064_0001.rad -nt 8
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage04_ntheta064  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     8
+ 29/04/2026
+
+           **************************
+           ** IMPLICIT OPTION USED **
+           **************************
+
+ NC=       0 T= 0.0000E+00 DT= 1.0000E+00 ERR=  0.0% DM/M= 0.0000E+00
+
+   *--------- STIFFNESS MATRIX SETUP ---------*
+ SYMBOLIC DIM : ND =   33600 NZ =   1140096 NB_MAX =      26
+ FINAL    DIM : ND =   33492 NZ =   1135484 NB_MAX =      26
+
+
+Entering DMUMPS 5.8.2 with JOB =  -2
+      executing #MPI =      1 and #OMP =      8
+
+ MUMPS    DIM : NNZ =   1168976 NNZFR =         0
+
+  ** BEGIN LINEAR STATIC IMPLICIT COMPUTATION **
+
+ NC=       1 T= 1.0000E+00 DT= 1.0000E+00 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.68 s  REMAINING TIME=          0.00 s
+     ANIMATION FILE: stage04_ntheta064A001 WRITTEN
+     RESTART FILES: stage04_ntheta064_0001_[0001-0001].rst WRITTEN
+ NC=       2 T= 1.0000E+00 DT= 6.3660E-09 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.73 s  REMAINING TIME=         -0.00 s
+  
+                           ** CPU USER TIME **
+  
+  
+                      ** IMPLICIT  **
+  
+ #PROC  [K]SETUP  [M]SETUP  IMP_SOLV  IMP_TOT  
+   1   .3684E+00 .0000E+00 .0000E+00 .2237E+01
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .5380E-02 .1597E-04 .3691E-03 .3474E+00 .1620E-02 .1031E-02 .2646E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1907E-05     0.00 % 
+ ELEMENT FORCES..............: .5380E-02     0.20 % 
+ KINEMATIC COND..............: .1597E-04     0.00 % 
+ INTEGRATION.................: .3691E-03     0.01 % 
+ ASSEMBLING..................: .1031E-02     0.04 % 
+ OTHERS (including I/O)......: .2639E+01    99.74 % 
+ TOTAL.......................: .2646E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      354 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      354 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      354 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      354 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:        198 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          5 MB
+ MUMPS INTERNAL FILE USAGE .................:        193 MB
+  
+ ELAPSED TIME     =          1.73 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :       3
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta064/stage04_ntheta064A001
+[exit 0] wrote /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta064/stage04_ntheta064A001.vtk
+[stage04_ntheta064] Kt=3.095581 Howland_err=1.996% far_err=0.585% ligament=3.768%
+[stage04_ntheta128] elements=17408 nodes=22400 uy=1.471190131e-04 m
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta128/stage04_ntheta128_0000.rad -nt 8
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+Stage 04 open-hole tension Ntheta 128
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    8 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  15:53:24
+ EXECUTION COMPLETED    :      2026/04/29  15:53:25
+  
+ ELAPSED TIME...........=          0.38 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     NORMAL TERMINATION                                                                  
+     ------------------                                                                  
+              0 ERROR(S)            
+              0 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta128/stage04_ntheta128_0001.rad -nt 8
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage04_ntheta128  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     8
+ 29/04/2026
+
+           **************************
+           ** IMPLICIT OPTION USED **
+           **************************
+
+ NC=       0 T= 0.0000E+00 DT= 1.0000E+00 ERR=  0.0% DM/M= 0.0000E+00
+
+   *--------- STIFFNESS MATRIX SETUP ---------*
+ SYMBOLIC DIM : ND =   67200 NZ =   2280192 NB_MAX =      26
+ FINAL    DIM : ND =   66997 NZ =   2271552 NB_MAX =      26
+
+
+Entering DMUMPS 5.8.2 with JOB =  -2
+      executing #MPI =      1 and #OMP =      8
+
+ MUMPS    DIM : NNZ =   2338549 NNZFR =         0
+
+  ** BEGIN LINEAR STATIC IMPLICIT COMPUTATION **
+
+ NC=       1 T= 1.0000E+00 DT= 1.0000E+00 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.06 s  REMAINING TIME=          0.00 s
+     ANIMATION FILE: stage04_ntheta128A001 WRITTEN
+     RESTART FILES: stage04_ntheta128_0001_[0001-0001].rst WRITTEN
+ NC=       2 T= 1.0000E+00 DT= 6.3724E-09 ERR=  0.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          2.14 s  REMAINING TIME=         -0.00 s
+  
+                           ** CPU USER TIME **
+  
+  
+                      ** IMPLICIT  **
+  
+ #PROC  [K]SETUP  [M]SETUP  IMP_SOLV  IMP_TOT  
+   1   .1035E+01 .0000E+00 .0000E+00 .4172E+01
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .1786E-01 .3667E-03 .2624E-02 .6364E+00 .2792E-02 .2786E-02 .4942E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1907E-05     0.00 % 
+ ELEMENT FORCES..............: .1786E-01     0.36 % 
+ KINEMATIC COND..............: .3667E-03     0.01 % 
+ INTEGRATION.................: .2624E-02     0.05 % 
+ ASSEMBLING..................: .2786E-02     0.06 % 
+ OTHERS (including I/O)......: .4918E+01    99.52 % 
+ TOTAL.......................: .4942E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      580 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      580 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      580 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      580 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:        377 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          1 MB
+ RESTART FILE SIZE .........................:         10 MB
+ MUMPS INTERNAL FILE USAGE .................:        366 MB
+  
+ ELAPSED TIME     =          2.15 s
+                          0:00:02
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :       3
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta128/stage04_ntheta128A001
+[exit 0] wrote /mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta128/stage04_ntheta128A001.vtk
+[stage04_ntheta128] Kt=3.114333 Howland_err=2.614% far_err=0.639% ligament=3.945%

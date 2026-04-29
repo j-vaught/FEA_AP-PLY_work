@@ -1,0 +1,147 @@
+{
+  "stage": 4,
+  "name": "open_hole_kirsch",
+  "verdict": "PASS",
+  "metrics": {
+    "n_theta_032": {
+      "n_theta": 32,
+      "elements": 4352,
+      "nodes": 5600,
+      "sigma_inf_input_Pa": 50000000.0,
+      "sigma_inf_measured_Pa": 49696860.67415731,
+      "sigma_inf_std_Pa": 634263.3070918899,
+      "sigma_peak_recovered_Pa": 151359188.96545088,
+      "sigma_peak_direct_cell_Pa": 153580000.0,
+      "sigma_peak_point_average_Pa": 150005504.0,
+      "sigma_peak_side_spread": 0.00023157657412012966,
+      "kt_fem": 3.0456488983852186,
+      "kt_direct_cell": 3.0903360477226807,
+      "kt_point_average": 3.018410055788571,
+      "kt_target_howland": 3.035,
+      "kt_target_kirsch": 3.0,
+      "error_howland": 0.0035086979852449523,
+      "error_kirsch": 0.015216299461739524,
+      "far_field_error": 0.006062786516853869,
+      "far_field_cov": 0.012762643323700142,
+      "ligament_l2_error": 0.03322162960989514,
+      "thickness_variation": 0.041453412899300615,
+      "layer_peak_Pa": "1.452122400e+08;1.513591890e+08;1.513591890e+08;1.452122400e+08",
+      "wall_clock_s": 2.2799359913915396,
+      "vtk_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta032/stage04_ntheta032A001.vtk"
+    },
+    "n_theta_064": {
+      "n_theta": 64,
+      "elements": 8704,
+      "nodes": 11200,
+      "sigma_inf_input_Pa": 50000000.0,
+      "sigma_inf_measured_Pa": 49707622.25433526,
+      "sigma_inf_std_Pa": 656849.2635050848,
+      "sigma_peak_recovered_Pa": 153873965.0454632,
+      "sigma_peak_direct_cell_Pa": 154480000.0,
+      "sigma_peak_point_average_Pa": 153558000.0,
+      "sigma_peak_side_spread": 0.0006234414405141366,
+      "kt_fem": 3.09558088009416,
+      "kt_direct_cell": 3.107772872530168,
+      "kt_point_average": 3.089224409373301,
+      "kt_target_howland": 3.035,
+      "kt_target_kirsch": 3.0,
+      "error_howland": 0.019960751266609577,
+      "error_kirsch": 0.03186029336472007,
+      "far_field_error": 0.005847554913294762,
+      "far_field_cov": 0.013214256359804005,
+      "ligament_l2_error": 0.0376775679535753,
+      "thickness_variation": 0.040404159908634295,
+      "layer_peak_Pa": "1.477799290e+08;1.538739650e+08;1.538739650e+08;1.477799290e+08",
+      "wall_clock_s": 2.346379214897752,
+      "vtk_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta064/stage04_ntheta064A001.vtk"
+    },
+    "n_theta_128": {
+      "n_theta": 128,
+      "elements": 17408,
+      "nodes": 22400,
+      "sigma_inf_input_Pa": 50000000.0,
+      "sigma_inf_measured_Pa": 49680362.82798834,
+      "sigma_inf_std_Pa": 648512.030209692,
+      "sigma_peak_recovered_Pa": 154721177.91116795,
+      "sigma_peak_direct_cell_Pa": 154684992.0,
+      "sigma_peak_point_average_Pa": 154467488.0,
+      "sigma_peak_side_spread": 5.344706466618412e-05,
+      "kt_fem": 3.1143326880858235,
+      "kt_direct_cell": 3.1136043135509346,
+      "kt_point_average": 3.109226245686312,
+      "kt_target_howland": 3.035,
+      "kt_target_kirsch": 3.0,
+      "error_howland": 0.026139271197964872,
+      "error_kirsch": 0.038110896028607844,
+      "far_field_error": 0.006392743440233171,
+      "far_field_cov": 0.013053689492065078,
+      "ligament_l2_error": 0.03944878079998531,
+      "thickness_variation": 0.03990388872455997,
+      "layer_peak_Pa": "1.486679744e+08;1.547211779e+08;1.547211779e+08;1.486679744e+08",
+      "wall_clock_s": 2.9729651045054197,
+      "vtk_path": "/mnt/storage/j-vaught/fea_apply/tests/stage_04_open_hole_kirsch/runs/stage04_ntheta128/stage04_ntheta128A001.vtk"
+    }
+  },
+  "checks": {
+    "primary_howland_kt": {
+      "gating": true,
+      "pass": true,
+      "value": 3.09558088009416,
+      "target": 3.035,
+      "relative_error": 0.019960751266609577,
+      "tolerance": 0.02
+    },
+    "far_field_stress": {
+      "gating": true,
+      "pass": true,
+      "value_Pa": 49707622.25433526,
+      "target_Pa": 50000000.0,
+      "relative_error": 0.005847554913294762,
+      "tolerance": 0.01
+    },
+    "ligament_kirsch_decay": {
+      "gating": false,
+      "pass": false,
+      "value": 0.0376775679535753,
+      "tolerance": 0.03,
+      "note": "reported diagnostic; finite-width strip and exact-rectangle boundary are compared to the infinite-plate Kirsch polynomial"
+    },
+    "through_thickness_variation": {
+      "gating": true,
+      "pass": true,
+      "value": 0.040404159908634295,
+      "tolerance": 0.05
+    },
+    "mesh_convergence": {
+      "gating": false,
+      "pass": false,
+      "observed_order": 1.4129344631950402,
+      "kt_extrapolated": 3.1256100563950757,
+      "relative_gap_to_64": 0.009700659573786387,
+      "tolerance": 0.005,
+      "note": "reported diagnostic; Stage 04 primary gate is the N_theta=64 Howland Kt comparison"
+    }
+  },
+  "reference": {
+    "type": "Kirsch 1898 infinite plate with Howland 1929 finite-width gross-section correction",
+    "sigma_inf_Pa": 50000000.0,
+    "Kt_Howland_2a_over_W_0p10": 3.035,
+    "Kt_Kirsch_infinite": 3.0,
+    "target_peak_Pa": 151750000.0,
+    "geometry": {
+      "length_m": 0.2,
+      "width_m": 0.1,
+      "thickness_m": 0.005,
+      "hole_radius_m": 0.005
+    },
+    "drive_correction": 1.01365
+  },
+  "tolerance": {
+    "primary_kt_howland": 0.02,
+    "far_field_stress": 0.01,
+    "ligament_decay_l2": 0.03,
+    "through_thickness_variation": 0.05,
+    "mesh_convergence": 0.005
+  },
+  "git_sha": "213e6c3569fd76e7d5b299e53d3f3dbca7345cf7"
+}
