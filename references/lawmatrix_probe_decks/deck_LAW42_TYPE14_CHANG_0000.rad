@@ -1,0 +1,59 @@
+#RADIOSS STARTER
+/BEGIN
+deck_LAW42_TYPE14_CHANG
+      2026         0
+                  kg                  mm                  ms
+                  kg                  mm                  ms
+/TITLE
+LAW42 OGDEN TYPE14 CHANG compatibility probe
+/DEF_SOLID
+         0         0                   0                                       0
+/DEF_SHELL
+         0         0         0         0         0                             1         0
+/MAT/LAW42/1
+probe_ogden
+                 940
+               0.495                   0                   0                   0         0         0
+               827.6                  55                   0                   0                   0
+
+                   2                  -2                   0                   0                   0
+
+/FAIL/CHANG/1
+                1500                  50                  90                1200                 200
+                   0                   0         0         1                   0
+/NODE
+         1                   0                   0                   0
+         2                   1                   0                   0
+         3                   1                   1                   0
+         4                   0                   1                   0
+         5                   0                   0                   1
+         6                   1                   0                   1
+         7                   1                   1                   1
+         8                   0                   1                   1
+/PART/1
+probe_part
+         1         1         0
+/BRICK/1
+         1         1         2         3         4         5         6         7         8
+/BCS/1
+probe_clamp
+   111 111         0         1
+/GRNOD/NODE/1
+probe_fixed_nodes
+         1         4         5         8
+/CLOAD/1
+probe_unit_load
+        99         X         0         0         2                             1                   1
+/GRNOD/NODE/2
+probe_loaded_nodes
+         2         3         6         7
+/FUNCT/99
+probe_constant_load
+                   0                   1
+                   1                   1
+/PROP/TYPE14/1
+probe_type14_solid
+         0         0                   0                   0                   0                   0
+                   0                   0                   0
+                   0
+/END

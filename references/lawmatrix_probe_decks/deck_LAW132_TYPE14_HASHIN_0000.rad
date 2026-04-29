@@ -1,0 +1,68 @@
+#RADIOSS STARTER
+/BEGIN
+deck_LAW132_TYPE14_HASHIN
+      2026         0
+                  kg                  mm                  ms
+                  kg                  mm                  ms
+/TITLE
+LAW132 LAMINATED_FRACTURE_DAIMLER_CAMANHO TYPE14 HASHIN compatibility probe
+/DEF_SOLID
+         0         0                   0                                       0
+/DEF_SHELL
+         0         0         0         0         0                             1         0
+/MAT/LAW132/1
+probe_laminated_fracture_daimler_camanho
+            1.55e-09
+              135000               10000               10000
+                5000                5000                3800
+                 0.3        0.0222222222                 0.4
+                 0.1                 0.1                 0.1                 0.1                 0.1
+                1200                1500                 200                  50                  90
+                 0.1                 0.1                1200                1500
+                   0                   0                   0                   0         0
+                   0                   0                   0
+                   0                   0                   0
+                   0                   0                   0                   0                   0
+                   0                   0                   0                   0                   0
+                   1                   0
+/FAIL/HASHIN/1
+         1         0         1                   1
+                1500                  50                  50                1200                 200
+                 200                  90                  90                  70                  90
+                   0                   1                   0                                       0
+/NODE
+         1                   0                   0                   0
+         2                   1                   0                   0
+         3                   1                   1                   0
+         4                   0                   1                   0
+         5                   0                   0                   1
+         6                   1                   0                   1
+         7                   1                   1                   1
+         8                   0                   1                   1
+/PART/1
+probe_part
+         1         1         0
+/BRICK/1
+         1         1         2         3         4         5         6         7         8
+/BCS/1
+probe_clamp
+   111 111         0         1
+/GRNOD/NODE/1
+probe_fixed_nodes
+         1         4         5         8
+/CLOAD/1
+probe_unit_load
+        99         X         0         0         2                             1                   1
+/GRNOD/NODE/2
+probe_loaded_nodes
+         2         3         6         7
+/FUNCT/99
+probe_constant_load
+                   0                   1
+                   1                   1
+/PROP/TYPE14/1
+probe_type14_solid
+         0         0                   0                   0                   0                   0
+                   0                   0                   0
+                   0
+/END

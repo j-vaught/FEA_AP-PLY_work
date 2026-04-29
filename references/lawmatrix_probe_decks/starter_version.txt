@@ -1,0 +1,12 @@
+ 
+OpenRadioss Starter 
+ 
+Platform release : linux64             
+Platform info : Linux 64 bits, GNU compiler                                       
+ 
+Time of build : 14:07:11                        
+Date of build : Apr 29 2026                     
+ 
+CommitID : User Build
+Reader : 20260429_8d9da7aa
+ 

@@ -1,0 +1,61 @@
+#RADIOSS STARTER
+/BEGIN
+deck_LAW62_TYPE6_TSAIWU
+      2026         0
+                  kg                  mm                  ms
+                  kg                  mm                  ms
+/TITLE
+LAW62 VISC_HYP TYPE6 TSAIWU compatibility probe
+/DEF_SOLID
+         0         0                   0                                       0
+/DEF_SHELL
+         0         0         0         0         0                             1         0
+/MAT/LAW62/1
+probe_visc_hyp
+             5.5e-08
+                   0         2         4
+          6.9119e-05         1.20126e-07
+             30.4979             -3.6961
+             0.34391             0.10785            0.070763            0.077511
+              461.99               14206            199183.3             8625495
+/FAIL/TSAIWU/1
+                1500                  50                1200                 200                  90
+                -0.5                   0                   0                             0         1
+/NODE
+         1                   0                   0                   0
+         2                   1                   0                   0
+         3                   1                   1                   0
+         4                   0                   1                   0
+         5                   0                   0                   1
+         6                   1                   0                   1
+         7                   1                   1                   1
+         8                   0                   1                   1
+/PART/1
+probe_part
+         1         1         0
+/BRICK/1
+         1         1         2         3         4         5         6         7         8
+/BCS/1
+probe_clamp
+   111 111         0         1
+/GRNOD/NODE/1
+probe_fixed_nodes
+         1         4         5         8
+/CLOAD/1
+probe_unit_load
+        99         X         0         0         2                             1                   1
+/GRNOD/NODE/2
+probe_loaded_nodes
+         2         3         6         7
+/FUNCT/99
+probe_constant_load
+                   0                   1
+                   1                   1
+/PROP/TYPE6/1
+probe_type6_sol_orth
+         0         0                   0                   0                   0                   0
+                   0                   0                   0
+                   1                   0                   0         0         1         0
+                   0                   0                   0                   0
+                   0         0         0
+/END

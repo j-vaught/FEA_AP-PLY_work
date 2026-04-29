@@ -1,0 +1,51 @@
+#RADIOSS STARTER
+/BEGIN
+deck_LAW1_TYPE1_TSAIWU
+      2026         0
+                  kg                  mm                  ms
+                  kg                  mm                  ms
+/TITLE
+LAW1 ELAST TYPE1 TSAIWU compatibility probe
+/DEF_SOLID
+         0         0                   0                                       0
+/DEF_SHELL
+         0         0         0         0         0                             1         0
+/MAT/LAW1/1
+probe_elast
+             7.8e-09
+              210000                 0.3
+/FAIL/TSAIWU/1
+                1500                  50                1200                 200                  90
+                -0.5                   0                   0                             0         1
+/NODE
+         1                   0                   0                   0
+         2                   1                   0                   0
+         3                   1                   1                   0
+         4                   0                   1                   0
+/PART/1
+probe_part
+         1         1         0
+/SHELL/1
+         1         1         2         3         4
+/BCS/1
+probe_clamp
+   111 111         0         1
+/GRNOD/NODE/1
+probe_fixed_nodes
+         1         4
+/CLOAD/1
+probe_unit_load
+        99         X         0         0         2                             1                   1
+/GRNOD/NODE/2
+probe_loaded_nodes
+         2         3
+/FUNCT/99
+probe_constant_load
+                   0                   1
+                   1                   1
+/PROP/TYPE1/1
+probe_type1_shell
+         0         0         0         0                                                 0
+                   0                   0                   0                   0                   0
+         1         0                   1                   0                   0         0
+/END
