@@ -2,29 +2,29 @@
   "stage": 2,
   "name": "cantilever_large",
   "verdict": "INCONCLUSIVE",
-  "solver_mode": "explicit",
-  "toolchain_note": "Auto fallback used explicit dynamic relaxation because the prebuilt OpenRadioss engine reported MUMPS required for nonlinear implicit.",
+  "solver_mode": "implicit",
+  "toolchain_note": "MUMPS-linked implicit engine completed baseline alpha=1; alpha=3 and alpha=5 remain blocked by nonlinear timestep-limit convergence.",
   "metrics": {
-    "coarse_alpha_1": {
-      "solver_mode": "explicit",
-      "dx_fem_over_L": 1.033400565120246e-08,
-      "dy_fem_over_L": 3.400685091037303e-05,
+    "baseline_alpha_1": {
+      "solver_mode": "implicit",
+      "dx_fem_over_L": 0.0573217011988163,
+      "dy_fem_over_L": 0.30434900522232056,
       "dx_ref_over_L": 0.056433236283377264,
       "dy_ref_over_L": 0.3017207737998132,
-      "err_x": 0.9999998168808608,
-      "err_y": 0.9998872903231617,
-      "elements": 600,
-      "nodes": 984,
-      "wall_clock_s": 3.4525084355846047,
-      "gated": false
+      "err_x": 0.01574364636785394,
+      "err_y": 0.008710806980268226,
+      "elements": 1920,
+      "nodes": 2835,
+      "wall_clock_s": 84.42776564043015,
+      "gated": true
     }
   },
   "reference": {
     "type": "Bisshopp-Drucker elastica via elliptic integrals",
     "pass_alphas": [
-      1.0,
-      3.0,
-      5.0
+      1,
+      3,
+      5
     ]
   },
   "tolerance": {
@@ -32,5 +32,5 @@
     "relative_error_dy": 0.02,
     "gated_mesh": "baseline"
   },
-  "git_sha": "2c849865029f052ce179a21633f786a2c3e2b73e"
+  "git_sha": "d857c35ed4a269b55ae967bca816d59a706bcf93"
 }

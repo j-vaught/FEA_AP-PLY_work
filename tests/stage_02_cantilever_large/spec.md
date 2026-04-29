@@ -91,14 +91,14 @@ Solid hexahedral elements only, per master plan §1.
 | Direction | Count | Element edge length |
 |---|---|---|
 | Along $x$ (length, $L=1.0\ \text{m}$) | 80 | $12.5\ \text{mm}$ |
-| Across $y$ (width, $b=25\ \text{mm}$) | 6 | $4.167\ \text{mm}$ |
-| Through $z$ (thickness, $h=3\ \text{mm}$) | 3 | $1.000\ \text{mm}$ |
-| **Total elements** | **1440** | HEXA8 |
+| Across section direction 1 | 4 | $0.750\ \text{mm}$ |
+| Across section direction 2 | 6 | $4.167\ \text{mm}$ |
+| **Total elements** | **1920** | HEXA8 |
 
 The brief mandates $\ge 40$ along length, $\ge 5$ across width,
 $\ge 3$ through thickness; the baseline exceeds all three.
 
-**Element aspect ratio.** Worst case $12.5 / 1.0 = 12.5$ along $x$
+**Element aspect ratio.** Worst case $12.5 / 0.75 = 16.7$ along $x$
 relative to the through-thickness direction. This is at the edge of
 what HEXA8 tolerates in pure bending. The two mitigations are
 discussed in §6 (formulation flag) and §10 (risks). We accept the
@@ -113,7 +113,7 @@ most visible):
 | Tag | $N_x \times N_y \times N_z$ | Total | Edge $z$ |
 |---|---|---|---|
 | coarse | $40 \times 5 \times 3$ | 600 | 1.0 mm |
-| baseline | $80 \times 6 \times 3$ | 1440 | 1.0 mm |
+| baseline | $80 \times 4 \times 6$ | 1920 | 0.75 mm |
 | fine | $160 \times 8 \times 4$ | 5120 | 0.75 mm |
 
 Convergence is declared if $|\delta_y^{\text{fine}} - \delta_y^{\text{baseline}}|
@@ -263,13 +263,13 @@ implicit nonlinear analysis cards. The engine file
 #  Icpre:  1 = constant-pressure formulation (mitigates volumetric locking; recommended
 #              for nu=0.30 in bending)
 
-# Mesh nodes: x86,481 nodes for the baseline 80x6x3 mesh
+# Mesh nodes: generated directly by the runner for the baseline 80x4x6 mesh
 /NODE
    1   0.0000  -0.0125  -0.0015
    2   0.0125  -0.0125  -0.0015
    ...
 
-# Mesh elements: 1440 HEXA8 bricks for baseline
+# Mesh elements: 1920 HEXA8 bricks for baseline
 /BRICK/1
    1   <n1>   <n2>   <n3>   <n4>   <n5>   <n6>   <n7>   <n8>
    ...
@@ -579,7 +579,7 @@ regime the §8 small-load gate samples.
 The pass/fail logic is exactly:
 
 1. Run three OpenRadioss jobs with $\alpha \in \{1, 3, 5\}$ on the
-   baseline mesh ($80 \times 6 \times 3$ HEXA8).
+   baseline mesh ($80 \times 4 \times 6$ HEXA8).
 2. From each `T01` time-history, extract the final-step tip-centroid
    $(\delta_x^{\text{FEM}}, \delta_y^{\text{FEM}})$.
 3. Compute the elastica reference $(\delta_x^{\text{ref}},
@@ -691,8 +691,8 @@ the toolchain.
    will implement load-control first and only escalate if it fails.
 
 3. **HEXA8 locking under bending.**
-   With $h = 3\ \text{mm}$ and three through-thickness elements
-   (edge $\approx 1\ \text{mm}$), full-integration HEXA8 in pure
+   With $h = 3\ \text{mm}$ and four through-thickness elements
+   (edge $\approx 0.75\ \text{mm}$), full-integration HEXA8 in pure
    bending exhibits both volumetric and shear locking. **Mitigation.**
    `/PROP/TYPE14 Icpre = 1` (constant-pressure / B-bar) and
    `Ismstr = 11` (co-rotational small-strain large-rotation, exact
@@ -735,7 +735,7 @@ the toolchain.
 7. **Lima file-IO crossing.** macOS host invokes Lima which mounts
    the host filesystem read-write into the VM. Heavy `T01` writes
    through the 9pfs / virtio-fs mount can be slow. For this stage
-   (1440 elements, 200 time samples, $\le 5$ MB `T01`) it is not
+   (1920 elements, 200 time samples, $\le 5$ MB `T01`) it is not
    a concern; flagged for future stages with larger meshes.
 
 8. **No native MFront / MGIS path.** Not applicable to this stage

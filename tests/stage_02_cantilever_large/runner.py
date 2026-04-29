@@ -113,7 +113,7 @@ class MeshSpec:
 
 MESHES = {
     "coarse": MeshSpec("coarse", nx=40, ny_height=3, nz_width=5),
-    "baseline": MeshSpec("baseline", nx=80, ny_height=3, nz_width=6),
+    "baseline": MeshSpec("baseline", nx=80, ny_height=4, nz_width=6),
     "fine": MeshSpec("fine", nx=160, ny_height=4, nz_width=8),
 }
 
@@ -173,7 +173,10 @@ class Logger:
         if proc.stdout:
             self._fh.write(proc.stdout)
             self._fh.flush()
-            print(proc.stdout, end="", flush=True)
+            if len(proc.stdout) <= 4000:
+                print(proc.stdout, end="", flush=True)
+            else:
+                print(f"[captured {len(proc.stdout)} bytes in {self.path}]", flush=True)
         self.log(f"[exit {proc.returncode}]")
         return proc
 
@@ -246,12 +249,21 @@ def build_mesh_data(case: CantileverCase, spec: MeshSpec) -> MeshData:
 
     clamp = [nid(0, j, k) for k in range(spec.nz_width + 1) for j in range(spec.ny_height + 1)]
     tip = [nid(spec.nx, j, k) for k in range(spec.nz_width + 1) for j in range(spec.ny_height + 1)]
-    probe_nodes = sorted(tip, key=lambda node_id: nodes[node_id][1] ** 2 + nodes[node_id][2] ** 2)[:4]
+    tip_by_centroid_distance = sorted(tip, key=lambda node_id: nodes[node_id][1] ** 2 + nodes[node_id][2] ** 2)
+    if math.hypot(nodes[tip_by_centroid_distance[0]][1], nodes[tip_by_centroid_distance[0]][2]) <= 1.0e-12:
+        probe_nodes = [tip_by_centroid_distance[0]]
+    else:
+        probe_nodes = tip_by_centroid_distance[:4]
     return MeshData(
         spec=spec,
         nodes=nodes,
         bricks=bricks,
-        node_sets={"clamp": clamp, "tip": tip, "probe": probe_nodes, "all_nodes": list(nodes)},
+        node_sets={
+            "clamp": clamp,
+            "tip": tip,
+            "probe": probe_nodes,
+            "all_nodes": list(nodes),
+        },
         probe_nodes=probe_nodes,
     )
 
@@ -311,7 +323,7 @@ def write_starter(
         f"Stage 02 alpha {alpha:g} {solver_mode} large-deflection cantilever",
         "/DEF_SOLID",
         "#  I_SOLID    ISMSTR             ISTRAIN                                  IFRAME",
-        fmt_i(24, 11) + f"{0:20d}" + f"{2:40d}",
+        fmt_i(14, 11) + f"{0:20d}" + f"{2:40d}",
         "/RANDOM",
         fmt_f(0.0) + f"{0:20d}",
         "/SPMD",
@@ -344,9 +356,9 @@ def write_starter(
     lines.extend(
         [
             "/PROP/SOLID/1",
-            "heph_corotational_constant_pressure",
+            "solid14_corotational",
             "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
-            fmt_i(0, 11) + f"{1:20d}{0:20d}{0:10d}{0:10d}{0:20d}",
+            fmt_i(14, 11) + f"{1:20d}{0:20d}{0:10d}{0:10d}{0:20d}",
             "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
             fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
             "#             dt_min   istrain      IHKT",
@@ -355,6 +367,10 @@ def write_starter(
             "clamp_x0",
             "#  Tra rot   skew_ID  grnod_ID",
             f"   111 000{0:10d}{100:10d}",
+        ]
+    )
+    lines.extend(
+        [
             "/FUNCT/1",
             "dead_load_ramp",
             "#                  X                   Y",
@@ -383,8 +399,21 @@ def write_starter(
             "#    NODid     Iskew                                           NODname",
         ]
     )
-    for node_id in mesh.probe_nodes:
+    th_probe_nodes = mesh.probe_nodes
+    for node_id in th_probe_nodes:
         lines.append(f"{node_id:10d}{0:10d}probe_{node_id}")
+    if solver_mode == "implicit":
+        lines.extend(
+            [
+                "/TH/NODE/2",
+                "clamp_reaction_y",
+                "#     var1      var2      var3      var4      var5      var6      var7      var8      var9     var10",
+                "REACY",
+                "#    NODid     Iskew                                           NODname",
+            ]
+        )
+        for node_id in mesh.node_sets["clamp"]:
+            lines.append(f"{node_id:10d}{0:10d}clamp_{node_id}")
     lines.extend(["/END", ""])
     out_rad.write_text("\n".join(lines), encoding="utf-8")
 
@@ -412,17 +441,17 @@ def write_engine(job: str, out_rad: pathlib.Path, solver_mode: str, run_time: fl
             "/ANIM/BRICK/TENS/STRAIN/ALL",
             "/ANIM/GZIP",
             "/IMPL/PRINT/NONL/-1",
+            "/IMPL/NONLIN/KTCON",
             "/IMPL/NONLIN/1",
-            "# L_a Itol Tol",
-            f"{0:10d}{2:10d}{0.02:20.12g}",
-            "/IMPL/SOLVER/5",
+            f"{25:10d}{2:10d}{0.02:20.12g}",
+            "/IMPL/SOLVER/2",
+            f"{0:10d}{0:10d}{0:10d}{0.0:20.12g}",
             "/IMPL/DTINI",
             fmt_f(0.02 * run_time),
             "/IMPL/DT/STOP",
-            fmt_f(1.0e-6 * run_time, 0.20 * run_time),
+            fmt_f(1.0e-8 * run_time, 0.20 * run_time),
             "/IMPL/DT/2",
-            "# It_w L_arc L_dtn Scal_dtn Scal_dtp_max",
-            f"{6:10d}{0.0:20.12g}{20:10d}{0.67:20.12g}{1.10:20.12g}",
+            f"{18:10d}{0.0:10.1f}{30:10d}{0.67:10.2f}{1.35:10.2f}",
             "/END/ENGINE",
             "",
         ]
@@ -460,7 +489,7 @@ def gunzip_keep(src: pathlib.Path, dst: pathlib.Path) -> None:
 def convert_anim_to_vtk(job: str, workdir: pathlib.Path, log: Logger, env: dict[str, str]) -> pathlib.Path:
     anim = workdir / f"{job}A001"
     gz = anim.with_suffix(anim.suffix + ".gz")
-    if gz.exists() and not anim.exists():
+    if gz.exists() and (not anim.exists() or gz.stat().st_mtime > anim.stat().st_mtime):
         gunzip_keep(gz, anim)
     if not anim.exists():
         raise FileNotFoundError(f"animation frame not found: {anim} or {gz}")
@@ -521,6 +550,8 @@ def run_case(
     alpha_label = f"{alpha:.2f}".replace(".", "p")
     job = f"stage02_{solver_mode}_{mesh_label}_a{alpha_label}"
     workdir = RUNS_DIR / job
+    if workdir.exists():
+        shutil.rmtree(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     msh = workdir / f"{job}.msh"
     starter = workdir / f"{job}_0000.rad"
@@ -683,10 +714,10 @@ def write_results_json(rows: list[SweepRow], solver_mode: str) -> pathlib.Path:
         "verdict": verdict,
         "solver_mode": solver_mode,
         "toolchain_note": (
-            "Auto fallback used explicit dynamic relaxation because the prebuilt OpenRadioss "
-            "engine reported MUMPS required for nonlinear implicit."
+            "Explicit dynamic relaxation is a user-selected exploratory fallback; gated "
+            "Stage 02 verification expects nonlinear implicit completion."
             if solver_mode == "explicit"
-            else "Nonlinear implicit path completed."
+            else "MUMPS-linked nonlinear implicit path completed the recorded run."
         ),
         "metrics": metrics,
         "reference": {
@@ -798,7 +829,7 @@ def write_typst_figure(rows: list[SweepRow]) -> pathlib.Path:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=["auto", "implicit", "explicit"], default="auto")
+    parser.add_argument("--mode", choices=["auto", "implicit", "explicit"], default="implicit")
     parser.add_argument("--meshes", default="baseline", help="comma-separated subset of coarse,baseline,fine")
     parser.add_argument("--alphas", default="1,3,5", help="comma-separated alpha values")
     parser.add_argument("--run-time", type=float, default=1.0)
@@ -834,37 +865,18 @@ def main(argv: list[str] | None = None) -> int:
         log.log(f"OpenRadioss root: {OR_DIR}")
         log.log(f"EI={case.ei:.8g} N m^2, inertia_z={case.inertia_z:.8e} m^4")
         rows: list[SweepRow]
-        try:
-            rows = run_sweep(
-                case,
-                mesh_labels,
-                alphas,
-                solver_mode,
-                args.run_time,
-                args.dt_noda,
-                args.damping_alpha,
-                args.n_threads,
-                log,
-                env,
-            )
-        except RuntimeError as exc:
-            if args.mode != "auto" or solver_mode != "implicit":
-                raise
-            log.log(f"[auto] implicit path failed: {exc}")
-            log.log("[auto] falling back to explicit dynamic relaxation")
-            solver_mode = "explicit"
-            rows = run_sweep(
-                case,
-                mesh_labels,
-                alphas,
-                solver_mode,
-                args.run_time,
-                args.dt_noda,
-                args.damping_alpha,
-                args.n_threads,
-                log,
-                env,
-            )
+        rows = run_sweep(
+            case,
+            mesh_labels,
+            alphas,
+            solver_mode,
+            args.run_time,
+            args.dt_noda,
+            args.damping_alpha,
+            args.n_threads,
+            log,
+            env,
+        )
 
         write_timeseries(rows)
         results_path = write_results_json(rows, solver_mode)

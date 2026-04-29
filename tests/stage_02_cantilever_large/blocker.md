@@ -1,4 +1,4 @@
-# Stage 02 Blocker: Nonlinear Implicit Requires MUMPS
+# Stage 02 Blocker: Large-Deflection Implicit Convergence
 
 **Author.** J.C. Vaught
 **Date.** 2026-04-29
@@ -7,29 +7,28 @@
 
 `INCONCLUSIVE`
 
-## What was attempted
+## Status
 
-The Stage 02 runner now builds the solid HEXA8 cantilever deck directly, writes OpenRadioss starter/engine files, and probes the nonlinear implicit path before falling back to explicit dynamic relaxation.
+The earlier MUMPS blocker is resolved. OpenRadioss was rebuilt from source with the conda-forge MUMPS MPI libraries, and the installed engine now reaches `DMUMPS 5.8.2` under `/IMPL/NONLIN`.
 
-The implicit starter completes, but the engine terminates immediately with:
-
-```text
-Fatal error: MUMPS required
-```
-
-This confirms that the installed OpenRadioss prebuilt at `/mnt/storage/j-vaught/openradioss/OpenRadioss` is not MUMPS-linked.
-
-The automatic explicit fallback was probed on the coarse mesh at `alpha=1.0` with `/KEREL`, `/DAMP`, and `/DT/NODA/CST`. It runs end-to-end, emits VTK, and is recorded in `results/timeseries.csv`, but the one-second mass-scaled run remains far from quasi-static equilibrium:
+The refined baseline `80 x 4 x 6` solid mesh with `Isolid=14`, `Ismstr=11`, and `Icpre=1` completes the gated `alpha=1` case:
 
 ```text
-dy/L FEM = 3.400685e-05
-dy/L ref = 3.017208e-01
-dx/L FEM = 1.033401e-08
-dx/L ref = 5.643324e-02
+dx/L FEM = 5.732170e-02, ref = 5.643324e-02, error = 1.574%
+dy/L FEM = 3.043490e-01, ref = 3.017208e-01, error = 0.871%
 ```
 
-Because this is not the gated baseline mesh and because the intended implicit path is unavailable, this is a toolchain inconclusive result rather than a numerical verification failure.
+The required `alpha=3` and `alpha=5` cases do not yet complete as a valid verification. The blocker is now nonlinear path convergence, not missing MUMPS.
+
+## Failed follow-up paths
+
+- Load control, `/IMPL/DT/2`, force norm (`NITOL=2`) reaches only about `T=0.066` for `alpha=3` before timestep-limit termination.
+- Load control, displacement norm (`NITOL=3`) advances farther, to about `T=0.271`, then terminates on timestep limit.
+- Riks/arc-length (`/IMPL/DT/3`) can traverse close to the target load, but either exits with timestep-limit failure at the final step before writing a usable animation frame or reverses into negative arc-length steps during a held-load variant.
+- `/IMPL/QSTAT` stalls almost immediately near `T=8.6e-4`.
+- Displacement-control variants are not acceptable as verification: whole-face `IMPDISP` overconstrains tip rotation, single-node `IMPDISP` pulls a local solid node, and a trial `/RBODY` tip control over-stiffens the end condition.
+- `Isolid=24` HEPH is much slower and stalls early for this case.
 
 ## Required resolution
 
-Either provide a MUMPS-linked OpenRadioss build for `/IMPL/NONLIN`, or allocate a much longer explicit dynamic-relaxation run plan with kinetic-energy checks before treating the fallback as a verification result.
+Stage 02 needs a robust OpenRadioss nonlinear static path for the `alpha=3` and `alpha=5` dead-load cantilever cases, or a documented explicit/quasi-static fallback with kinetic-energy and mesh-convergence checks. Until then, stages 03-16 remain unattempted because Stage 02 is the geometric-nonlinearity gate.

@@ -17,10 +17,10 @@
   rect((1.150, 0.850), (14.550, 6.850), fill: white, stroke: charcoal + 0.65pt)
   line((1.150, 0.850), (14.550, 0.850), stroke: black10 + 0.45pt)
   content((0.990, 0.850), [0.0], anchor: "east")
-  line((1.150, 4.466), (14.550, 4.466), stroke: black10 + 0.45pt)
-  content((0.990, 4.466), [0.2], anchor: "east")
-  circle((14.550, 6.305), radius: 0.055, fill: atlantic, stroke: none)
-  circle((14.550, 0.851), radius: 0.055, fill: garnet, stroke: none)
+  line((1.150, 4.434), (14.550, 4.434), stroke: black10 + 0.45pt)
+  content((0.990, 4.434), [0.2], anchor: "east")
+  circle((14.550, 6.257), radius: 0.055, fill: atlantic, stroke: none)
+  circle((14.550, 6.305), radius: 0.055, fill: garnet, stroke: none)
   content((14.550, 0.530), [1], anchor: "north")
   content((7.850, 0.070), [Dimensionless load alpha], anchor: "north")
   content((0.270, 3.850), [Tip sag, dy/L], angle: 90deg)
@@ -36,7 +36,7 @@
   table(
     columns: 5,
     [alpha], [mesh], [dy error], [dx error], [verdict],
-  [1], [coarse], [99.99\%], [100.00\%], [FAIL],
+  [1], [baseline], [0.87\%], [1.57\%], [PASS],
   ),
   caption: [Stage 02 tip displacement error by load and mesh.]
 )
