@@ -1,0 +1,4 @@
+case,quantity,solver_Pa,target_Pa,relative_error_pct,starter_rc,engine_rc,vtk_path,verdict
+axial_z,E1_ROM_Pa,139668177367.5,139632000000.0,0.025909080654864212,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_10_UD_mesoscale_direct/runs/stage10_axial_zA001.vtk,PASS
+transverse_x,E2_HT_Pa,22515555336.25,20249854982.067673,11.188723851053382,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_10_UD_mesoscale_direct/runs/stage10_transverse_xA001.vtk,FAIL
+shear_xz,G12_HT_Pa,3688576.1309432983,5552827414.210154,99.93357300964362,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_10_UD_mesoscale_direct/runs/stage10_shear_xzA001.vtk,FAIL

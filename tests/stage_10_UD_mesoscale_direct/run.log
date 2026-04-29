@@ -1,0 +1,477 @@
+starter=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf
+engine=/mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf
+mesh=20x20x4
+fiber_bricks=960
+matrix_bricks=640
+vf_actual=0.600000
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage10_axial_z_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         0                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 10 UD mesoscale axial_z
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:50:25
+ EXECUTION COMPLETED    :      2026/04/29  19:50:26
+  
+ ELAPSED TIME...........=          0.26 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage10_axial_z_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage10_axial_z  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 3.5727E-10 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 3.5726E-08 DT= 3.5726E-10 ERR=-98.4% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.42 s  REMAINING TIME=          6.51 s
+ NC=     200 T= 7.1452E-08 DT= 3.5725E-10 ERR=-99.3% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          2.60 s
+ NC=     300 T= 1.0718E-07 DT= 3.5723E-10 ERR=-99.6% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=          1.28 s
+ NC=     400 T= 1.4290E-07 DT= 3.5722E-10 ERR=-99.7% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=          0.60 s
+ NC=     500 T= 1.7862E-07 DT= 3.5721E-10 ERR=-99.8% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=          0.18 s
+     RESTART FILES: stage10_axial_z_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage10_axial_zA001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .9906E+00 .1452E+01 .9836E-01 .2339E+00 .1522E+01 .7928E-01 .3039E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .1915E-02     0.06 % 
+ ELEMENT FORCES..............: .9906E+00    32.59 % 
+ KINEMATIC COND..............: .1452E+01    47.78 % 
+ INTEGRATION.................: .9836E-01     3.24 % 
+ ASSEMBLING..................: .7928E-01     2.61 % 
+ OTHERS (including I/O)......: .4171E+00    13.72 % 
+ TOTAL.......................: .3039E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      164 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      164 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      164 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      164 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          1 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          1 MB
+  
+ ELAPSED TIME     =          1.57 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     561
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_10_UD_mesoscale_direct/runs/stage10_axial_zA001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage10_transverse_x_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         0                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 10 UD mesoscale transverse_x
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:50:27
+ EXECUTION COMPLETED    :      2026/04/29  19:50:28
+  
+ ELAPSED TIME...........=          0.27 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage10_transverse_x_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage10_transverse_x  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 3.5727E-10 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 3.5726E-08 DT= 3.5725E-10 ERR=-68.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.43 s  REMAINING TIME=          6.57 s
+ NC=     200 T= 7.1450E-08 DT= 3.5723E-10 ERR=-97.4% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.46 s  REMAINING TIME=          2.63 s
+ NC=     300 T= 1.0717E-07 DT= 3.5722E-10 ERR=-95.9% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.49 s  REMAINING TIME=          1.29 s
+ NC=     400 T= 1.4289E-07 DT= 3.5720E-10 ERR=-99.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=          0.60 s
+ NC=     500 T= 1.7861E-07 DT= 3.5718E-10 ERR=-99.1% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.54 s  REMAINING TIME=          0.18 s
+     RESTART FILES: stage10_transverse_x_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage10_transverse_xA001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .1208E+01 .1170E+00 .3120E+00 .3823E+00 .3352E+00 .2090E+00 .2695E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .2570E-03     0.01 % 
+ ELEMENT FORCES..............: .1208E+01    44.83 % 
+ KINEMATIC COND..............: .1170E+00     4.34 % 
+ INTEGRATION.................: .3120E+00    11.58 % 
+ ASSEMBLING..................: .2090E+00     7.76 % 
+ OTHERS (including I/O)......: .8483E+00    31.48 % 
+ TOTAL.......................: .2695E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      165 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      165 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      165 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      165 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          1 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          1 MB
+  
+ ELAPSED TIME     =          1.57 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     561
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_10_UD_mesoscale_direct/runs/stage10_transverse_xA001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i stage10_shear_xz_0000.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+
+WARNING ID : 100214
+** WARNING IN INPUT OPTIONS
+DESCRIPTION :  
+-- BLOCK: /DEF_SOLID
+-- LINE: 24         0                   0                                       2
+unsupported field exists
+SOLUTION :     
+    Please check input format and fields description defined in the Reference Guide.
+Stage 10 UD mesoscale shear_xz
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON   16 THREADS
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. IMPOSED VELOCITIES                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  19:50:30
+ EXECUTION COMPLETED    :      2026/04/29  19:50:30
+  
+ ELAPSED TIME...........=          0.25 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     TERMINATION WITH WARNING           
+     ------------------                                                                  
+              0 ERROR(S)            
+              1 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i stage10_shear_xz_0001.rad -nt 16
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                Linux 64 bits, GNU compiler, OpenMPI                **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage10_shear_xz  RESTART: 0001
+ NUMBER OF HMPP PROCESSES    16
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 3.5727E-10 ERR=  0.0% DM/M= 0.0000E+00
+ NC=     100 T= 3.5727E-08 DT= 3.5727E-10 ERR=-15.9% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.45 s  REMAINING TIME=          6.67 s
+ NC=     200 T= 7.1454E-08 DT= 3.5727E-10 ERR=-31.7% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.48 s  REMAINING TIME=          2.67 s
+ NC=     300 T= 1.0718E-07 DT= 3.5727E-10 ERR=-28.8% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.51 s  REMAINING TIME=          1.31 s
+ NC=     400 T= 1.4291E-07 DT= 3.5727E-10 ERR=-29.4% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.55 s  REMAINING TIME=          0.62 s
+ NC=     500 T= 1.7863E-07 DT= 3.5727E-10 ERR=-30.0% DM/M= 0.0000E+00
+ ELAPSED TIME=          1.58 s  REMAINING TIME=          0.19 s
+     RESTART FILES: stage10_shear_xz_0001_[0001-0001].rst WRITTEN
+     ANIMATION FILE: stage10_shear_xzA001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .1037E+01 .1433E+01 .9909E-01 .2474E+00 .1501E+01 .8317E-01 .3081E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .2866E-03     0.01 % 
+ ELEMENT FORCES..............: .1037E+01    33.64 % 
+ KINEMATIC COND..............: .1433E+01    46.52 % 
+ INTEGRATION.................: .9909E-01     3.22 % 
+ ASSEMBLING..................: .8317E-01     2.70 % 
+ OTHERS (including I/O)......: .4286E+00    13.91 % 
+ TOTAL.......................: .3081E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:      163 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:      163 MB
+ MINIMUM MEMORY PER PROCESSOR...............:      163 MB
+ AVERAGE MEMORY PER PROCESSOR...............:      163 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          1 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          1 MB
+  
+ ELAPSED TIME     =          1.61 s
+                          0:00:01
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :     561
+
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_10_UD_mesoscale_direct/runs/stage10_shear_xzA001
+[exit 0]

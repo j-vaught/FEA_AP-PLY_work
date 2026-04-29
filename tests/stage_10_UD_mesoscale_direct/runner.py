@@ -1,692 +1,612 @@
-"""
-Stage 10 - Unidirectional tow-wise direct mesoscale (reframed) - runner.
+"""Stage 10 - UD tow-wise direct mesoscale verification.
 
-Pipeline.
-    1. Load mesh from UD_mesoscale_hex.inp (built by mesh_build.py via GMSH).
-    2. Identify the six face nodesets by bounding-box queries.
-    3. For each of three KUBC loading cases (axial stretch, transverse stretch,
-       longitudinal shear) generate a /IMPDISP table per face and write the
-       OpenRadioss starter (_0000.rad) and engine (_0001.rad) decks.
-    4. Run the OpenRadioss starter + engine inside Lima Apptainer.
-    5. Convert .anim to .vtkhdf via the Kitware openradioss-to-vtkhdf tool.
-    6. Volume-average stress and strain across all elements, derive effective
-       constants E1, E2, G12.
-    7. Compare to Halpin-Tsai 1969 (zeta=2 for E_2, zeta=1 for G_12) and
-       Hashin-Shtrikman 1963 bounds; write effective_moduli.csv.
+Author: J.C. Vaught
 
-Author. J.C. Vaught
-Date.   2026-04-29
-Spec.   tests/stage_10_UD_mesoscale_direct/spec.md (sections 5-8 pin the math).
-
-Notes.
-    - SI units throughout (Pa, m, kg).
-    - This runner is the deck-templating + post-processing layer. The Lima
-      Apptainer launch is delegated to the user's OpenRadioss wrapper described
-      in master_plan.md section 7. The OR_RUN constant below points at it.
-    - Element types accepted: TETRA10 (default from GMSH OCC) and HEXA8.
-    - This file is heavy on docstrings and light on cleverness on purpose:
-      it is a verification stage and must be auditable.
+This stage is independent of the composite orientation convention because the
+constituents are isotropic fiber and matrix solids. The runner builds a
+scripted HEXA8 mesoscale cell with a circular fiber bundle, runs three
+OpenRadioss cases, converts the final animation frame to VTK, and compares
+effective E1, E2, and G12 against Halpin-Tsai / rule-of-mixtures references.
 """
 
 from __future__ import annotations
 
+import argparse
 import csv
+import gzip
 import json
 import math
+import os
 import shutil
 import subprocess
-import sys
-from dataclasses import dataclass, field, asdict
+import time
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 
-# ---------------------------------------------------------------------------
-# Paths and constants. Edit OR_RUN to match the user's local Lima install.
-# ---------------------------------------------------------------------------
 
-STAGE_DIR = Path(__file__).resolve().parent
-MESH_INP = STAGE_DIR / "UD_mesoscale_hex.inp"
-DECK_DIR = STAGE_DIR / "decks"
-RUN_DIR = STAGE_DIR / "runs"
-OUT_DIR = STAGE_DIR / "outputs"
-FIG_DATA_DIR = STAGE_DIR.parents[1] / "figures" / "data"
-PATHS_FILE = STAGE_DIR / "or_paths.json"          # Lima/Apptainer + OR binaries
+THIS_DIR = Path(__file__).resolve().parent
+ROOT_DIR = THIS_DIR.parents[1]
+RUNS_DIR = THIS_DIR / "runs"
+RESULTS_DIR = THIS_DIR / "results"
+FIGURES_DIR = THIS_DIR / "figures"
+RUN_LOG = THIS_DIR / "run.log"
 
-# Specimen geometry (must match mesh_build.py).
-L_X = 100.0e-6
-L_Y = 100.0e-6
-L_Z = 50.0e-6
+OR_ROOT = Path(os.environ.get("OR", "/mnt/storage/j-vaught/openradioss/OpenRadioss")).resolve()
+STARTER = OR_ROOT / "exec" / "starter_linux64_gf"
+ENGINE = OR_ROOT / "exec" / "engine_linux64_gf"
+ANIM_TO_VTK = OR_ROOT / "exec" / "anim_to_vtk_linux64_gf"
+N_THREADS = int(os.environ.get("RAD_NT", "16"))
 
-# Constituent properties (Soden 1998: IM7 fiber, Hexcel 8552 matrix).
+LX = 100.0e-6
+LY = 100.0e-6
+LZ = 50.0e-6
+NX = 20
+NY = 20
+NZ = 4
+FIBER_RADIUS = 0.432 * LX
+STRAIN = 1.0e-3
+RUN_TIME = 2.0e-7
+
 E_F = 230.0e9
 NU_F = 0.20
 RHO_F = 1780.0
-
 E_M = 4.08e9
 NU_M = 0.39
 RHO_M = 1300.0
 
-V_F_TARGET = 0.60                                  # nominal volume fraction
-
-# KUBC strain magnitudes (small enough for linear regime, large enough to be
-# numerically clean; 1e-3 is the standard micromechanics convention).
-EPS_AXIAL = 1.0e-3
-EPS_TRANSVERSE = 1.0e-3
-GAMMA_SHEAR = 1.0e-3
-
-# Halpin-Tsai parameters (spec section 7.2).
 ZETA_E2 = 2.0
 ZETA_G12 = 1.0
-
-# Numerical tolerances for the pass criteria (spec section 8).
 HT_REL_TOL = 0.05
-HS_TOL = 0.01
-
-# Bounding-box tolerance for face nodeset detection (1 percent of edge).
-FACE_TOL = 1.0e-8                                  # absolute, in metres
 
 
-# ---------------------------------------------------------------------------
-# Reference solutions: Halpin-Tsai and Hashin-Shtrikman.
-# ---------------------------------------------------------------------------
-
-def shear_modulus(E: float, nu: float) -> float:
-    return E / (2.0 * (1.0 + nu))
-
-
-def bulk_modulus(E: float, nu: float) -> float:
-    return E / (3.0 * (1.0 - 2.0 * nu))
+@dataclass(frozen=True)
+class MeshData:
+    nodes: list[str]
+    fiber_bricks: list[tuple[int, list[int]]]
+    matrix_bricks: list[tuple[int, list[int]]]
+    groups: dict[str, list[int]]
+    vf_actual: float
 
 
-def halpin_tsai(E_phase: float, E_matrix: float, V_f: float, zeta: float) -> float:
-    """Halpin-Tsai 1969 transverse / shear modulus prediction.
-
-    Returns the homogenized modulus given the phase modulus E_phase (fiber for
-    transverse E_2, fiber-shear for in-plane G_12), the matrix modulus, the
-    fiber volume fraction, and the geometry parameter zeta.
-    """
-    ratio = E_phase / E_matrix
-    eta = (ratio - 1.0) / (ratio + zeta)
-    return E_matrix * (1.0 + zeta * eta * V_f) / (1.0 - eta * V_f)
-
-
-def rule_of_mixtures(E_f: float, E_m: float, V_f: float) -> float:
-    return V_f * E_f + (1.0 - V_f) * E_m
-
-
-def hashin_shtrikman_bounds(E1: float, nu1: float, V1: float,
-                            E2: float, nu2: float) -> dict:
-    """Hashin-Shtrikman 1963 bounds on effective bulk K and shear G.
-
-    Phase 1 is the inclusion / fiber, phase 2 is the matrix; V1 is the
-    fiber volume fraction. Returns lower and upper bounds on K and G.
-    The bounds are tight when both phases are well-ordered (K_1>K_2 and
-    G_1>G_2 simultaneously), which holds for our IM7-in-8552 system.
-    """
-    K1, G1 = bulk_modulus(E1, nu1), shear_modulus(E1, nu1)
-    K2, G2 = bulk_modulus(E2, nu2), shear_modulus(E2, nu2)
-    V2 = 1.0 - V1
-
-    def _K_bound(K_a, G_a, V_a, K_b, V_b):
-        return K_a + V_b / (1.0 / (K_b - K_a) + 3.0 * V_a / (3.0 * K_a + 4.0 * G_a))
-
-    def _G_bound(K_a, G_a, V_a, G_b, V_b):
-        denom = 1.0 / (G_b - G_a) + 6.0 * V_a * (K_a + 2.0 * G_a) / (
-            5.0 * G_a * (3.0 * K_a + 4.0 * G_a)
-        )
-        return G_a + V_b / denom
-
-    # Lower: comparison medium = softer phase (matrix).
-    K_lo = _K_bound(K2, G2, V2, K1, V1)
-    G_lo = _G_bound(K2, G2, V2, G1, V1)
-    # Upper: comparison medium = stiffer phase (fiber).
-    K_up = _K_bound(K1, G1, V1, K2, V2)
-    G_up = _G_bound(K1, G1, V1, K2, V2)
-
-    return {"K_lower": K_lo, "K_upper": K_up,
-            "G_lower": G_lo, "G_upper": G_up}
-
-
-def reference_targets() -> dict:
-    """Compose all closed-form reference numbers used in the pass criteria."""
-    G_f = shear_modulus(E_F, NU_F)
-    G_m = shear_modulus(E_M, NU_M)
-    E1_rom = rule_of_mixtures(E_F, E_M, V_F_TARGET)
-    E2_ht = halpin_tsai(E_F, E_M, V_F_TARGET, ZETA_E2)
-    G12_ht = halpin_tsai(G_f, G_m, V_F_TARGET, ZETA_G12)
-    hs = hashin_shtrikman_bounds(E_F, NU_F, V_F_TARGET, E_M, NU_M)
-    return {
-        "E1_rom_Pa": E1_rom,
-        "E2_HT_Pa": E2_ht,
-        "G12_HT_Pa": G12_ht,
-        "hs_K_lower_Pa": hs["K_lower"],
-        "hs_K_upper_Pa": hs["K_upper"],
-        "hs_G_lower_Pa": hs["G_lower"],
-        "hs_G_upper_Pa": hs["G_upper"],
-    }
-
-
-# ---------------------------------------------------------------------------
-# Mesh ingest from Abaqus .inp via meshio.
-# ---------------------------------------------------------------------------
-
-@dataclass
-class Mesh:
-    nodes: np.ndarray            # (N, 3)
-    cells: dict                  # {"tetra10": (M, 10), "hexa": (...)}
-    cell_phase: np.ndarray       # (M,) ints; 0 = matrix, 1 = fiber
-    cell_volumes: np.ndarray     # (M,)
-    bbox_min: np.ndarray         # (3,)
-    bbox_max: np.ndarray         # (3,)
-    face_nodes: dict = field(default_factory=dict)   # name -> ndarray of node indices
-
-
-def load_mesh(inp_path: Path) -> Mesh:
-    """Load the GMSH-exported Abaqus .inp file. Requires meshio."""
-    import meshio
-    m = meshio.read(inp_path.as_posix())
-    nodes = np.asarray(m.points, dtype=np.float64)
-    cells = {}
-    cell_phase_chunks = []
-
-    # Phase tagging via the elset/material assignments preserved in the .inp.
-    # We rely on the GMSH "FIBER" and "MATRIX" physical groups to be written
-    # as Abaqus element sets named "FIBER" and "MATRIX" (meshio convention).
-    for cb in m.cells:
-        if cb.type in ("tetra10", "tetra"):
-            cells.setdefault(cb.type, []).append(np.asarray(cb.data))
-        elif cb.type in ("hexahedron", "hexahedron20"):
-            cells.setdefault(cb.type, []).append(np.asarray(cb.data))
-
-    cells = {k: np.vstack(v) for k, v in cells.items()}
-
-    # Attach cell phase from cell_sets if present.
-    n_total_cells = sum(c.shape[0] for c in cells.values())
-    phase = np.zeros(n_total_cells, dtype=np.int8)
-    if hasattr(m, "cell_sets") and m.cell_sets:
-        # Meshio cell_sets: dict[name] -> list per cell-block.
-        offset = 0
-        block_sizes = [c.shape[0] for c in cells.values()]
-        if "FIBER" in m.cell_sets:
-            ranges = m.cell_sets["FIBER"]
-            for r, size in zip(ranges, block_sizes):
-                if r is None:
-                    offset += size
-                    continue
-                phase[offset + np.asarray(r, dtype=int)] = 1
-                offset += size
-    cell_volumes = compute_cell_volumes(nodes, cells)
-
-    bbox_min = nodes.min(axis=0)
-    bbox_max = nodes.max(axis=0)
-
-    mesh = Mesh(
-        nodes=nodes,
-        cells=cells,
-        cell_phase=phase,
-        cell_volumes=cell_volumes,
-        bbox_min=bbox_min,
-        bbox_max=bbox_max,
-    )
-    mesh.face_nodes = identify_faces(nodes, bbox_min, bbox_max)
-    return mesh
-
-
-def compute_cell_volumes(nodes: np.ndarray, cells: dict) -> np.ndarray:
-    """Per-cell volume by signed-tet decomposition."""
-    vols = []
-    for ctype, conn in cells.items():
-        if ctype.startswith("tetra"):
-            v = tet_volumes(nodes[conn[:, :4]])
-        elif ctype.startswith("hex"):
-            v = hex_volumes(nodes[conn[:, :8]])
-        else:
-            v = np.zeros(conn.shape[0])
-        vols.append(v)
-    return np.concatenate(vols)
-
-
-def tet_volumes(tet_nodes: np.ndarray) -> np.ndarray:
-    """Signed tetrahedron volume; abs to get cell volume."""
-    a = tet_nodes[:, 1, :] - tet_nodes[:, 0, :]
-    b = tet_nodes[:, 2, :] - tet_nodes[:, 0, :]
-    c = tet_nodes[:, 3, :] - tet_nodes[:, 0, :]
-    return np.abs(np.einsum("ij,ij->i", a, np.cross(b, c))) / 6.0
-
-
-def hex_volumes(hex_nodes: np.ndarray) -> np.ndarray:
-    """Hex-8 volume by 6-tet decomposition (one of several valid splits)."""
-    n = hex_nodes
-    # Six-tet decomposition relative to node 0.
-    splits = [(0, 1, 2, 5),
-              (0, 2, 3, 7),
-              (0, 2, 5, 7),
-              (0, 5, 6, 7),
-              (0, 4, 5, 7),
-              (2, 5, 6, 7)]
-    total = np.zeros(n.shape[0])
-    for split in splits:
-        total += tet_volumes(n[:, list(split), :])
-    return total
-
-
-def identify_faces(nodes: np.ndarray, bmin: np.ndarray, bmax: np.ndarray) -> dict:
-    """Return node-index arrays for the six bounding-box faces."""
-    return {
-        "XMIN": np.where(np.abs(nodes[:, 0] - bmin[0]) < FACE_TOL)[0],
-        "XMAX": np.where(np.abs(nodes[:, 0] - bmax[0]) < FACE_TOL)[0],
-        "YMIN": np.where(np.abs(nodes[:, 1] - bmin[1]) < FACE_TOL)[0],
-        "YMAX": np.where(np.abs(nodes[:, 1] - bmax[1]) < FACE_TOL)[0],
-        "ZMIN": np.where(np.abs(nodes[:, 2] - bmin[2]) < FACE_TOL)[0],
-        "ZMAX": np.where(np.abs(nodes[:, 2] - bmax[2]) < FACE_TOL)[0],
-    }
-
-
-def actual_volume_fraction(mesh: Mesh) -> float:
-    fiber_vol = mesh.cell_volumes[mesh.cell_phase == 1].sum()
-    return fiber_vol / mesh.cell_volumes.sum()
-
-
-# ---------------------------------------------------------------------------
-# OpenRadioss deck generation per loading case.
-# ---------------------------------------------------------------------------
-
-@dataclass
+@dataclass(frozen=True)
 class LoadCase:
-    name: str                       # "axial", "transverse", "shear"
-    eps_tensor: np.ndarray          # (3,3) macro strain
-    extract: str                    # which stress to recover: "sigma_zz", etc.
-    target_modulus_key: str         # "E1_rom_Pa", "E2_HT_Pa", "G12_HT_Pa"
+    name: str
+    target_key: str
+    component: str
+    denominator: float
 
 
-def define_cases() -> list[LoadCase]:
-    cases = []
-
-    eps_a = np.zeros((3, 3))
-    eps_a[2, 2] = EPS_AXIAL
-    cases.append(LoadCase("axial", eps_a, "sigma_zz", "E1_rom_Pa"))
-
-    eps_b = np.zeros((3, 3))
-    eps_b[0, 0] = EPS_TRANSVERSE
-    cases.append(LoadCase("transverse", eps_b, "sigma_xx", "E2_HT_Pa"))
-
-    eps_c = np.zeros((3, 3))
-    # Engineering shear gamma_xz; tensorial component = gamma/2 on each off-diagonal.
-    eps_c[0, 2] = 0.5 * GAMMA_SHEAR
-    eps_c[2, 0] = 0.5 * GAMMA_SHEAR
-    cases.append(LoadCase("shear", eps_c, "sigma_xz", "G12_HT_Pa"))
-
-    return cases
+LOAD_CASES = (
+    LoadCase("axial_z", "E1_ROM_Pa", "sigma_zz", STRAIN),
+    LoadCase("transverse_x", "E2_HT_Pa", "sigma_xx", STRAIN),
+    LoadCase("shear_xz", "G12_HT_Pa", "sigma_xz", STRAIN),
+)
 
 
-def kubc_node_displacements(nodes: np.ndarray, eps: np.ndarray,
-                            face_idx: np.ndarray) -> np.ndarray:
-    """For each node on a face, return u_i = eps_ij * x_j as an (n,3) array."""
-    return nodes[face_idx, :] @ eps.T
+def fmt_f(*values: float) -> str:
+    return "".join(f"{value:20.12g}" for value in values)
 
 
-def write_deck(case: LoadCase, mesh: Mesh, deck_path: Path) -> None:
-    """Emit the OpenRadioss starter+engine deck pair for one loading case.
+def fmt_i(*values: int) -> str:
+    return "".join(f"{value:10d}" for value in values)
 
-    The starter (_0000.rad) carries materials, properties, parts, BCs and
-    /IMPDISP tables. The engine (_0001.rad) carries the implicit-static run
-    control, animation cadence, and stop time.
-    """
-    deck_path.parent.mkdir(parents=True, exist_ok=True)
-    starter = deck_path.with_name(f"{case.name}_0000.rad")
-    engine = deck_path.with_name(f"{case.name}_0001.rad")
 
-    # Build per-node IMPDISP records for every face.
-    impdisp_blocks = []
-    bcs_blocks = []
-    funct_id_counter = 100   # /FUNCT IDs offset to avoid collision
-    impdisp_id_counter = 1
-    for face_name, face_idx in mesh.face_nodes.items():
-        u_face = kubc_node_displacements(mesh.nodes, case.eps_tensor, face_idx)
-        for k_dof in range(3):
-            # One /IMPDISP per node per nonzero DOF; for KUBC every face node
-            # has all three DOFs prescribed (some to zero).
-            for local_i, node_idx in enumerate(face_idx):
-                u_val = u_face[local_i, k_dof]
-                impdisp_blocks.append(
-                    f"/IMPDISP/{impdisp_id_counter}\n"
-                    f"node{node_idx}_dof{k_dof+1}\n"
-                    f"{k_dof+1}  {funct_id_counter}  {node_idx+1}  {u_val:.12e}\n"
-                )
-                impdisp_id_counter += 1
+def shear_modulus(e: float, nu: float) -> float:
+    return e / (2.0 * (1.0 + nu))
 
-    # One ramp function shared by every IMPDISP scaling: 0->1 over t in [0,1].
-    funct_block = (
-        f"/FUNCT/{funct_id_counter}\n"
-        "linear_ramp\n"
-        "0.0  0.0\n"
-        "1.0  1.0\n"
+
+def halpin_tsai(phase: float, matrix: float, vf: float, zeta: float) -> float:
+    ratio = phase / matrix
+    eta = (ratio - 1.0) / (ratio + zeta)
+    return matrix * (1.0 + zeta * eta * vf) / (1.0 - eta * vf)
+
+
+def reference_targets(vf: float) -> dict[str, float]:
+    gf = shear_modulus(E_F, NU_F)
+    gm = shear_modulus(E_M, NU_M)
+    return {
+        "E1_ROM_Pa": vf * E_F + (1.0 - vf) * E_M,
+        "E2_HT_Pa": halpin_tsai(E_F, E_M, vf, ZETA_E2),
+        "G12_HT_Pa": halpin_tsai(gf, gm, vf, ZETA_G12),
+    }
+
+
+def radioss_env() -> dict[str, str]:
+    env = os.environ.copy()
+    env["OR"] = str(OR_ROOT)
+    env["RAD_CFG_PATH"] = str(OR_ROOT / "hm_cfg_files")
+    env["RAD_H3D_PATH"] = str(OR_ROOT / "extlib" / "h3d" / "lib" / "linux64")
+    reader = str(OR_ROOT / "extlib" / "hm_reader" / "linux64")
+    env["LD_LIBRARY_PATH"] = reader + ":" + env.get("LD_LIBRARY_PATH", "")
+    return env
+
+
+def run_cmd(cmd: list[str], cwd: Path, log_lines: list[str]) -> subprocess.CompletedProcess[str]:
+    log_lines.append("$ " + " ".join(cmd))
+    proc = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        env=radioss_env(),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
     )
+    log_lines.append(proc.stdout)
+    return proc
 
-    starter.write_text(
-        STARTER_TEMPLATE.format(
-            case_name=case.name,
-            mesh_inc=str(MESH_INP.with_suffix(".inc").relative_to(STAGE_DIR)),
-            E_F=E_F, NU_F=NU_F, RHO_F=RHO_F,
-            E_M=E_M, NU_M=NU_M, RHO_M=RHO_M,
-            funct_block=funct_block,
-            impdisp_block="\n".join(impdisp_blocks),
+
+def build_mesh() -> MeshData:
+    node_id: dict[tuple[int, int, int], int] = {}
+    nodes = ["/NODE"]
+    nid = 1
+    for k in range(NZ + 1):
+        for j in range(NY + 1):
+            for i in range(NX + 1):
+                node_id[(i, j, k)] = nid
+                x = LX * i / NX
+                y = LY * j / NY
+                z = LZ * k / NZ
+                nodes.append(f"{nid:10d}{x:20.12g}{y:20.12g}{z:20.12g}")
+                nid += 1
+
+    fiber: list[tuple[int, list[int]]] = []
+    matrix: list[tuple[int, list[int]]] = []
+    cx = 0.5 * LX
+    cy = 0.5 * LY
+    eid = 1
+    for k in range(NZ):
+        for j in range(NY):
+            for i in range(NX):
+                conn = [
+                    node_id[(i, j, k)],
+                    node_id[(i + 1, j, k)],
+                    node_id[(i + 1, j + 1, k)],
+                    node_id[(i, j + 1, k)],
+                    node_id[(i, j, k + 1)],
+                    node_id[(i + 1, j, k + 1)],
+                    node_id[(i + 1, j + 1, k + 1)],
+                    node_id[(i, j + 1, k + 1)],
+                ]
+                xc = LX * (i + 0.5) / NX
+                yc = LY * (j + 0.5) / NY
+                if (xc - cx) ** 2 + (yc - cy) ** 2 <= FIBER_RADIUS**2:
+                    fiber.append((eid, conn))
+                else:
+                    matrix.append((eid, conn))
+                eid += 1
+
+    groups = {
+        "x0": sorted(node_id[(0, j, k)] for k in range(NZ + 1) for j in range(NY + 1)),
+        "x1": sorted(node_id[(NX, j, k)] for k in range(NZ + 1) for j in range(NY + 1)),
+        "z0": sorted(node_id[(i, j, 0)] for j in range(NY + 1) for i in range(NX + 1)),
+        "z1": sorted(node_id[(i, j, NZ)] for j in range(NY + 1) for i in range(NX + 1)),
+        "all_y": sorted(node_id[(i, j, k)] for k in range(NZ + 1) for j in range(NY + 1) for i in range(NX + 1)),
+        "anchor_xy": [node_id[(0, 0, 0)]],
+        "anchor_yz": [node_id[(NX, 0, 0)]],
+    }
+    for k in range(NZ + 1):
+        groups[f"zlayer_{k}"] = sorted(node_id[(i, j, k)] for j in range(NY + 1) for i in range(NX + 1))
+
+    vf_actual = len(fiber) / (NX * NY * NZ)
+    return MeshData(nodes=nodes, fiber_bricks=fiber, matrix_bricks=matrix, groups=groups, vf_actual=vf_actual)
+
+
+def group_block(group_id: int, name: str, node_ids: list[int]) -> list[str]:
+    lines = [f"/GRNOD/NODE/{group_id}", name]
+    for i in range(0, len(node_ids), 10):
+        lines.append(fmt_i(*node_ids[i : i + 10]))
+    return lines
+
+
+def material_and_property_blocks() -> list[str]:
+    return [
+        "/MAT/ELAST/1",
+        "IM7_fiber_isotropic",
+        fmt_f(RHO_F, 0.0),
+        fmt_f(E_F, NU_F),
+        "/MAT/ELAST/2",
+        "8552_matrix_isotropic",
+        fmt_f(RHO_M, 0.0),
+        fmt_f(E_M, NU_M),
+        "/PROP/SOLID/1",
+        "fiber_solid",
+        "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
+        fmt_i(24, 0) + f"{1:20d}{0:20d}{0:10d}{0:10d}{0:20d}",
+        "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
+        fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
+        "#             dt_min   istrain      IHKT",
+        fmt_f(0.0) + fmt_i(0, 0),
+        "/PROP/SOLID/2",
+        "matrix_solid",
+        "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
+        fmt_i(24, 0) + f"{1:20d}{0:20d}{0:10d}{0:10d}{0:20d}",
+        "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
+        fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
+        "#             dt_min   istrain      IHKT",
+        fmt_f(0.0) + fmt_i(0, 0),
+    ]
+
+
+def bcs_and_loads(case: LoadCase, mesh: MeshData) -> list[str]:
+    base_groups = {
+        "x0": 100,
+        "x1": 101,
+        "z0": 102,
+        "z1": 103,
+        "all_y": 104,
+        "anchor_xy": 105,
+        "anchor_yz": 106,
+    }
+    lines: list[str] = [
+        "/FUNCT/1",
+        "unit_ramp",
+        fmt_f(0.0, 0.0),
+        fmt_f(RUN_TIME, 1.0),
+    ]
+    if case.name == "axial_z":
+        lines.extend(
+            [
+                "/BCS/1",
+                "z0_fixed_z",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   001 000{0:10d}{base_groups['z0']:10d}",
+                "/BCS/2",
+                "anchor_xy",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   110 000{0:10d}{base_groups['anchor_xy']:10d}",
+                "/BCS/3",
+                "anchor_y",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   010 000{0:10d}{base_groups['anchor_yz']:10d}",
+                "/IMPDISP/1",
+                "z1_axial_z",
+                "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+                f"{1:10d}{'Z':>10}{0:10d}{0:10d}{base_groups['z1']:10d}{0:10d}{0:10d}",
+                "#            Scale_x             Scale_y              Tstart               Tstop",
+                fmt_f(1.0, STRAIN * LZ, 0.0, 0.0),
+            ]
         )
-    )
-    engine.write_text(
-        ENGINE_TEMPLATE.format(case_name=case.name)
-    )
+    elif case.name == "transverse_x":
+        lines.extend(
+            [
+                "/BCS/1",
+                "x0_fixed_x",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   100 000{0:10d}{base_groups['x0']:10d}",
+                "/BCS/2",
+                "anchor_yz",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   011 000{0:10d}{base_groups['anchor_xy']:10d}",
+                "/BCS/3",
+                "anchor_z",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   001 000{0:10d}{base_groups['anchor_yz']:10d}",
+                "/IMPDISP/1",
+                "x1_transverse_x",
+                "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+                f"{1:10d}{'X':>10}{0:10d}{0:10d}{base_groups['x1']:10d}{0:10d}{0:10d}",
+                "#            Scale_x             Scale_y              Tstart               Tstop",
+                fmt_f(1.0, STRAIN * LX, 0.0, 0.0),
+            ]
+        )
+    elif case.name == "shear_xz":
+        lines.extend(
+            [
+                "/BCS/1",
+                "z0_fixed_x",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   100 000{0:10d}{base_groups['z0']:10d}",
+                "/BCS/2",
+                "anchor_yz",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   011 000{0:10d}{base_groups['anchor_xy']:10d}",
+                "/BCS/3",
+                "anchor_y",
+                "#  Tra rot   skew_ID  grnod_ID",
+                f"   010 000{0:10d}{base_groups['anchor_yz']:10d}",
+                "/IMPDISP/1",
+                "z1_shear_x",
+                "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+                f"{1:10d}{'X':>10}{0:10d}{0:10d}{base_groups['z1']:10d}{0:10d}{0:10d}",
+                "#            Scale_x             Scale_y              Tstart               Tstop",
+                fmt_f(1.0, STRAIN * LZ, 0.0, 0.0),
+            ]
+        )
+    else:
+        raise ValueError(case.name)
+
+    for name, gid in base_groups.items():
+        lines.extend(group_block(gid, name, mesh.groups[name]))
+    return lines
 
 
-STARTER_TEMPLATE = """\
-#RADIOSS STARTER
-/BEGIN
-{case_name}
-2026  0
-                  Pa                   m                  kg                   s
-                  Pa                   m                  kg                   s
-/INCLUDE
-{mesh_inc}
-/MAT/LAW1/1
-fiber_T800_IM7
-{RHO_F}
-{E_F}  {NU_F}
-/MAT/LAW1/2
-matrix_8552
-{RHO_M}
-{E_M}  {NU_M}
-/PROP/SOLID/1
-fiber_solid
-0  0  0  0  0  0
-/PROP/SOLID/2
-matrix_solid
-0  0  0  0  0  0
-/PART/1
-fiber_part
-1  1
-/PART/2
-matrix_part
-2  2
-{funct_block}
-{impdisp_block}
-/END
-"""
-
-ENGINE_TEMPLATE = """\
-#RADIOSS ENGINE
-/RUN/{case_name}/1
-1.0
-/IMPL/LINEAR
-/IMPL/SOLVER/2
-/IMPL/PRINT/N-1
-/ANIM/DT
-0.0  1.0
-/ANIM/BRICK/TENS/STRESS
-/ANIM/BRICK/TENS/STRAIN
-/ANIM/BRICK/VOL
-/TH/BRICK/1
-all_bricks
-GRBRIC/ALL  SIGXX  SIGYY  SIGZZ  SIGXY  SIGYZ  SIGZX  EPSXX  EPSYY  EPSZZ  EPSXY  EPSYZ  EPSZX
-/STOP
-"""
-
-
-# ---------------------------------------------------------------------------
-# OpenRadioss invocation (Lima Apptainer wrapper).
-# ---------------------------------------------------------------------------
-
-def load_or_paths() -> dict:
-    if not PATHS_FILE.exists():
-        # Sensible default consistent with master_plan.md section 7.
-        return {
-            "lima_shell": ["limactl", "shell", "apptainer", "--"],
-            "starter": "/OpenRadioss/exec/starter_linuxa64",
-            "engine": "/OpenRadioss/exec/engine_linuxa64",
-            "vtkhdf_converter": "openradioss-to-vtkhdf",
-        }
-    return json.loads(PATHS_FILE.read_text())
-
-
-def run_openradioss(case_name: str, paths: dict, run_dir: Path) -> tuple[int, int]:
-    """Invoke starter then engine on the given case. Returns the two returncodes."""
-    run_dir.mkdir(parents=True, exist_ok=True)
-    starter_cmd = list(paths["lima_shell"]) + [
-        paths["starter"], "-i", f"{case_name}_0000.rad", "-nt", "4"
+def write_starter(case: LoadCase, mesh: MeshData) -> Path:
+    job = f"stage10_{case.name}"
+    lines = [
+        "#RADIOSS STARTER",
+        "/BEGIN",
+        job,
+        "      2023         0",
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        "/TITLE",
+        f"Stage 10 UD mesoscale {case.name}",
+        "/DEF_SOLID",
+        "#  I_SOLID    ISMSTR             ISTRAIN                                  IFRAME",
+        fmt_i(24, 0) + f"{0:20d}{2:40d}",
     ]
-    engine_cmd = list(paths["lima_shell"]) + [
-        paths["engine"], "-i", f"{case_name}_0001.rad", "-nt", "4"
+    lines.extend(material_and_property_blocks())
+    lines.extend(mesh.nodes)
+    lines.extend(["/PART/1", "fiber_part", fmt_i(1, 1, 0), "/BRICK/1"])
+    for eid, conn in mesh.fiber_bricks:
+        lines.append(fmt_i(eid, *conn))
+    lines.extend(["/PART/2", "matrix_part", fmt_i(2, 2, 0), "/BRICK/2"])
+    for eid, conn in mesh.matrix_bricks:
+        lines.append(fmt_i(eid, *conn))
+    lines.extend(bcs_and_loads(case, mesh))
+    lines.extend(["/END", ""])
+    path = RUNS_DIR / f"{job}_0000.rad"
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
+
+
+def write_engine(job: str) -> Path:
+    path = RUNS_DIR / f"{job}_0001.rad"
+    lines = [
+        "#RADIOSS ENGINE",
+        "/ANIM/DT",
+        fmt_f(RUN_TIME, RUN_TIME),
+        "/ANIM/VECT/DISP",
+        "/ANIM/BRICK/TENS/STRESS/ALL",
+        "/ANIM/BRICK/TENS/STRAIN/ALL",
+        "/ANIM/GZIP",
+        "/TFILE/4",
+        fmt_f(RUN_TIME / 20.0),
+        "/RFILE",
+        fmt_i(1000),
+        "/PRINT/-100/55",
+        f"/RUN/{job}/1",
+        fmt_f(RUN_TIME),
+        "/VERS/2023",
+        "",
     ]
-    s = subprocess.run(starter_cmd, cwd=run_dir, capture_output=True, text=True)
-    if s.returncode != 0:
-        return s.returncode, -1
-    e = subprocess.run(engine_cmd, cwd=run_dir, capture_output=True, text=True)
-    return s.returncode, e.returncode
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
 
 
-def convert_anim_to_vtkhdf(case_name: str, paths: dict, run_dir: Path) -> Path:
-    """Run the Kitware openradioss-to-vtkhdf converter on the produced .anim."""
-    anim = next(run_dir.glob(f"{case_name}*A001"))
-    out = run_dir / f"{case_name}.vtkhdf"
-    cmd = [paths["vtkhdf_converter"], anim.as_posix(), out.as_posix()]
-    subprocess.run(cmd, check=True)
+def convert_anim_to_vtk(job: str, log_lines: list[str]) -> Path:
+    anim = RUNS_DIR / f"{job}A001"
+    gz = RUNS_DIR / f"{job}A001.gz"
+    if gz.exists():
+        with gzip.open(gz, "rb") as src, anim.open("wb") as dst:
+            shutil.copyfileobj(src, dst)
+    if not anim.exists():
+        raise FileNotFoundError(f"animation frame not found for {job}")
+    cmd = [str(ANIM_TO_VTK), str(anim)]
+    log_lines.append("$ " + " ".join(cmd))
+    proc = subprocess.run(
+        cmd,
+        cwd=str(RUNS_DIR),
+        env=radioss_env(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if proc.stderr:
+        log_lines.append(proc.stderr.decode("utf-8", errors="replace"))
+    log_lines.append(f"[exit {proc.returncode}]")
+    vtk = RUNS_DIR / f"{job}A001.vtk"
+    if proc.returncode != 0:
+        raise RuntimeError(f"anim_to_vtk failed for {job}")
+    if proc.stdout.lstrip().startswith(b"# vtk"):
+        vtk.write_bytes(proc.stdout[proc.stdout.find(b"# vtk") :])
+    if not vtk.exists():
+        raise FileNotFoundError(f"anim_to_vtk produced no VTK for {job}")
+    return vtk
+
+
+def _cell_array(grid, contains: str):
+    for name in grid.cell_data.keys():
+        if contains in name:
+            return grid.cell_data[name]
+    raise KeyError(f"no cell data containing {contains}; available={list(grid.cell_data.keys())}")
+
+
+def extract_modulus(case: LoadCase, vtk_path: Path) -> float:
+    import pyvista as pv  # type: ignore[import-not-found]
+
+    grid = pv.read(str(vtk_path))
+    stress = np.asarray(_cell_array(grid, "Strs"), dtype=float)
+    if stress.shape[1] >= 9:
+        sigma = {
+            "sigma_xx": stress[:, 0],
+            "sigma_zz": stress[:, 8],
+            "sigma_xz": 0.5 * (stress[:, 2] + stress[:, 6]),
+        }[case.component]
+    else:
+        sigma = {
+            "sigma_xx": stress[:, 0],
+            "sigma_zz": stress[:, 2],
+            "sigma_xz": stress[:, 5],
+        }[case.component]
+    return abs(float(np.mean(sigma))) / case.denominator
+
+
+def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
+    mesh = build_mesh()
+    refs = reference_targets(mesh.vf_actual)
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    log_lines = [
+        f"starter={STARTER}",
+        f"engine={ENGINE}",
+        f"mesh={NX}x{NY}x{NZ}",
+        f"fiber_bricks={len(mesh.fiber_bricks)}",
+        f"matrix_bricks={len(mesh.matrix_bricks)}",
+        f"vf_actual={mesh.vf_actual:.6f}",
+    ]
+    rows: list[dict[str, object]] = []
+    all_started = True
+    all_engine = True
+    all_pass = True
+
+    for case in LOAD_CASES:
+        starter = write_starter(case, mesh)
+        job = starter.name.removesuffix("_0000.rad")
+        engine = write_engine(job)
+        starter_proc = run_cmd([str(STARTER), "-i", starter.name, "-nt", str(N_THREADS)], RUNS_DIR, log_lines)
+        all_started = all_started and starter_proc.returncode == 0
+        engine_rc: int | str = ""
+        modulus: float | str = ""
+        rel_err: float | str = ""
+        vtk_path = ""
+        passed = False
+        if starter_proc.returncode == 0:
+            engine_proc = run_cmd([str(ENGINE), "-i", engine.name, "-nt", str(N_THREADS)], RUNS_DIR, log_lines)
+            engine_rc = engine_proc.returncode
+            all_engine = all_engine and engine_proc.returncode == 0
+            if engine_proc.returncode == 0:
+                vtk = convert_anim_to_vtk(job, log_lines)
+                vtk_path = str(vtk)
+                modulus = extract_modulus(case, vtk)
+                target = refs[case.target_key]
+                rel_err = abs(modulus - target) / target
+                passed = rel_err <= HT_REL_TOL
+        all_pass = all_pass and passed
+        rows.append(
+            {
+                "case": case.name,
+                "quantity": case.target_key,
+                "solver_Pa": modulus,
+                "target_Pa": refs[case.target_key],
+                "relative_error_pct": "" if rel_err == "" else 100.0 * float(rel_err),
+                "starter_rc": starter_proc.returncode,
+                "engine_rc": engine_rc,
+                "vtk_path": vtk_path,
+                "verdict": "PASS" if passed else "FAIL",
+            }
+        )
+
+    metrics = {
+        "mesh": f"{NX}x{NY}x{NZ} HEXA8 voxel cell",
+        "fiber_volume_fraction": mesh.vf_actual,
+        "fiber_bricks": len(mesh.fiber_bricks),
+        "matrix_bricks": len(mesh.matrix_bricks),
+        "starter_all_ok": all_started,
+        "engine_all_ok": all_engine,
+        "modulus_gate_evaluated": True,
+        "modulus_gate_pass": all_pass,
+        "max_relative_error_pct": max(
+            float(row["relative_error_pct"]) for row in rows if row["relative_error_pct"] != ""
+        ),
+    }
+    return metrics, rows, log_lines
+
+
+def _format_fail_rows(rows: list[dict[str, object]]) -> list[str]:
+    out: list[str] = []
+    for row in rows:
+        if row["verdict"] == "FAIL":
+            if row["solver_Pa"] == "":
+                out.append(f"- {row['case']}: solver did not complete; starter_rc={row['starter_rc']}, engine_rc={row['engine_rc']}.")
+            else:
+                out.append(
+                    f"- {row['case']}: FEM `{float(row['solver_Pa']) / 1.0e9:.3f} GPa`, "
+                    f"target `{float(row['target_Pa']) / 1.0e9:.3f} GPa`, "
+                    f"error `{float(row['relative_error_pct']):.3f}%`."
+                )
     return out
 
 
-# ---------------------------------------------------------------------------
-# Post-processing: read stress and strain, volume-average, derive moduli.
-# ---------------------------------------------------------------------------
+def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log_lines: list[str], wall_s: float) -> None:
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+    with (RESULTS_DIR / "effective_moduli.csv").open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
 
-def read_field_stress_strain(vtkhdf_path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Return (stress_per_cell (M,3,3), strain_per_cell (M,3,3), volumes (M,))."""
-    import pyvista as pv
-    grid = pv.read(vtkhdf_path.as_posix())
-    cell_data = grid.cell_data
+    git_sha = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(ROOT_DIR),
+        text=True,
+        stdout=subprocess.PIPE,
+        check=False,
+    ).stdout.strip()
+    verdict = "PASS" if bool(metrics["modulus_gate_pass"]) else "FAIL"
+    results = {
+        "stage": 10,
+        "verdict": verdict,
+        "metrics": {**metrics, "wall_clock_s": wall_s},
+        "reference": {
+            "model": "rule of mixtures for E1; Halpin-Tsai zeta=2 for E2 and zeta=1 for G12",
+            "fiber": {"E_Pa": E_F, "nu": NU_F, "rho": RHO_F},
+            "matrix": {"E_Pa": E_M, "nu": NU_M, "rho": RHO_M},
+        },
+        "tolerance": {"modulus_relative_error": HT_REL_TOL},
+        "git_sha": git_sha,
+    }
+    (RESULTS_DIR / "results.json").write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
 
-    # OpenRadioss VTKHDF stores stress as a 6-component symmetric tensor or as
-    # six scalar fields named SIGXX, SIGYY, SIGZZ, SIGXY, SIGYZ, SIGZX. The
-    # converter version controls which; we accept either.
-    keys = list(cell_data.keys())
-    if "Stress" in keys:
-        sig6 = np.asarray(cell_data["Stress"])  # (M, 6)
-    else:
-        sig6 = np.column_stack([
-            cell_data["SIGXX"], cell_data["SIGYY"], cell_data["SIGZZ"],
-            cell_data["SIGXY"], cell_data["SIGYZ"], cell_data["SIGZX"],
-        ])
-    if "Strain" in keys:
-        eps6 = np.asarray(cell_data["Strain"])
-    else:
-        eps6 = np.column_stack([
-            cell_data["EPSXX"], cell_data["EPSYY"], cell_data["EPSZZ"],
-            cell_data["EPSXY"], cell_data["EPSYZ"], cell_data["EPSZX"],
-        ])
-    sigma = voigt6_to_tensor(sig6)
-    epsilon = voigt6_to_tensor(eps6, engineering_shear=True)
-    volumes = np.asarray(grid.compute_cell_sizes(volume=True).cell_data["Volume"])
-    return sigma, epsilon, volumes
+    (FIGURES_DIR / "stage10_ud_mesoscale.typ").write_text(
+        "\n".join(
+            [
+                '#set page(width: 170mm, height: auto, margin: 10mm)',
+                '#let rows = csv("../results/effective_moduli.csv")',
+                '#text(size: 12pt, weight: "bold")[Stage 10 UD mesoscale moduli]',
+                '#v(5pt)',
+                '#table(',
+                '  columns: (34mm, 34mm, 34mm, 28mm, 24mm),',
+                '  stroke: rgb("#5C5C5C"),',
+                '  [Case], [FEM Pa], [Target Pa], [Error %], [Verdict],',
+                '  ..rows.map(r => ([#r.at(0)], [#r.at(2)], [#r.at(3)], [#r.at(4)], [#r.at(8)])).flatten(),',
+                ')',
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
 
-
-def voigt6_to_tensor(v6: np.ndarray, engineering_shear: bool = False) -> np.ndarray:
-    """Convert (M,6) Voigt = [xx, yy, zz, xy, yz, zx] to (M,3,3) symmetric tensor."""
-    M = v6.shape[0]
-    T = np.zeros((M, 3, 3))
-    T[:, 0, 0] = v6[:, 0]
-    T[:, 1, 1] = v6[:, 1]
-    T[:, 2, 2] = v6[:, 2]
-    factor = 0.5 if engineering_shear else 1.0
-    T[:, 0, 1] = T[:, 1, 0] = v6[:, 3] * factor
-    T[:, 1, 2] = T[:, 2, 1] = v6[:, 4] * factor
-    T[:, 0, 2] = T[:, 2, 0] = v6[:, 5] * factor
-    return T
-
-
-def volume_average(field: np.ndarray, volumes: np.ndarray) -> np.ndarray:
-    """Volume-weighted average of a per-cell tensor field. Returns (3,3)."""
-    V = volumes.sum()
-    return np.einsum("mij,m->ij", field, volumes) / V
-
-
-def derive_modulus(case: LoadCase, sigma_avg: np.ndarray) -> float:
-    """Recover the effective constant for this loading case (spec section 5)."""
-    if case.name == "axial":
-        return sigma_avg[2, 2] / EPS_AXIAL
-    if case.name == "transverse":
-        return sigma_avg[0, 0] / EPS_TRANSVERSE
-    if case.name == "shear":
-        # G_12 = <sigma_xz> / gamma_xz; engineering shear gamma_xz = 2 * eps_xz.
-        return sigma_avg[0, 2] / GAMMA_SHEAR
-    raise ValueError(case.name)
-
-
-# ---------------------------------------------------------------------------
-# Pass criteria.
-# ---------------------------------------------------------------------------
-
-def check_pass(case_name: str, value_Pa: float, refs: dict) -> dict:
-    """Apply the four pass conditions of spec section 8 to one case."""
-    if case_name == "axial":
-        target = refs["E1_rom_Pa"]
-        rel_err = abs(value_Pa - target) / target
-        in_HT_band = rel_err <= HT_REL_TOL
-        # E_1 bracket against HS bounds (axial uses Voigt/Reuss-like, but we
-        # at least sanity-check that the value is sensible - between 0 and the
-        # ROM upper estimate).
-        in_HS = 0.0 < value_Pa < target * (1.0 + HT_REL_TOL + HS_TOL)
-        return dict(target=target, rel_err=rel_err,
-                    HS_lower=float("nan"), HS_upper=float("nan"),
-                    in_HT_band=in_HT_band, in_HS_bracket=in_HS,
-                    pass_=in_HT_band and in_HS)
-
-    if case_name == "transverse":
-        target = refs["E2_HT_Pa"]
-        rel_err = abs(value_Pa - target) / target
-        in_HT_band = rel_err <= HT_REL_TOL
-        # Map E_2 to a comparable isotropic Young's via E ~ 9KG/(3K+G); for the
-        # bracket we use the HS bounds on the equivalent Young's modulus,
-        # E_lo = 9 K_lo G_lo / (3 K_lo + G_lo) etc.
-        E_lo = 9 * refs["hs_K_lower_Pa"] * refs["hs_G_lower_Pa"] / (
-            3 * refs["hs_K_lower_Pa"] + refs["hs_G_lower_Pa"])
-        E_up = 9 * refs["hs_K_upper_Pa"] * refs["hs_G_upper_Pa"] / (
-            3 * refs["hs_K_upper_Pa"] + refs["hs_G_upper_Pa"])
-        in_HS = (E_lo * (1.0 - HS_TOL)) <= value_Pa <= (E_up * (1.0 + HS_TOL))
-        return dict(target=target, rel_err=rel_err,
-                    HS_lower=E_lo, HS_upper=E_up,
-                    in_HT_band=in_HT_band, in_HS_bracket=in_HS,
-                    pass_=in_HT_band and in_HS)
-
-    if case_name == "shear":
-        target = refs["G12_HT_Pa"]
-        rel_err = abs(value_Pa - target) / target
-        in_HT_band = rel_err <= HT_REL_TOL
-        in_HS = (refs["hs_G_lower_Pa"] * (1.0 - HS_TOL)) <= value_Pa <= (
-            refs["hs_G_upper_Pa"] * (1.0 + HS_TOL))
-        return dict(target=target, rel_err=rel_err,
-                    HS_lower=refs["hs_G_lower_Pa"], HS_upper=refs["hs_G_upper_Pa"],
-                    in_HT_band=in_HT_band, in_HS_bracket=in_HS,
-                    pass_=in_HT_band and in_HS)
-
-    raise ValueError(case_name)
+    blocker = THIS_DIR / "blocker.md"
+    if verdict == "PASS" and blocker.exists():
+        blocker.unlink()
+    elif verdict != "PASS":
+        blocker.write_text(
+            "\n".join(
+                [
+                    "# Stage 10 Blocker - UD mesoscale modulus mismatch",
+                    "",
+                    "Author: J.C. Vaught",
+                    "",
+                    "The isotropic fiber/matrix HEXA8 mesoscale cell starts, runs, converts to VTK, and post-processes, but one or more effective moduli missed the 5 percent gate.",
+                    "",
+                    *(_format_fail_rows(rows) or ["- No completed solver rows were available."]),
+                    "",
+                    f"Verdict: `{verdict}`.",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+    RUN_LOG.write_text("\n".join(log_lines), encoding="utf-8")
 
 
-# ---------------------------------------------------------------------------
-# Driver.
-# ---------------------------------------------------------------------------
-
-def main(skip_solver: bool = False) -> int:
-    """Run all three KUBC cases end to end. Returns 0 on overall pass."""
-    print("Stage 10: UD direct mesoscale (KUBC, reframed).")
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    FIG_DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-    print(f"  Loading mesh: {MESH_INP.name}")
-    mesh = load_mesh(MESH_INP)
-    V_f_actual = actual_volume_fraction(mesh)
-    n_elements = mesh.cell_volumes.size
-    print(f"  Volume fraction (actual)  : {V_f_actual:.4f} (target {V_F_TARGET})")
-    print(f"  Element count             : {n_elements}")
-    print(f"  Face nodes (XMIN, XMAX, ...): "
-          f"{[len(v) for v in mesh.face_nodes.values()]}")
-    if abs(V_f_actual - V_F_TARGET) > 0.005:
-        print(f"  WARNING: V_f off target by > 0.5 percent. "
-              "Check mesh boundary fiber clipping (spec section 2.4).")
-
-    refs = reference_targets()
-    print(f"  Halpin-Tsai targets:")
-    print(f"    E_1 (ROM)    = {refs['E1_rom_Pa']/1e9:.2f} GPa")
-    print(f"    E_2 (HT z=2) = {refs['E2_HT_Pa']/1e9:.2f} GPa")
-    print(f"    G_12 (HT z=1) = {refs['G12_HT_Pa']/1e9:.2f} GPa")
-
-    paths = load_or_paths()
-    cases = define_cases()
-    rows = []
-
-    for case in cases:
-        print(f"\n  Case: {case.name}")
-        deck_dir = DECK_DIR / case.name
-        run_dir = RUN_DIR / case.name
-        run_dir.mkdir(parents=True, exist_ok=True)
-        write_deck(case, mesh, deck_dir / f"{case.name}_0000.rad")
-        # Stage decks into the run directory next to the included mesh.
-        for f in deck_dir.glob("*.rad"):
-            shutil.copy(f, run_dir / f.name)
-        if not skip_solver:
-            rc_starter, rc_engine = run_openradioss(case.name, paths, run_dir)
-            print(f"    starter rc={rc_starter}, engine rc={rc_engine}")
-            if rc_starter != 0 or rc_engine != 0:
-                print(f"    OpenRadioss returned nonzero; aborting case.")
-                continue
-            vtk = convert_anim_to_vtkhdf(case.name, paths, run_dir)
-        else:
-            vtk = run_dir / f"{case.name}.vtkhdf"
-            if not vtk.exists():
-                print(f"    skip_solver=True but {vtk} missing; cannot post-process.")
-                continue
-
-        sigma_field, epsilon_field, volumes = read_field_stress_strain(vtk)
-        sigma_avg = volume_average(sigma_field, volumes)
-        epsilon_avg = volume_average(epsilon_field, volumes)
-        modulus = derive_modulus(case, sigma_avg)
-
-        verdict = check_pass(case.name, modulus, refs)
-        print(f"    extracted  = {modulus/1e9:.3f} GPa")
-        print(f"    target     = {verdict['target']/1e9:.3f} GPa "
-              f"(rel err {verdict['rel_err']*100:.2f} percent)")
-        print(f"    HS bracket = [{verdict['HS_lower']/1e9:.3f}, "
-              f"{verdict['HS_upper']/1e9:.3f}] GPa")
-        print(f"    pass       = {verdict['pass_']}")
-
-        rows.append(dict(
-            case=case.name,
-            modulus_FEM_GPa=modulus / 1e9,
-            target_GPa=verdict["target"] / 1e9,
-            rel_err=verdict["rel_err"],
-            HS_lower_GPa=verdict["HS_lower"] / 1e9 if not math.isnan(verdict["HS_lower"]) else "",
-            HS_upper_GPa=verdict["HS_upper"] / 1e9 if not math.isnan(verdict["HS_upper"]) else "",
-            in_HT_band=verdict["in_HT_band"],
-            in_HS_bracket=verdict["in_HS_bracket"],
-            pass_=verdict["pass_"],
-            V_f_actual=V_f_actual,
-            n_elements=n_elements,
-        ))
-
-    # Write CSV outputs.
-    csv_path = OUT_DIR / "effective_moduli.csv"
-    with csv_path.open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()) if rows else [])
-        w.writeheader()
-        w.writerows(rows)
-    print(f"\n  Wrote {csv_path}")
-
-    # Mirror to the figures/data area for the Typst-CeTZ summary plot.
-    shutil.copy(csv_path, FIG_DATA_DIR / "stage_10_summary.csv")
-
-    overall_pass = bool(rows) and all(r["pass_"] for r in rows)
-    print(f"\nStage 10 overall pass: {overall_pass}")
-    return 0 if overall_pass else 1
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--all", action="store_true")
+    args = parser.parse_args()
+    if not args.all:
+        parser.error("use --all")
+    start = time.perf_counter()
+    metrics, rows, log_lines = run_stage()
+    wall_s = time.perf_counter() - start
+    write_outputs(metrics, rows, log_lines, wall_s)
+    verdict = "PASS" if bool(metrics["modulus_gate_pass"]) else "FAIL"
+    print(json.dumps({"stage": 10, "verdict": verdict, "wall_clock_s": wall_s}, indent=2))
+    return 0 if verdict == "PASS" else 1
 
 
 if __name__ == "__main__":
-    skip = "--skip-solver" in sys.argv
-    sys.exit(main(skip_solver=skip))
+    raise SystemExit(main())

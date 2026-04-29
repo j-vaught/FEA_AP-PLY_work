@@ -1,0 +1,33 @@
+{
+  "stage": 10,
+  "verdict": "FAIL",
+  "metrics": {
+    "mesh": "20x20x4 HEXA8 voxel cell",
+    "fiber_volume_fraction": 0.6,
+    "fiber_bricks": 960,
+    "matrix_bricks": 640,
+    "starter_all_ok": true,
+    "engine_all_ok": true,
+    "modulus_gate_evaluated": true,
+    "modulus_gate_pass": false,
+    "max_relative_error_pct": 99.93357300964362,
+    "wall_clock_s": 6.284515810199082
+  },
+  "reference": {
+    "model": "rule of mixtures for E1; Halpin-Tsai zeta=2 for E2 and zeta=1 for G12",
+    "fiber": {
+      "E_Pa": 230000000000.0,
+      "nu": 0.2,
+      "rho": 1780.0
+    },
+    "matrix": {
+      "E_Pa": 4080000000.0,
+      "nu": 0.39,
+      "rho": 1300.0
+    }
+  },
+  "tolerance": {
+    "modulus_relative_error": 0.05
+  },
+  "git_sha": "55a43604627c36d123c37a11cb19ecda6f9f0896"
+}
