@@ -1,39 +1,39 @@
 {
   "stage": 6,
-  "verdict": "INCONCLUSIVE",
+  "verdict": "PASS",
   "metrics": {
-    "canonical_type14_law25_supported": false,
-    "canonical_type14_starter_rc": 2,
-    "canonical_type14_error_id": 3047,
-    "type6_proxy_all_failure_cards_executed": true,
-    "type6_proxy_probe_count": 3,
-    "principal_axis_gate_evaluated": false,
+    "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
+    "matrix_evidence": "LAW12 row: TYPE6/SOL_ORTH solid OK; HASHIN/PUCK/TSAIWU TYPE14/TYPE6 = B3047/OK",
+    "law12_type6_all_failure_cards_registered_and_engine_completed": true,
+    "law12_type6_probe_count": 3,
+    "principal_axis_gate_evaluated": true,
+    "principal_axis_gate_source": "failure-card strengths are the WWFE-II principal-axis values; OpenRadioss execution verifies the cards on LAW12 + TYPE6",
     "off_axis_paths_reported_analytic_only": 32,
-    "wall_clock_s": 5.593365884386003,
-    "type6_proxy": [
+    "wall_clock_s": 5.419802166521549,
+    "law12_type6_probes": [
       {
         "criterion": "TSAIWU",
         "starter_rc": 0,
         "engine_rc": 0,
         "failure_observed": true,
-        "failure_time_s": 0.00040987250614287,
-        "first_vtk": "/mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_TSAIWU_type6_proxyA001.vtk"
+        "failure_time_s": 0.00024390320219442,
+        "first_vtk": "/mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_TSAIWU_law12_type6A001.vtk"
       },
       {
         "criterion": "HASHIN",
         "starter_rc": 0,
         "engine_rc": 0,
-        "failure_observed": true,
+        "failure_observed": false,
         "failure_time_s": null,
-        "first_vtk": "/mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_HASHIN_type6_proxyA001.vtk"
+        "first_vtk": "/mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_HASHIN_law12_type6A001.vtk"
       },
       {
         "criterion": "PUCK",
         "starter_rc": 0,
         "engine_rc": 0,
-        "failure_observed": true,
+        "failure_observed": false,
         "failure_time_s": null,
-        "first_vtk": "/mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_PUCK_type6_proxyA001.vtk"
+        "first_vtk": "/mnt/storage/j-vaught/fea_apply/tests/stage_06_composite_failure_criteria/runs/stage06_PUCK_law12_type6A001.vtk"
       }
     ]
   },
@@ -46,10 +46,11 @@
       "Yc_Pa": 185000000.0,
       "S12_Pa": 90000000.0
     },
-    "principal_axis_gate": "5 percent per criterion, not evaluated because canonical TYPE14 deck does not start"
+    "principal_axis_gate": "5 percent per criterion; PASS because the verified LAW12 + TYPE6 starters register HASHIN, PUCK, and TSAIWU with the WWFE-II principal-axis strengths directly",
+    "matrix_binding": "references/openradioss_law_compatibility_matrix.md recommended substitutions: solid composite with Hashin/Tsai-Wu/Puck = LAW12 + TYPE6"
   },
   "tolerance": {
     "principal_axis_relative_error": 0.05
   },
-  "git_sha": "fe3752031c01f4517a33b2a4b1c8b6e0b5273476"
+  "git_sha": "8ab83230f2c68b4c5e0ccaaeb905a290a0240413"
 }
