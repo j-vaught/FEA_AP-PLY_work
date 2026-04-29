@@ -1,0 +1,3 @@
+run,theta_deg,reference_modulus_pa,canonical_property,canonical_starter_rc,canonical_status,proxy_property,proxy_starter_rc,solver_modulus_pa,relative_error_pct,verdict
+7A,0.0,171400000000.0,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
+7B,45.0,13277196220.353676,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE

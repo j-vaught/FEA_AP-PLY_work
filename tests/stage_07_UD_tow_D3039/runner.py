@@ -1,42 +1,14 @@
-"""
-Stage 07 runner. ASTM D3039 unidirectional tow tension on IM7/8552 in
-OpenRadioss, implicit static, /MAT/LAW25 on /PROP/TYPE14 solid HEXA8.
+"""Stage 07 - ASTM D3039 UD tow tension capability probe.
 
 Author: J.C. Vaught
-Date: 2026-04-29
 
-Usage
------
-    python runner.py                    # both 7A (0 deg) and 7B (45 deg)
-    python runner.py --only 7A          # on-axis only
-    python runner.py --only 7B          # off-axis only
-    python runner.py --dry-run          # template decks but don't launch
-    python runner.py --refine           # rerun with h/2 width refinement
-    python runner.py --no-lima          # call starter/engine on PATH
-                                        # directly, skipping Lima shell
-
-What this script does
----------------------
-1. Templates the OpenRadioss starter / engine .rad decks for both runs
-   (psi = 0 deg and psi = 45 deg) using the IM7/8552 Soden 1998 card.
-2. Generates the structured HEXA8 mesh inline (no GMSH dependency for
-   this stage).
-3. Invokes the OpenRadioss starter and engine binaries inside the
-   user's documented Lima Apptainer environment (master plan section
-   7) unless --no-lima is passed.
-4. Parses the resulting T01 time-history file, extracts apparent
-   modulus from a least-squares fit of sigma_xx vs eps_xx in the
-   gauge window (spec section 9).
-5. Compares to closed-form: E1 for 7A; the off-axis transformation
-   formula at theta = 45 deg for 7B.
-6. Writes a pass/fail CSV summary and a free-form log.
-
-Hard requirements: solid elements only, SI base. The deck uses the
-OpenRadioss "Mg, mm, s" unit set (mass in megagrams, length in
-millimeters, time in seconds), which gives stress in MPa, density in
-Mg/mm^3 = g/mm^3 * 1e-3 *no wait*: Mg/mm^3 = 1e9 kg/m^3, so density of
-1.58 g/cm^3 = 1580 kg/m^3 = 1.58e-9 Mg/mm^3. We use that conversion
-explicitly in the MAT_PARAMS dict below.
+The canonical stage 07 requirement is /MAT/LAW25 on /PROP/TYPE14 solid
+HEXA8 coupons with the ply frame set by /SKEW/FIX. The OpenRadioss starter
+available on this host rejects LAW25 + TYPE14 before the engine can run, so
+this runner records the canonical 0 deg and 45 deg starter failures and marks
+the stage INCONCLUSIVE. A TYPE6/SOL_ORTH starter proxy is also written and
+started to show that the same material card is accepted on all-solid
+orthotropic properties, but that proxy is not used as a pass substitute.
 """
 
 from __future__ import annotations
@@ -46,539 +18,428 @@ import csv
 import json
 import math
 import os
-import shutil
 import subprocess
-import sys
-from dataclasses import dataclass, field
+import time
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
-
-# ----------------------------------------------------------------------
-# 1. Material card. IM7/8552 from Soden, Hinton, Kaddour 1998
-#    (and Kaddour-Hinton 2013 for nu23). Units in the deck are Mg, mm, s
-#    so stress is MPa, density is Mg/mm^3.
-# ----------------------------------------------------------------------
-
-MAT_PARAMS: dict[str, float] = {
-    # density: 1580 kg/m^3 = 1.58e-9 Mg/mm^3
-    "rho": 1.58e-9,
-    # stiffness, MPa
-    "E1": 171_000.0,
-    "E2": 9_080.0,
-    "E3": 9_080.0,
-    "nu12": 0.32,
-    "nu13": 0.32,
-    "nu23": 0.50,
-    "G12": 5_290.0,
-    "G13": 5_290.0,
-    # G23 derived: E2 / (2 * (1 + nu23)) = 9080 / 3 = 3026.67
-    "G23": 9_080.0 / (2.0 * (1.0 + 0.50)),
-    # strengths, MPa  (used by LAW25 even in linear regime; not exercised
-    # at the 0.2 percent strain we apply here, but kept so the deck is
-    # reusable downstream).
-    "Xt": 2_326.0,
-    "Xc": 1_700.0,    # Soden 1998 IM7/8552 longitudinal compressive
-    "Yt": 64.7,
-    "Yc": 200.0,      # Soden 1998 IM7/8552 transverse compressive
-    "S":  92.3,
-}
 
 
-def Ex_offaxis(theta_deg: float, p: dict[str, float]) -> float:
-    """Closed-form off-axis Young's modulus for plane-stress orthotropic
-    UD ply, Jones 1999 / Daniel-Ishai 2006:
+THIS_DIR = Path(__file__).resolve().parent
+ROOT_DIR = THIS_DIR.parents[1]
+RUNS_DIR = THIS_DIR / "runs"
+RESULTS_DIR = THIS_DIR / "results"
+FIGURES_DIR = THIS_DIR / "figures"
+RUN_LOG = THIS_DIR / "run.log"
+CARD_PATH = ROOT_DIR / "references" / "material_cards" / "im7_8552.json"
 
-        1/E_x = c^4/E1 + s^4/E2 + (1/G12 - 2 nu12/E1) c^2 s^2
+OR_ROOT = Path(os.environ.get("OR", "/mnt/storage/j-vaught/openradioss/OpenRadioss")).resolve()
+STARTER = OR_ROOT / "exec" / "starter_linux64_gf"
 
-    Returns E_x in the same units as the inputs (MPa here).
-    """
-    th = math.radians(theta_deg)
-    c2, s2 = math.cos(th) ** 2, math.sin(th) ** 2
-    c4, s4 = c2 * c2, s2 * s2
-    E1, E2, G12, n12 = p["E1"], p["E2"], p["G12"], p["nu12"]
-    inv = c4 / E1 + s4 / E2 + (1.0 / G12 - 2.0 * n12 / E1) * c2 * s2
+
+@dataclass(frozen=True)
+class Material:
+    rho: float
+    e1: float
+    e2: float
+    e3: float
+    nu12: float
+    nu13: float
+    nu23: float
+    g12: float
+    g13: float
+    g23: float
+    xt: float
+    xc: float
+    yt: float
+    yc: float
+    s12: float
+
+
+@dataclass(frozen=True)
+class Coupon:
+    name: str
+    theta_deg: float
+    length: float
+    width: float
+    thickness: float
+    nx: int
+    ny: int
+    nz: int
+
+
+COUPONS = (
+    Coupon("7A", 0.0, 0.250, 0.015, 0.001, 16, 4, 1),
+    Coupon("7B", 45.0, 0.250, 0.025, 0.001, 16, 6, 1),
+)
+
+
+def fmt_f(*values: float) -> str:
+    return "".join(f"{value:20.12g}" for value in values)
+
+
+def fmt_i(*values: int) -> str:
+    return "".join(f"{value:10d}" for value in values)
+
+
+def load_material() -> Material:
+    data = json.loads(CARD_PATH.read_text(encoding="utf-8"))
+    elastic = data["elastic"]
+    strength = data["strength"]
+    return Material(
+        rho=float(elastic["density_kg_m3"]),
+        e1=float(elastic["E1_Pa"]),
+        e2=float(elastic["E2_Pa"]),
+        e3=float(elastic["E3_Pa"]),
+        nu12=float(elastic["nu12"]),
+        nu13=float(elastic["nu13"]),
+        nu23=float(elastic["nu23"]),
+        g12=float(elastic["G12_Pa"]),
+        g13=float(elastic["G13_Pa"]),
+        g23=float(elastic["G23_Pa"]),
+        xt=float(strength["Xt_Pa"]),
+        xc=float(strength["Xc_Pa"]),
+        yt=float(strength["Yt_Pa"]),
+        yc=float(strength["Yc_Pa"]),
+        s12=float(strength["S12_Pa"]),
+    )
+
+
+def ex_offaxis(theta_deg: float, mat: Material) -> float:
+    theta = math.radians(theta_deg)
+    c2 = math.cos(theta) ** 2
+    s2 = math.sin(theta) ** 2
+    inv = (
+        c2 * c2 / mat.e1
+        + s2 * s2 / mat.e2
+        + (1.0 / mat.g12 - 2.0 * mat.nu12 / mat.e1) * c2 * s2
+    )
     return 1.0 / inv
 
 
-# ----------------------------------------------------------------------
-# 2. Per-run configuration
-# ----------------------------------------------------------------------
-
-@dataclass
-class RunCfg:
-    name: str           # "7A" or "7B"
-    theta_deg: float    # 0 or 45
-    L: float            # coupon length, mm
-    w: float            # coupon width, mm
-    t: float            # coupon thickness, mm
-    nx: int             # elements along length
-    ny: int             # elements across width
-    nz: int             # elements through thickness
-    Lg: float           # gauge window length, mm (centered at L/2)
-    eps_max: float      # peak applied longitudinal strain
-    n_steps: int        # implicit load steps
+def radioss_env() -> dict[str, str]:
+    env = os.environ.copy()
+    env["OR"] = str(OR_ROOT)
+    env["RAD_CFG_PATH"] = str(OR_ROOT / "hm_cfg_files")
+    env["RAD_H3D_PATH"] = str(OR_ROOT / "extlib" / "h3d" / "lib" / "linux64")
+    reader = str(OR_ROOT / "extlib" / "hm_reader" / "linux64")
+    env["LD_LIBRARY_PATH"] = reader + ":" + env.get("LD_LIBRARY_PATH", "")
+    return env
 
 
-def default_runs() -> list[RunCfg]:
+def run_cmd(cmd: list[str], cwd: Path, log_lines: list[str]) -> subprocess.CompletedProcess[str]:
+    log_lines.append("$ " + " ".join(cmd))
+    proc = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        env=radioss_env(),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+    )
+    log_lines.append(proc.stdout)
+    return proc
+
+
+def law25_block(mat: Material) -> list[str]:
     return [
-        RunCfg(name="7A", theta_deg=0.0,
-               L=250.0, w=15.0, t=1.0,
-               nx=80, ny=8,  nz=1,
-               Lg=100.0, eps_max=2.0e-3, n_steps=5),
-        RunCfg(name="7B", theta_deg=45.0,
-               L=250.0, w=25.0, t=1.0,
-               nx=80, ny=12, nz=1,
-               Lg=100.0, eps_max=2.0e-3, n_steps=5),
+        "/MAT/LAW25/1",
+        "IM7_8552_canonical_Soden_WWFEII",
+        "#              RHO_I",
+        fmt_f(mat.rho),
+        "#                E11                 E22                NU12     Iform                           E33",
+        fmt_f(mat.e1, mat.e2, mat.nu12) + fmt_i(0) + f"{mat.e3:20.12g}",
+        "#                G12                 G23                 G31              EPS_f1              EPS_f2",
+        fmt_f(mat.g12, mat.g23, mat.g13, 0.0, 0.0),
+        "#             EPS_t1              EPS_m1              EPS_t2              EPS_m2                dmax",
+        fmt_f(0.0, 0.0, 0.0, 0.0, 1.0),
+        "#              Wpmax               Wpref      Ioff                         ratio",
+        fmt_f(0.0, 0.0) + fmt_i(0) + f"{0.0:20.12g}",
+        "#                  b                   n                fmax",
+        fmt_f(0.0, 0.0, 0.0),
+        "#            sig_1yt             sig_2yt             sig_1yc             sig_2yc               alpha",
+        fmt_f(mat.xt, mat.yt, mat.xc, mat.yc, 0.0),
+        "#           sig_12yc            sig_12yt                c_12          Eps_rate_0       ICC",
+        fmt_f(mat.s12, mat.s12, 0.0, 0.0) + fmt_i(0),
+        "#          GAMMA_ini           GAMMA_max               d3max",
+        fmt_f(0.0, 0.0, 0.0),
+        "#  Fsmooth                Fcut",
+        fmt_i(0) + f"{0.0:20.12g}",
     ]
 
 
-# ----------------------------------------------------------------------
-# 3. Mesh generation. Structured HEXA8, lexicographic node numbering.
-#    Node id = 1 + i + (nx+1)*j + (nx+1)*(ny+1)*k, 1-based.
-#    Brick connectivity follows the OpenRadioss /BRICK convention:
-#    n1..n4 form the bottom face (z = z_k) ccw seen from +z,
-#    n5..n8 form the top face (z = z_{k+1}) ccw seen from +z.
-# ----------------------------------------------------------------------
-
-def gen_mesh(cfg: RunCfg) -> tuple[list[tuple[int, float, float, float]],
-                                   list[tuple[int, list[int]]],
-                                   list[int],   # gripA face nodes (x=0)
-                                   list[int],   # gripB face nodes (x=L)
-                                   list[int],   # gauge window node line at x=x1
-                                   list[int]]:  # gauge window node line at x=x2
-    nx, ny, nz = cfg.nx, cfg.ny, cfg.nz
-    L, w, t = cfg.L, cfg.w, cfg.t
-    Lg = cfg.Lg
-
-    # node coords
-    nodes: list[tuple[int, float, float, float]] = []
-    nid_of = {}
-    nid = 0
-    for k in range(nz + 1):
-        for j in range(ny + 1):
-            for i in range(nx + 1):
+def mesh_blocks(coupon: Coupon) -> tuple[list[str], list[int], list[int]]:
+    nodes: list[str] = ["/NODE"]
+    node_id: dict[tuple[int, int, int], int] = {}
+    nid = 1
+    for k in range(coupon.nz + 1):
+        for j in range(coupon.ny + 1):
+            for i in range(coupon.nx + 1):
+                node_id[(i, j, k)] = nid
+                x = coupon.length * i / coupon.nx
+                y = coupon.width * (j / coupon.ny - 0.5)
+                z = coupon.thickness * (k / coupon.nz - 0.5)
+                nodes.append(f"{nid:10d}{x:20.12g}{y:20.12g}{z:20.12g}")
                 nid += 1
-                x = L * i / nx
-                y = w * j / ny
-                z = t * k / nz
-                nodes.append((nid, x, y, z))
-                nid_of[(i, j, k)] = nid
 
-    # bricks
-    bricks: list[tuple[int, list[int]]] = []
-    eid = 0
-    for k in range(nz):
-        for j in range(ny):
-            for i in range(nx):
+    bricks = ["/BRICK/1"]
+    eid = 1
+    for k in range(coupon.nz):
+        for j in range(coupon.ny):
+            for i in range(coupon.nx):
+                conn = [
+                    node_id[(i, j, k)],
+                    node_id[(i + 1, j, k)],
+                    node_id[(i + 1, j + 1, k)],
+                    node_id[(i, j + 1, k)],
+                    node_id[(i, j, k + 1)],
+                    node_id[(i + 1, j, k + 1)],
+                    node_id[(i + 1, j + 1, k + 1)],
+                    node_id[(i, j + 1, k + 1)],
+                ]
+                bricks.append(fmt_i(eid, *conn))
                 eid += 1
-                n1 = nid_of[(i,     j,     k)]
-                n2 = nid_of[(i + 1, j,     k)]
-                n3 = nid_of[(i + 1, j + 1, k)]
-                n4 = nid_of[(i,     j + 1, k)]
-                n5 = nid_of[(i,     j,     k + 1)]
-                n6 = nid_of[(i + 1, j,     k + 1)]
-                n7 = nid_of[(i + 1, j + 1, k + 1)]
-                n8 = nid_of[(i,     j + 1, k + 1)]
-                bricks.append((eid, [n1, n2, n3, n4, n5, n6, n7, n8]))
 
-    # node sets
-    gripA = [nid_of[(0,  j, k)] for k in range(nz + 1) for j in range(ny + 1)]
-    gripB = [nid_of[(nx, j, k)] for k in range(nz + 1) for j in range(ny + 1)]
-
-    # gauge window: pick i indices closest to x1 = (L-Lg)/2 and x2 = (L+Lg)/2
-    x1, x2 = (L - Lg) / 2.0, (L + Lg) / 2.0
-    i1 = round(x1 / L * nx)
-    i2 = round(x2 / L * nx)
-    gauge_x1 = [nid_of[(i1, j, k)] for k in range(nz + 1) for j in range(ny + 1)]
-    gauge_x2 = [nid_of[(i2, j, k)] for k in range(nz + 1) for j in range(ny + 1)]
-
-    return nodes, bricks, gripA, gripB, gauge_x1, gauge_x2
+    left = [node_id[(0, j, k)] for k in range(coupon.nz + 1) for j in range(coupon.ny + 1)]
+    right = [node_id[(coupon.nx, j, k)] for k in range(coupon.nz + 1) for j in range(coupon.ny + 1)]
+    return nodes + ["/PART/1", "ud_coupon", fmt_i(1, 1, 0)] + bricks, left, right
 
 
-# ----------------------------------------------------------------------
-# 4. Deck templating. We deliberately keep this as direct string
-#    formatting rather than Jinja2 to avoid an extra dependency for
-#    this stage. The OpenRadioss starter free-format reader tolerates
-#    mild whitespace variation; column-strict cards (LAW25, PROP) are
-#    written with explicit field widths.
-# ----------------------------------------------------------------------
-
-def fmt_node_block(nodes) -> str:
-    return "\n".join(f"{nid:10d}{x:20.7f}{y:20.7f}{z:20.7f}"
-                     for (nid, x, y, z) in nodes)
+def group_block(group_id: int, name: str, node_ids: list[int]) -> list[str]:
+    lines = [f"/GRNOD/NODE/{group_id}", name]
+    for i in range(0, len(node_ids), 10):
+        lines.append(fmt_i(*node_ids[i : i + 10]))
+    return lines
 
 
-def fmt_brick_block(part_id: int, bricks) -> str:
-    lines = []
-    for eid, nlist in bricks:
-        # /BRICK card: eid, part, n1..n8
-        lines.append(f"{eid:10d}{part_id:10d}" +
-                     "".join(f"{n:10d}" for n in nlist))
-    return "\n".join(lines)
+def skew_block(theta_deg: float) -> list[str]:
+    theta = math.radians(theta_deg)
+    c = math.cos(theta)
+    s = math.sin(theta)
+    return [
+        "/SKEW/FIX/1",
+        f"ply_frame_theta_{theta_deg:.1f}",
+        fmt_f(0.0, 0.0, 0.0),
+        fmt_f(c, s, 0.0),
+        fmt_f(-s, c, 0.0),
+    ]
 
 
-def fmt_grnod_block(node_ids: Iterable[int]) -> str:
-    out = []
-    row = []
-    for nid in node_ids:
-        row.append(f"{nid:10d}")
-        if len(row) == 10:
-            out.append("".join(row))
-            row = []
-    if row:
-        out.append("".join(row))
-    return "\n".join(out)
+def type14_property() -> list[str]:
+    return [
+        "/PROP/TYPE14/1",
+        "canonical_type14_solid_property",
+        "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
+        fmt_i(24, 4) + f"{1:20d}{0:20d}{0:10d}{2:10d}{0.0:20.12g}",
+        "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
+        fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
+        "#             dt_min   istrain      IHKT",
+        fmt_f(0.0) + fmt_i(0, 0),
+    ]
 
 
-def write_starter(path: Path, cfg: RunCfg, mat: dict[str, float]) -> None:
-    nodes, bricks, gripA, gripB, gauge_x1, gauge_x2 = gen_mesh(cfg)
-    u_max = cfg.eps_max * cfg.L
-
-    nodes_block = fmt_node_block(nodes)
-    bricks_block = fmt_brick_block(part_id=1, bricks=bricks)
-    gripA_block = fmt_grnod_block(gripA)
-    gripB_block = fmt_grnod_block(gripB)
-    gauge_x1_block = fmt_grnod_block(gauge_x1)
-    gauge_x2_block = fmt_grnod_block(gauge_x2)
-
-    deck = f"""#RADIOSS STARTER
-/BEGIN
-stage7_{cfg.name}
-      2024         0
-                  Mg                  mm                   s
-                  Mg                  mm                   s
-/UNIT/1
-mass length time
-Mg mm s
-#---1---|---2---|---3---|---4---|---5---|---6---|---7---|---8---|
-/MAT/LAW25/1
-IM7_8552_Soden1998
-{mat['rho']:.6e} {mat['E1']:.4f} {mat['E2']:.4f} {mat['E3']:.4f} {mat['nu12']:.4f} {mat['nu13']:.4f} {mat['nu23']:.4f}
-{mat['G12']:.4f} {mat['G23']:.4f} {mat['G13']:.4f}      1      0
-{mat['Xt']:.4f} {mat['Xc']:.4f} {mat['Yt']:.4f} {mat['Yc']:.4f} {mat['S']:.4f}
-0.0 0.0 0.0 0.0 0.0
-0.0 0.0 0.0 0.0
-#
-/PROP/TYPE14/1
-solid_UD_psi_{cfg.theta_deg:.1f}
-   1   1   0   0   0   0
-0.0 0.0 0.0 1.0 0.0 0.0   0   1   0   0   0   0
-{cfg.theta_deg:.4f}
-#
-/SKEW/FIX/1
-global
-0.0 0.0 0.0
-1.0 0.0 0.0
-0.0 1.0 0.0
-#
-/NODE
-{nodes_block}
-#
-/BRICK/1
-{bricks_block}
-#
-/PART/1
-ud_coupon
-1 1 0
-#
-/GRNOD/NODE/1
-gripA_face
-{gripA_block}
-/GRNOD/NODE/2
-gripB_face
-{gripB_block}
-/GRNOD/NODE/3
-gauge_x1
-{gauge_x1_block}
-/GRNOD/NODE/4
-gauge_x2
-{gauge_x2_block}
-#
-/BCS/1
-gripA_clamped
-111 111   1
-1
-#
-/BCS/2
-gripB_lateral_only
-011 111   1
-2
-#
-/IMPDISP/1
-gripB_pull_x
-2 1 1
-   1   1   1   0.0   1.0   {u_max:.6f}
-#
-/FUNCT/1
-ramp
-0.0 0.0
-1.0 1.0
-#
-/IMPL/PRINT/N
-1
-/IMPL/SOLVER/1
-0  0  3  0  0
-/IMPL/NONLIN/SMDISP
-{cfg.n_steps}  0.0  1.0  1.0e-3  1.0e-6  20  0
-/IMPL/DT/STOP
-1.0e-12   1.0
-/IMPL/DTINI
-{1.0 / cfg.n_steps:.6f}
-#
-/TH/NODE/1
-gripB_reaction
-2 0 0
-DX FX
-/TH/NODE/2
-gauge_x1_th
-3 0 0
-DX
-/TH/NODE/3
-gauge_x2_th
-4 0 0
-DX
-#
-/ANIM/BRICK/TENS/STRESS
-/ANIM/BRICK/TENS/STRAIN
-/ANIM/DT
-0.2
-#
-/END
-"""
-    path.write_text(deck)
+def type6_property() -> list[str]:
+    return [
+        "/PROP/TYPE6/1",
+        "type6_sol_orth_proxy_property",
+        "#   Isolid    Ismstr               Icpre  Itetra10     Inpts   Itetra4    Iframe                  Dn",
+        fmt_i(24, 4) + f"{1:20d}{0:10d}{0:10d}{0:10d}{2:10d}{0.0:20.12g}",
+        "#                 qa                  qb                   h",
+        fmt_f(0.0, 0.0, 0.0),
+        "#                 Vx                  Vy                  Vz   skew_ID        Ip     Iorth",
+        fmt_f(1.0, 0.0, 0.0) + fmt_i(1, 0, 1),
+        "#                Phi                 Px                  Py                  Pz",
+        fmt_f(0.0, 0.0, 0.0, 0.0),
+        "#             dt_min   istrain      IHKT",
+        fmt_f(0.0) + fmt_i(0, 0),
+    ]
 
 
-def write_engine(path: Path, cfg: RunCfg) -> None:
-    deck = f"""#RADIOSS ENGINE
-/RUN/stage7_{cfg.name}/1
-1.0
-/PRINT/-100
-/HIS/DT
-0.05
-/STOP
-0.0  1.0e-3  0.0  0.0
-/END
-"""
-    path.write_text(deck)
+def write_starter(coupon: Coupon, mat: Material, prop: list[str], suffix: str) -> Path:
+    mesh, left, right = mesh_blocks(coupon)
+    job = f"stage07_{coupon.name}_{suffix}"
+    lines = [
+        "#RADIOSS STARTER",
+        "/BEGIN",
+        job,
+        "      2023         0",
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        f"{'kg':>20}{'m':>20}{'s':>20}",
+        "/TITLE",
+        f"Stage 07 {coupon.name} theta {coupon.theta_deg:.1f} deg {suffix}",
+        "/DEF_SOLID",
+        "#  I_SOLID    ISMSTR             ISTRAIN                                  IFRAME",
+        fmt_i(24, 4) + f"{0:20d}{2:40d}",
+    ]
+    lines.extend(law25_block(mat))
+    lines.extend(mesh)
+    lines.extend(prop)
+    lines.extend(skew_block(coupon.theta_deg))
+    lines.extend(
+        [
+            "/BCS/1",
+            "left_grip_x_fixed",
+            "#  Tra rot   skew_ID  grnod_ID",
+            f"   100 000{0:10d}{100:10d}",
+            "/BCS/2",
+            "right_grip_yz_anchor",
+            "#  Tra rot   skew_ID  grnod_ID",
+            f"   011 000{0:10d}{101:10d}",
+            "/FUNCT/1",
+            "unit_ramp",
+            fmt_f(0.0, 0.0),
+            fmt_f(1.0, 1.0),
+            "/IMPDISP/1",
+            "right_grip_x",
+            "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+            f"{1:10d}{'X':>10}{0:10d}{0:10d}{101:10d}{0:10d}{0:10d}",
+            "#            Scale_x             Scale_y              Tstart               Tstop",
+            fmt_f(1.0, 0.002 * coupon.length, 0.0, 0.0),
+        ]
+    )
+    lines.extend(group_block(100, "left_grip", left))
+    lines.extend(group_block(101, "right_grip", right))
+    lines.extend(["/END", ""])
+    path = RUNS_DIR / f"{job}_0000.rad"
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
 
 
-# ----------------------------------------------------------------------
-# 5. Solver invocation. Defaults to Lima Apptainer wrapper per master
-#    plan section 7. The user can override the executable paths and
-#    the wrapper command via env vars.
-# ----------------------------------------------------------------------
+def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
+    mat = load_material()
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    log_lines = [f"material_card={CARD_PATH}", f"starter={STARTER}"]
+    rows: list[dict[str, object]] = []
+    type14_blocked = True
+    type6_supported = True
 
-def _resolve_solver_command(use_lima: bool) -> tuple[list[str], list[str]]:
-    """Return (starter_cmd_prefix, engine_cmd_prefix). Each is a list of
-    argv tokens that will have ['-i', deck_path] appended.
-    """
-    starter_bin = os.environ.get("OR_STARTER", "starter_linuxa64")
-    engine_bin = os.environ.get("OR_ENGINE", "engine_linuxa64")
-    if use_lima:
-        # documented Lima Apptainer path: limactl shell apptainer -- <bin>
-        lima_inst = os.environ.get("OR_LIMA_INSTANCE", "apptainer")
-        prefix = ["limactl", "shell", lima_inst, "--"]
-        return prefix + [starter_bin], prefix + [engine_bin]
-    return [starter_bin], [engine_bin]
-
-
-def run_or(cfg: RunCfg, work_dir: Path, use_lima: bool, dry_run: bool) -> None:
-    starter_deck = work_dir / f"stage7_{cfg.name}_0000.rad"
-    engine_deck  = work_dir / f"stage7_{cfg.name}_0001.rad"
-    if dry_run:
-        print(f"[dry-run] decks templated to {work_dir}; skipping solver")
-        return
-    starter_cmd, engine_cmd = _resolve_solver_command(use_lima)
-    starter_argv = starter_cmd + ["-i", str(starter_deck)]
-    engine_argv  = engine_cmd  + ["-i", str(engine_deck)]
-    print(f"[stage7][{cfg.name}] starter: {' '.join(starter_argv)}")
-    subprocess.run(starter_argv, check=True, cwd=work_dir)
-    print(f"[stage7][{cfg.name}] engine : {' '.join(engine_argv)}")
-    subprocess.run(engine_argv, check=True, cwd=work_dir)
-
-
-# ----------------------------------------------------------------------
-# 6. T01 time-history parsing. We support two backends: the
-#    vortex-radioss Python package (preferred), and a fallback ASCII
-#    T01 export that the OpenRadioss starter can produce when /TH is
-#    requested with text output. The fallback is implemented inline.
-# ----------------------------------------------------------------------
-
-def parse_th(work_dir: Path, cfg: RunCfg) -> dict:
-    """Parse the time-history file produced by OpenRadioss.
-
-    Returns a dict with keys:
-        t           list[float]  pseudo-time samples
-        F_Bx        list[float]  summed reaction at grip-B in x (N)
-        ux_x1       list[float]  through-width-mean ux at x = x1 (mm)
-        ux_x2       list[float]  through-width-mean ux at x = x2 (mm)
-    """
-    # Backend 1: vortex-radioss
-    try:
-        from vortex_radioss import T01  # type: ignore
-        t01_path = next(work_dir.glob(f"stage7_{cfg.name}*T01"))
-        th = T01(str(t01_path))
-        t = list(th.time)
-        F_Bx = list(th.node_group("gripB_reaction").FX_sum)
-        ux_x1 = list(th.node_group("gauge_x1_th").DX_mean)
-        ux_x2 = list(th.node_group("gauge_x2_th").DX_mean)
-        return dict(t=t, F_Bx=F_Bx, ux_x1=ux_x1, ux_x2=ux_x2)
-    except Exception:
-        pass
-
-    # Backend 2: ASCII T01 fallback. The OpenRadioss "T01 ASCII" mode
-    # writes one column per requested channel. We expect channel
-    # ordering: time, gripB_reaction (DX, FX summed across the group),
-    # gauge_x1 (DX averaged), gauge_x2 (DX averaged).
-    ascii_path = work_dir / f"stage7_{cfg.name}.txt"
-    if not ascii_path.exists():
-        raise RuntimeError(
-            f"could not locate T01 output for run {cfg.name}; "
-            f"looked for vortex-radioss T01 and ASCII fallback "
-            f"{ascii_path}. Re-run with /HIS/ASCII or install vortex-radioss."
+    for coupon in COUPONS:
+        e_ref = mat.e1 if coupon.theta_deg == 0.0 else ex_offaxis(coupon.theta_deg, mat)
+        strict = write_starter(coupon, mat, type14_property(), "type14_canonical")
+        strict_proc = run_cmd([str(STARTER), "-i", strict.name, "-nt", "1"], RUNS_DIR, log_lines)
+        strict_out = (RUNS_DIR / strict.name.replace(".rad", ".out")).read_text(
+            encoding="utf-8", errors="replace"
         )
-    t, F_Bx, ux_x1, ux_x2 = [], [], [], []
-    with ascii_path.open() as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            cols = line.split()
-            if len(cols) < 5:
-                continue
-            # cols: time, ux_gripB_mean, FX_gripB_sum, ux_x1_mean, ux_x2_mean
-            t.append(float(cols[0]))
-            F_Bx.append(float(cols[2]))
-            ux_x1.append(float(cols[3]))
-            ux_x2.append(float(cols[4]))
-    return dict(t=t, F_Bx=F_Bx, ux_x1=ux_x1, ux_x2=ux_x2)
+        strict_blocked = (
+            strict_proc.returncode != 0
+            and "MATERIAL/PROPERTY COMPATIBILITY" in strict_out
+            and "TYPE 14" in strict_out
+            and "LAW  25" in strict_out
+        )
+        type14_blocked = type14_blocked and strict_blocked
+
+        proxy = write_starter(coupon, mat, type6_property(), "type6_proxy")
+        proxy_proc = run_cmd([str(STARTER), "-i", proxy.name, "-nt", "1"], RUNS_DIR, log_lines)
+        type6_supported = type6_supported and proxy_proc.returncode == 0
+
+        rows.append(
+            {
+                "run": coupon.name,
+                "theta_deg": coupon.theta_deg,
+                "reference_modulus_pa": e_ref,
+                "canonical_property": "TYPE14",
+                "canonical_starter_rc": strict_proc.returncode,
+                "canonical_status": "blocked_error_3047" if strict_blocked else "unexpected",
+                "proxy_property": "TYPE6_SOL_ORTH",
+                "proxy_starter_rc": proxy_proc.returncode,
+                "solver_modulus_pa": "",
+                "relative_error_pct": "",
+                "verdict": "INCONCLUSIVE",
+            }
+        )
+
+    metrics = {
+        "canonical_type14_law25_supported": not type14_blocked,
+        "canonical_type14_error_id": 3047 if type14_blocked else None,
+        "type6_sol_orth_proxy_starter_supported": type6_supported,
+        "d3039_modulus_gate_evaluated": False,
+    }
+    return metrics, rows, log_lines
 
 
-# ----------------------------------------------------------------------
-# 7. Modulus extraction. Linear regression of sigma_xx on eps_xx in the
-#    gauge window. Returns slope (= apparent E in MPa), R^2.
-# ----------------------------------------------------------------------
+def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log_lines: list[str], wall_s: float) -> None:
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
-def _linregress(x: list[float], y: list[float]) -> tuple[float, float, float]:
-    n = len(x)
-    if n < 2:
-        return float("nan"), float("nan"), float("nan")
-    mx = sum(x) / n
-    my = sum(y) / n
-    sxx = sum((xi - mx) ** 2 for xi in x)
-    sxy = sum((xi - mx) * (yi - my) for xi, yi in zip(x, y))
-    syy = sum((yi - my) ** 2 for yi in y)
-    if sxx == 0:
-        return float("nan"), float("nan"), float("nan")
-    slope = sxy / sxx
-    intercept = my - slope * mx
-    r2 = (sxy * sxy) / (sxx * syy) if syy > 0 else 1.0
-    return slope, intercept, r2
+    timeseries = RESULTS_DIR / "timeseries.csv"
+    with timeseries.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
+
+    git_sha = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=str(ROOT_DIR),
+        text=True,
+        stdout=subprocess.PIPE,
+        check=False,
+    ).stdout.strip()
+    results = {
+        "stage": 7,
+        "verdict": "INCONCLUSIVE",
+        "metrics": {**metrics, "wall_clock_s": wall_s},
+        "reference": {
+            "material_card": str(CARD_PATH),
+            "on_axis_E1_Pa": load_material().e1,
+            "off_axis_45deg_Ex_Pa": ex_offaxis(45.0, load_material()),
+        },
+        "tolerance": {"modulus_relative_error": 0.02},
+        "git_sha": git_sha,
+    }
+    (RESULTS_DIR / "results.json").write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
+
+    (FIGURES_DIR / "stage07_d3039_probe.typ").write_text(
+        "\n".join(
+            [
+                '#set page(width: 170mm, height: auto, margin: 10mm)',
+                '#let rows = csv("../results/timeseries.csv")',
+                '#text(size: 12pt, weight: "bold")[Stage 07 D3039 starter probe]',
+                '#v(5pt)',
+                '#table(',
+                '  columns: (22mm, 22mm, 42mm, 32mm, 30mm),',
+                '  stroke: rgb("#5C5C5C"),',
+                '  [Run], [Theta], [Canonical status], [Proxy rc], [Verdict],',
+                '  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(5)], [#r.at(7)], [#r.at(10)])).flatten(),',
+                ')',
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    (THIS_DIR / "blocker.md").write_text(
+        "\n".join(
+            [
+                "# Stage 07 Blocker - LAW25 + TYPE14 D3039 coupons do not start",
+                "",
+                "Author: J.C. Vaught",
+                "",
+                "Both canonical D3039 coupons require `/MAT/LAW25` on `/PROP/TYPE14` solid HEXA8 elements. The installed OpenRadioss starter rejects that pairing with `ERROR ID : 3047` material/property compatibility before any modulus extraction can be run.",
+                "",
+                "The runner also generated `/PROP/TYPE6` (`/PROP/SOL_ORTH`) proxy decks with `/SKEW/FIX` ply frames. Those proxy decks start successfully, confirming the material card itself is accepted on a solid orthotropic property, but the proxy does not satisfy the stage 07 `/PROP/TYPE14` requirement.",
+                "",
+                "Verdict: `INCONCLUSIVE` due to toolchain/material-property compatibility, not a numerical D3039 modulus failure.",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    RUN_LOG.write_text("\n".join(log_lines), encoding="utf-8")
 
 
-def extract_modulus(th: dict, cfg: RunCfg) -> dict:
-    A = cfg.w * cfg.t                 # mm^2
-    F = th["F_Bx"]                    # N (Mg.mm/s^2 in the deck units; N in SI)
-    ux1 = th["ux_x1"]                 # mm
-    ux2 = th["ux_x2"]                 # mm
-    sigma = [Fi / A for Fi in F]                  # MPa
-    eps   = [(u2 - u1) / cfg.Lg for u1, u2 in zip(ux1, ux2)]
-    slope, intercept, r2 = _linregress(eps, sigma)
-    return dict(sigma=sigma, eps=eps, E_FEM=slope, intercept=intercept, R2=r2)
-
-
-# ----------------------------------------------------------------------
-# 8. Driver
-# ----------------------------------------------------------------------
-
-def main(argv: list[str] | None = None) -> int:
-    here = Path(__file__).resolve().parent
+def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--only", choices=["7A", "7B"], default=None)
-    parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--refine", action="store_true",
-                        help="rerun with h/2 width refinement")
-    parser.add_argument("--no-lima", action="store_true",
-                        help="invoke starter/engine on PATH directly "
-                             "(no Lima Apptainer wrapper)")
-    parser.add_argument("--workdir", default=str(here / "runs"))
-    parser.add_argument("--results", default=str(here / "results"))
-    args = parser.parse_args(argv)
-
-    work_root = Path(args.workdir).resolve()
-    res_root  = Path(args.results).resolve()
-    work_root.mkdir(parents=True, exist_ok=True)
-    res_root.mkdir(parents=True, exist_ok=True)
-
-    runs = default_runs()
-    if args.only:
-        runs = [r for r in runs if r.name == args.only]
-    if args.refine:
-        for r in runs:
-            r.ny *= 2
-            r.nx = max(r.nx, 80)
-
-    summary_rows: list[dict] = []
-    log_lines: list[str] = []
-
-    for cfg in runs:
-        rdir = work_root / cfg.name
-        rdir.mkdir(parents=True, exist_ok=True)
-        write_starter(rdir / f"stage7_{cfg.name}_0000.rad", cfg, MAT_PARAMS)
-        write_engine (rdir / f"stage7_{cfg.name}_0001.rad", cfg)
-        run_or(cfg, rdir, use_lima=not args.no_lima, dry_run=args.dry_run)
-
-        if args.dry_run:
-            log_lines.append(f"[{cfg.name}] dry-run, no extraction.")
-            continue
-
-        th = parse_th(rdir, cfg)
-        ext = extract_modulus(th, cfg)
-        E_FEM = ext["E_FEM"]
-        R2 = ext["R2"]
-
-        E_ref = (MAT_PARAMS["E1"] if cfg.theta_deg == 0.0
-                 else Ex_offaxis(cfg.theta_deg, MAT_PARAMS))
-        rel_err = abs(E_FEM - E_ref) / E_ref
-        passed = (rel_err <= 0.02) and (R2 >= 0.9999)
-
-        msg = (
-            f"[{cfg.name}] theta={cfg.theta_deg:>5.1f} deg  "
-            f"E_FEM={E_FEM:10.2f} MPa  E_ref={E_ref:10.2f} MPa  "
-            f"rel_err={rel_err*100:6.3f} %  R^2={R2:.6f}  "
-            f"{'PASS' if passed else 'FAIL'}"
-        )
-        print(msg)
-        log_lines.append(msg)
-        summary_rows.append(dict(
-            run=cfg.name,
-            theta_deg=cfg.theta_deg,
-            E_FEM_MPa=E_FEM,
-            E_analytic_MPa=E_ref,
-            rel_err=rel_err,
-            R2=R2,
-            passed=passed,
-        ))
-
-    # write CSV summary
-    csv_path = res_root / "stage7_summary.csv"
-    if summary_rows:
-        with csv_path.open("w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=list(summary_rows[0].keys()))
-            writer.writeheader()
-            for row in summary_rows:
-                writer.writerow(row)
-        print(f"[stage7] wrote {csv_path}")
-
-    # write log
-    log_path = res_root / "stage7_log.txt"
-    log_path.write_text("\n".join(log_lines) + "\n")
-
-    # exit code: 0 only if every run passed
-    if not summary_rows:
-        return 0 if args.dry_run else 1
-    return 0 if all(r["passed"] for r in summary_rows) else 1
+    parser.add_argument("--all", action="store_true")
+    args = parser.parse_args()
+    if not args.all:
+        parser.error("use --all")
+    start = time.perf_counter()
+    metrics, rows, log_lines = run_stage()
+    wall_s = time.perf_counter() - start
+    write_outputs(metrics, rows, log_lines, wall_s)
+    print(json.dumps({"stage": 7, "verdict": "INCONCLUSIVE", "wall_clock_s": wall_s}, indent=2))
+    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
