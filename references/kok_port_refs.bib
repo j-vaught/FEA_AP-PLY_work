@@ -1,0 +1,181 @@
+% Bibliography additions for the Kok geometry preprocessor clean-room port.
+% Only entries that are NOT already present in
+%   references/delft_refs.bib
+%   references/uofsc_refs.bib
+%   references/openradioss_refs.bib
+%   references/test_progression_refs.bib
+%   references/ecosystem_refs.bib
+%   references/impact_refs.bib
+% are listed here. Entries shared with the existing files (Nagelsmit 2013,
+% Kok 2022 Tensile, Vakili Rad 2020, Kodagali 2023, Zheng 2016, Kok preproc
+% repo, Kok CDM repo) are referenced by their existing bib keys and are NOT
+% redefined here.
+%
+% Canonical existing keys re-used by plan/kok_port_plan.md:
+%   Nagelsmit2013Thesis           (delft_refs.bib)   -- algorithmic source for §2 of plan
+%   Nagelsmit2013FibrePlacement   (uofsc_refs.bib)   -- duplicate of above under different key
+%   Kok2022Tensile                (delft_refs.bib)   -- algorithmic source for §2-3 of plan
+%   Kok2022TensileMultiscale      (uofsc_refs.bib)   -- duplicate of above under different key
+%   Kok2022PreprocRepo            (delft_refs.bib)   -- prior-art acknowledgement
+%   Kok2022CDMRepo                (delft_refs.bib)   -- not used by the geometry port
+%   VakiliRad2020Thesis           (delft_refs.bib)   -- naming convention parameter ranges
+%   VakiliRad2020PseudoWoven      (uofsc_refs.bib)   -- duplicate of above
+%   Kodagali2023Thesis            (delft_refs.bib)   -- placement-sequence notation
+%   Kodagali2023MesoArchitectured (uofsc_refs.bib)   -- duplicate of above
+%   Zheng2016Thesis               (delft_refs.bib)   -- through-thickness geometry cross-reference
+%
+% --- New entries used by plan/kok_port_plan.md ---
+
+% GMSH OCC API (the chosen booleans engine for the port)
+
+@article{Geuzaine2009Gmsh,
+  author    = {Geuzaine, Christophe and Remacle, Jean-Fran\c{c}ois},
+  title     = {Gmsh: A 3-D finite element mesh generator with built-in pre- and post-processing facilities},
+  journal   = {International Journal for Numerical Methods in Engineering},
+  volume    = {79},
+  number    = {11},
+  pages     = {1309--1331},
+  year      = {2009},
+  doi       = {10.1002/nme.2579},
+  note      = {The canonical GMSH paper. The Python OCC API (gmsh.model.occ) used by the port is documented at https://gmsh.info/doc/texinfo/gmsh.html sections 4.3 and 6.4.}
+}
+
+@misc{GmshOccDocs2026,
+  author    = {Geuzaine, Christophe and Remacle, Jean-Fran\c{c}ois},
+  title     = {GMSH Reference Manual --- {OpenCASCADE} kernel API},
+  year      = {2026},
+  url       = {https://gmsh.info/doc/texinfo/gmsh.html},
+  note      = {Sections 6.4 (gmsh.model.occ) and 7.4 (Python API). The functions named in plan/kok_port_plan.md §5 (addBox, addWedge, fragment, fuse, cut, intersect, addPhysicalGroup, removeAllDuplicates, synchronize) come from this reference.}
+}
+
+% OpenCASCADE Boolean kernel (the engine GMSH delegates to)
+
+@misc{OpenCASCADE2026,
+  author    = {{Open CASCADE SAS}},
+  title     = {Open {CASCADE} Technology --- {Boolean} Operations Algorithm},
+  year      = {2026},
+  url       = {https://dev.opencascade.org/doc/overview/html/specification__boolean_operations.html},
+  note      = {Reference for OCC's BOPAlgo_Builder. The boolean-cascade scaling concern called out in plan/kok_port_plan.md §5 is documented here as the BOPAlgo time complexity.}
+}
+
+% meshio (the format bridge used by stages 11 and 16)
+
+@misc{Schloemer2024Meshio,
+  author    = {Schl{\"o}mer, Nico and {meshio contributors}},
+  title     = {meshio: tools for various mesh formats},
+  year      = {2024},
+  url       = {https://github.com/nschloe/meshio},
+  note      = {GitHub repository. MIT-licensed Python library for reading/writing GMSH .msh and Abaqus .inp formats. The .msh -> .inp step in plan/kok_port_plan.md §6 is performed via meshio.}
+}
+
+% Hill-Mandel uniform-displacement homogenization (justifies the validation strategy in §7c)
+
+@article{Hill1963Elastic,
+  author    = {Hill, R.},
+  title     = {Elastic properties of reinforced solids: some theoretical principles},
+  journal   = {Journal of the Mechanics and Physics of Solids},
+  volume    = {11},
+  number    = {5},
+  pages     = {357--372},
+  year      = {1963},
+  doi       = {10.1016/0022-5096(63)90036-X},
+  note      = {The Hill condition Sigma : eps = <sigma : eps> bounds the uniform-displacement and uniform-traction estimates of the homogenized stiffness. The 5-10\% bias documented in tests/stage_11_PW_mesoscale_direct/spec.md §1.2 traces to this paper.}
+}
+
+% Lomov 2007 textile-FE convergence (cited by stage 11 spec §1.2 to justify the uniform-displacement window)
+
+@article{Lomov2007Meso,
+  author    = {Lomov, S.V. and Ivanov, D.S. and Verpoest, I. and Zako, M. and Kurashiki, T. and Nakai, H. and Hirosawa, S.},
+  title     = {Meso-{FE} modelling of textile composites: Road map, data flow and algorithms},
+  journal   = {Composites Science and Technology},
+  volume    = {67},
+  number    = {9},
+  pages     = {1870--1891},
+  year      = {2007},
+  doi       = {10.1016/j.compscitech.2006.10.017},
+  note      = {Documents the convergence of uniform-displacement and periodic homogenization for textile composites as the specimen-to-unit-cell ratio grows. The 4-period rule used in stage 11 traces here.}
+}
+
+% Espadas-Escalante 2017 BC effect on textile homogenization
+
+@article{EspadasEscalante2017BC,
+  author    = {Espadas-Escalante, J.J. and van Dijk, N.P. and Isaksson, P.},
+  title     = {A study on the influence of boundary conditions in computational homogenization of periodic structures with application to woven composites},
+  journal   = {Composite Structures},
+  volume    = {160},
+  pages     = {529--537},
+  year      = {2017},
+  doi       = {10.1016/j.compstruct.2016.10.082},
+  note      = {Quantifies the bias between uniform-displacement, uniform-traction, and periodic BCs as a function of unit-cell count. Used by plan/kok_port_plan.md §7c to bound the validation tolerance.}
+}
+
+% Halpin-Tsai (used by stage 10 for tow-wise and informational here)
+
+@article{HalpinKardos1976,
+  author    = {Halpin, J.C. and Kardos, J.L.},
+  title     = {The {Halpin}-{Tsai} equations: A review},
+  journal   = {Polymer Engineering \& Science},
+  volume    = {16},
+  number    = {5},
+  pages     = {344--352},
+  year      = {1976},
+  doi       = {10.1002/pen.760160512},
+  note      = {Cited only as the closed-form cross-check stage 10 uses; not strictly a Kok-port reference, but listed here because the stage-11 sanity check inherits Halpin-Tsai for the tow constituent before AP-PLY architectural correction.}
+}
+
+% PyVista (used for visual-cross-section validation)
+
+@article{Sullivan2019PyVista,
+  author    = {Sullivan, C. Bane and Kaszynski, Alexander A.},
+  title     = {{PyVista}: 3D plotting and mesh analysis through a streamlined interface for the Visualization Toolkit ({VTK})},
+  journal   = {Journal of Open Source Software},
+  volume    = {4},
+  number    = {37},
+  pages     = {1450},
+  year      = {2019},
+  doi       = {10.21105/joss.01450},
+  note      = {Used in plan/kok_port_plan.md §7b for the headless visual-cross-section overlay against published Kok 2022 Figure 4.}
+}
+
+% Sympy / symbolic geometry (only if needed for the analytic volume cross-check in §7a)
+
+@article{Meurer2017SymPy,
+  author    = {Meurer, Aaron and {SymPy contributors}},
+  title     = {{SymPy}: symbolic computing in {Python}},
+  journal   = {PeerJ Computer Science},
+  volume    = {3},
+  pages     = {e103},
+  year      = {2017},
+  doi       = {10.7717/peerj-cs.103},
+  note      = {Optional dependency. Used in plan/kok_port_plan.md §7a only if the analytic ply-volume formula is derived symbolically rather than tabulated.}
+}
+
+% Pytest (the testing framework the port targets)
+
+@misc{Krekel2024Pytest,
+  author    = {Krekel, Holger and {pytest-dev team}},
+  title     = {pytest: helps you write better programs},
+  year      = {2024},
+  url       = {https://docs.pytest.org/},
+  note      = {The test fixtures in plan/kok_port_plan.md §10 are pytest cases.}
+}
+
+% LGPL-2.1 license text (cited to justify clean-room separation)
+
+@misc{LGPLv21,
+  author    = {{Free Software Foundation}},
+  title     = {{GNU} Lesser General Public License, version 2.1},
+  year      = {1999},
+  url       = {https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html},
+  note      = {The license under which rutger-kok/ap\_ply\_model\_creation is distributed. Cited in plan/kok_port_plan.md §1 to justify the clean-room posture: deriving from the source would propagate LGPL-2.1; deriving from the published papers does not.}
+}
+
+% MIT license text (the port's target license)
+
+@misc{MITLicense,
+  author    = {{Open Source Initiative}},
+  title     = {The {MIT} License},
+  year      = {2026},
+  url       = {https://opensource.org/license/mit},
+  note      = {Target license for the port, consistent with the user's open-source-only constraint per plan/master_plan.md §1.}
+}

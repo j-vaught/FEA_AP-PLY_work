@@ -1,0 +1,360 @@
+% OpenRadioss end-to-end audit references
+% Author: J.C. Vaught
+% Date: 2026-04-29
+%
+% Only entries NOT already present in fenicsx_refs.bib, impact_refs.bib,
+% test_progression_refs.bib, uofsc_refs.bib, delft_refs.bib, or
+% ecosystem_refs.bib.
+%
+% Existing relevant keys to avoid:
+%   OpenRadioss2025  (ecosystem_refs.bib)
+%   Kitware2024Catalyst, Kitware2025Trame  (ecosystem_refs.bib)
+%   Geuzaine2009Gmsh, Geuzaine2024Gmsh, SchloePygmsh2024  (fenicsx_refs.bib)
+%   Kok2022CDMRepo, Kok2022PreprocRepo, Kok2022Thesis  (delft_refs.bib)
+
+% ===== OpenRadioss documentation, repos, and tooling =====
+
+@misc{OpenRadiossInstall2026,
+  author       = {{OpenRadioss Project}},
+  title        = {{OpenRadioss}: \texttt{INSTALL.md} and \texttt{HOWTO.md} build instructions},
+  year         = {2026},
+  howpublished = {\url{https://github.com/OpenRadioss/OpenRadioss/blob/main/INSTALL.md} and \url{https://github.com/OpenRadioss/OpenRadioss/blob/main/HOWTO.md}},
+  note         = {Build documentation for Linux x86-64 (CentOS 8, Rocky 8/9, Ubuntu 20.04+, RHEL 8), Linux ARM64 (ArmFlang or GFortran 11+), Windows (Intel OneAPI 2025+ with Visual Studio 2022). No native macOS build documented as of 2026.}
+}
+
+@misc{OpenRadiossTools2026,
+  author       = {{OpenRadioss Project}},
+  title        = {{OpenRadioss/Tools}: \texttt{userlib\_sdk}, \texttt{inp2rad}, GUI launcher},
+  year         = {2026},
+  howpublished = {\url{https://github.com/OpenRadioss/Tools}},
+  note         = {Companion repository hosting the user-material SDK (\texttt{userlib\_sdk}, formerly \texttt{AnnemarieBulla/userlib\_sdk}), the Python \texttt{inp2rad} converter for Abaqus \texttt{.inp} to Radioss \texttt{.rad}, and the Python/Tk GUI launcher.}
+}
+
+@misc{OpenRadiossModelExchange2026,
+  author       = {{OpenRadioss Project}},
+  title        = {{OpenRadioss/ModelExchange}: published benchmark deck repository},
+  year         = {2026},
+  howpublished = {\url{https://github.com/OpenRadioss/ModelExchange}},
+  note         = {Public repository of validated example decks distributed with OpenRadioss, including crash, drop, impact, and tensile-test verification cases.}
+}
+
+@misc{OpenRadiossDiscussion2125,
+  author       = {{OpenRadioss Community}},
+  title        = {Running on {macOS} via arm64 {Apptainer} image (Discussion \#2125)},
+  year         = {2024},
+  howpublished = {\url{https://github.com/orgs/OpenRadioss/discussions/2125}},
+  note         = {Documented user-published workflow for running OpenRadioss on Apple Silicon via Lima + Apptainer Linux ARM64 VM.}
+}
+
+@misc{OpenRadiossDiscussion2117,
+  author       = {{OpenRadioss Community}},
+  title        = {{OpenRadioss} implicit build (Discussion \#2117)},
+  year         = {2024},
+  howpublished = {\url{https://github.com/orgs/OpenRadioss/discussions/2117}},
+  note         = {Discussion confirming that the implicit build of OpenRadioss requires linking against MUMPS and is more involved than the explicit-only build.}
+}
+
+@misc{OpenRadiossDiscussion482,
+  author       = {{OpenRadioss Community}},
+  title        = {User subroutines for element, material, etc.\ (Discussion \#482)},
+  year         = {2023},
+  howpublished = {\url{https://github.com/orgs/OpenRadioss/discussions/482}},
+  note         = {Reference discussion confirming the \texttt{userlib\_sdk} workflow for Fortran user materials, user failure criteria, and user elements in OpenRadioss.}
+}
+
+@misc{OpenRadiossDiscussion2943,
+  author       = {{OpenRadioss Community}},
+  title        = {Bringing attention to {MFront} as a material frontend (Discussion \#2943)},
+  year         = {2025},
+  howpublished = {\url{https://github.com/orgs/OpenRadioss/discussions/2943}},
+  note         = {Community feature request thread proposing native MFront integration into OpenRadioss; as of 2026 not yet implemented.}
+}
+
+@misc{OpenRadiossDiscussion678,
+  author       = {{OpenRadioss Community}},
+  title        = {Checking interest for {Python} interface to starter/engine keywords (Discussion \#678)},
+  year         = {2023},
+  howpublished = {\url{https://github.com/orgs/OpenRadioss/discussions/678}},
+  note         = {Community discussion proposing a Python wrapper that would generate Radioss keyword decks programmatically with seamless Pandas / NumPy / VTK integration; status as of 2026: not yet released as a PyPI package.}
+}
+
+@misc{OpenRadiossDiscussion3222INP2RAD,
+  author       = {{OpenRadioss Community}},
+  title        = {Release of {INP2RAD} {Abaqus}-to-{Radioss} converter (Discussion \#3222)},
+  year         = {2025},
+  howpublished = {\url{https://github.com/orgs/OpenRadioss/discussions/3222}},
+  note         = {Announcement of the Python \texttt{inp2rad} script that converts Abaqus \texttt{.inp} decks to Radioss \texttt{.rad} format. Tagged "beta" but supports most explicit-model element formulations, material laws, loadings, and BCs.}
+}
+
+@misc{OpenRadiossConfluenceTensile2024,
+  author       = {{OpenRadioss Project}},
+  title        = {Tensile Test Example Tutorial Using {Gmsh}},
+  year         = {2024},
+  howpublished = {\url{https://openradioss.atlassian.net/wiki/spaces/OPENRADIOSS/pages/24444938/Tensile+Test+Example+Tutorial+Using+Gmsh}},
+  note         = {Tutorial showing the GMSH-to-OpenRadioss workflow for an ASTM E8 tensile coupon: GMSH meshes a STEP-file geometry and exports to LS-DYNA / Abaqus format; OpenRadioss reads the deck via inp2rad. Demonstrates the headless deck-only path.}
+}
+
+@misc{OpenRadiossConfluenceSpringback2024,
+  author       = {{OpenRadioss Project}},
+  title        = {Spring-back tutorial: explicit stamping followed by implicit or explicit relaxation},
+  year         = {2024},
+  howpublished = {\url{https://openradioss.atlassian.net/wiki/spaces/OPENRADIOSS/pages/9502721/Spring-back}},
+  note         = {Documents the explicit-stamping then implicit-springback restart workflow using \texttt{/IMPL/SPRBACK}. Confirms restart-file state-mapping. Reverse direction (implicit prestress to explicit impact) is not in this tutorial.}
+}
+
+% ===== Visualization and post-processing tooling =====
+
+@misc{KitwareOpenRadiossVTKHDF2024,
+  author       = {{Kitware}},
+  title        = {Post-process your {OpenRadioss} results with {ParaView} (\texttt{openradioss-to-vtkhdf} converter)},
+  year         = {2024},
+  howpublished = {\url{https://www.kitware.com/post-process-your-openradioss-results-with-paraview/} and \url{https://gitlab.kitware.com/keu-public/openradioss-to-vtkhdf}},
+  note         = {Kitware-developed converter from OpenRadioss \texttt{.anim} to VTKHDF for fast ParaView and PyVista loading. Replaces the slow built-in \texttt{anim2vtk} ASCII-VTK path.}
+}
+
+@misc{VortexRadioss2024,
+  author       = {{Vortex CAE}},
+  title        = {{Vortex-Radioss}: {Python} reader for {Radioss} animation and time-history files},
+  year         = {2024},
+  howpublished = {\url{https://github.com/Vortex-CAE/Vortex-Radioss}},
+  note         = {Open-source Python tool for direct reading of Radioss \texttt{.anim} and \texttt{T01} files into NumPy / pandas, plus conversion to LS-DYNA \texttt{D3PLOT} format.}
+}
+
+@misc{Bear3232Anim2VTK2023,
+  author       = {Bear, J.},
+  title        = {\texttt{radiossAnim\_to\_vtk}: community converter from {OpenRadioss} animation files to {VTK}},
+  year         = {2023},
+  howpublished = {\url{https://github.com/bear3232/radiossAnim_to_vtk}},
+  note         = {Community-developed standalone Python script for converting OpenRadioss animation files to legacy VTK for ParaView visualization.}
+}
+
+@misc{Sadowski2024OpenRadiossVTK,
+  author       = {Sadowski, A.},
+  title        = {{OpenRadioss}-standalone-vtk-converter: {ParaView}-ready output},
+  year         = {2024},
+  howpublished = {\url{https://github.com/alekssadowski95/OpenRadioss-standalone-vtk-converter}},
+  note         = {Alternative community standalone converter from OpenRadioss animation files to VTK suitable for ParaView.}
+}
+
+% ===== Altair Radioss reference manual (open documentation pages) =====
+
+@misc{AltairRadiossLAW25,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/MAT/LAW25} (COMPSH) reference: composite shell and solid material with Tsai-Wu and CRASURV formulations},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/law25_composite_material_r.htm}},
+  note         = {Reference for the most-used composite material in Radioss / OpenRadioss. Compatible with shell properties (TYPE10, TYPE11, TYPE17, TYPE51, PCOMPP) and solid properties (TYPE6, TYPE14, TYPE20, TYPE21, TYPE22). Failure cards \texttt{/FAIL/CHANG}, \texttt{/FAIL/HASHIN}, \texttt{/FAIL/PUCK}, \texttt{/FAIL/LAD\_DAMA} apply on solid elements.}
+}
+
+@misc{AltairRadiossLAW12LAW14,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/MAT/LAW12} (3D\_COMP) and {/MAT/LAW14} (COMPSO) reference: 3D orthotropic-elastic Tsai-Wu for solids},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/law12_and_law14_composite_material_r.htm}},
+  note         = {LAW12 supersedes LAW14 as the documented preferred 3D composite solid card. Both are 3D orthotropic-elastic before the Tsai-Wu criterion is reached, with 9-parameter orthotropic stiffness. Solid-only.}
+}
+
+@misc{AltairRadiossCompositeIntro,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {Composite material (introduction): {LAW12}, {LAW14}, {LAW15}, {LAW19}, {LAW25}, {LAW58} and compatible failure models},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/composite_material_intro_c.htm}},
+  note         = {Reference compatibility table mapping composite material laws to shell vs solid properties and to failure cards. The authoritative source for the audit's solid-composite-with-Hashin/Puck/Tsai-Wu claim.}
+}
+
+@misc{AltairRadiossFailHashin,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/FAIL/HASHIN} reference},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/fail_hashin_starter_r.htm}},
+  note         = {Hashin failure model card. Available for both shell and solid elements; element erosion via the \texttt{Ifail} flag.}
+}
+
+@misc{AltairRadiossImplActivation,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {Implicit Analysis Activation in Radioss / OpenRadioss},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/implicit_analysis_activation_r.htm}},
+  note         = {Reference for \texttt{/IMPL/LINEAR}, \texttt{/IMPL/QSTAT}, \texttt{/IMPL/NONLIN}, \texttt{/IMPL/BUCKL}, \texttt{/IMPL/SOLVER}, \texttt{/IMPL/DT}, \texttt{/IMPL/SPRBACK}. Note: the implicit linear solver in OpenRadioss links against MUMPS, complicating the build relative to the explicit-only path.}
+}
+
+@misc{AltairRadiossBCSCyclic,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/BCS/CYCLIC}: cyclic boundary condition in a fixed cylindrical coordinate system},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/bcs_cyclic_starter_r.htm}},
+  note         = {Cyclic-symmetry boundary condition restricted to cylindrical coordinates. \emph{Not} a general 3D periodic BC for RVE homogenization.}
+}
+
+@misc{AltairRadiossMPC,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {Multi-Point Constraints {/MPC}: rotational gear, rack-and-pinion, differential gear joints},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/multi_point_constraints_r.htm}},
+  note         = {OpenRadioss \texttt{/MPC} supports only three pre-canned joint types via Lagrange multipliers. No documented general linear-equation MPC for RVE periodic BCs.}
+}
+
+@misc{AltairRadiossRBE2,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/RBE2} rigid body element reference},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/rbe2_starter_r.htm}},
+  note         = {Defines rigid body kinematics with one independent (master) node and many dependent (slave) nodes. Insufficient for RVE periodic boundary conditions, which require pairwise master-slave equations driven by macro-strain corner DOFs.}
+}
+
+@misc{AltairRadiossRBody,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {Rigid Body {/RBODY} reference},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/rigid_body_intro_r.htm}},
+  note         = {Constrains a set of nodes to move together as a non-deformable body. Used for projectile / impactor representation in stages 13-16; not a periodic-BC primitive.}
+}
+
+@misc{AltairRadiossInterType2,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/INTER/TYPE2} tied interface reference},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/inter_type2_starter_r.htm}},
+  note         = {Kinematic tie between secondary nodes and a main surface. Brittle failure modes only via \texttt{Spotflag}; not a traction-separation cohesive zone interface. For DCB/ENF cohesive modeling use \texttt{/MAT/LAW83} or \texttt{/MAT/LAW117} on a zero-thickness solid layer.}
+}
+
+@misc{AltairRadiossInterType7,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/INTER/TYPE7} general node-to-surface penalty contact},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/inter_type7_starter_r.htm}},
+  note         = {Multi-usage impact contact interface using the penalty method. Standard contact for projectile-laminate and tow-matrix interfaces in stages 13-16.}
+}
+
+@misc{AltairRadiossLAW2,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/MAT/LAW2} (PLAS\_JOHNS): Johnson-Cook elasto-plastic model for bricks, shells, trusses, beams},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/mat_law2_plas_johns_starter_r.htm}},
+  note         = {Standard Johnson-Cook plasticity card. Solid (brick) compatible. Used in stage 3 (isotropic dogbone tension).}
+}
+
+@misc{AltairRadiossLAW36,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/MAT/LAW36} (PLAS\_TAB): tabulated piecewise-linear elasto-plastic material model},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/mat_law36_plas_tab_starter_r.htm}},
+  note         = {Tabulated isotropic elasto-plastic law for bricks, shells, trusses, and beams. Hardening curve supplied as one or more user-defined functions $\sigma_y(\bar{\varepsilon}^p)$, optionally with strain-rate dependence. Solid (\texttt{/PROP/TYPE14}) compatible. Used as the rate-independent alternative to \texttt{/MAT/LAW2} in stage 3 (isotropic dogbone tension) when an experimentally measured $\sigma$-$\varepsilon$ curve is available rather than Johnson-Cook coefficients.}
+}
+
+@misc{AltairRadiossImplLinear,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/IMPL/LINEAR}: linear-static implicit computation},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/impl_linear_starter_r.htm}},
+  note         = {Activates a single-step linear-static implicit solve in OpenRadioss. Requires the MUMPS-linked implicit build. Used in stage 1 (linear-elastic beam) and as the elastic ramp portion of stage 3.}
+}
+
+@misc{AltairRadiossImplQstat,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/IMPL/QSTAT}: quasi-static implicit non-linear computation},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/impl_qstat_starter_r.htm}},
+  note         = {Quasi-static implicit nonlinear solver in OpenRadioss. Used for displacement-controlled elasto-plastic ramps such as stage 3 (isotropic dogbone tension) past yield.}
+}
+
+@misc{AltairRadiossBCS,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/BCS}: nodal boundary conditions reference},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/bcs_starter_r.htm}},
+  note         = {General nodal boundary-condition card for translational and rotational DOF restraints. Used to clamp the fixed grip face and to suppress lateral DOFs on the loaded grip face in stage 3.}
+}
+
+@misc{AltairRadiossImpDisp,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/IMPDISP}: imposed displacement reference},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/imposed_displacement_r.htm}},
+  note         = {Imposed-displacement loading card driven by a function of time. Used to ramp the loaded grip face axially for displacement-controlled tensile coupon analyses (stage 3).}
+}
+
+@misc{AltairRadiossTH,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/TH/NODE} and {/TH/BRICK}: time-history output for nodes and solid elements},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/th_node_starter_r.htm}},
+  note         = {Time-history output cards. \texttt{/TH/NODE} writes nodal displacement, velocity, and reaction-force histories to the \texttt{T01} file; \texttt{/TH/BRICK} writes per-element stress, plastic strain, and damage histories. Used in stage 3 to extract the gauge-section $\sigma$-$\varepsilon$ curve and the grip reaction force.}
+}
+
+@misc{AltairRadiossDuctileDamage,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {Ductile damage model: {LAW22} / {LAW23} for solids and shells},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/theory_material_laws_elastic_plastic_isotropic_materials_ductile_damage_model_r.htm}},
+  note         = {Closest OpenRadioss equivalent to a Mazars-style isotropic damage on solid elements. Includes traction, compression, and shear damage. Mesh objectivity via fracture-energy regularization (Hillerborg-style); no native non-local / gradient regularization documented.}
+}
+
+@misc{AltairRadiossPropType14,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{/PROP/TYPE14} (SOLID): general solid property reference},
+  year         = {2025},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/prop_type14_solid_starter_r.htm}},
+  note         = {Solid (brick) property card. Supports orthotropic frame via the \texttt{Iorth} flag and skew system reference. Used with LAW12, LAW14, LAW25 for solid composite plies.}
+}
+
+@misc{AltairRadiossCantileverRDV0020,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{RD-V}: 0020 Cantilever Beam (Radioss verification example)},
+  year         = {2021},
+  howpublished = {\url{https://help.altair.com/hwsolvers/rad/topics/solvers/rad/cantilever_beam_verification_intro_r.htm}},
+  note         = {Documented cantilever-beam verification benchmark in the Radioss / OpenRadioss reference library. Used in implicit nonlinear-static and explicit dynamic-relaxation modes.}
+}
+
+% ===== Public benchmarks and adoption =====
+
+@misc{TNO2024OpenRadiossLSDyna,
+  author       = {{TNO}},
+  title        = {{OpenRadioss} as a reliable replacement for {LS-DYNA}},
+  year         = {2024},
+  number       = {Report TNO 2024 R11057A},
+  howpublished = {\url{https://openradioss.org/wp-content/uploads/2025/08/TNO-2024-R11057A.pdf}},
+  note         = {Public benchmark report comparing OpenRadioss against LS-DYNA on identical full-vehicle crash decks. Sponsored, neutral analysis confirming production-quality status.}
+}
+
+@misc{IntelAWSOpenRadioss2024,
+  author       = {{Intel Corporation} and {Amazon Web Services}},
+  title        = {{OpenRadioss} on {AWS}: {HPC} workload testing methodology},
+  year         = {2024},
+  howpublished = {\url{https://cdrdv2-public.intel.com/816822/Intel-AWS-instances-accelerate-OpenRadioss-HPC-simulations-methodology.pdf}},
+  note         = {Joint Intel + AWS technical addendum benchmarking OpenRadioss scaling on cloud HPC instances. Demonstrates production readiness for cluster-class crash and impact runs.}
+}
+
+@misc{OpenRadiossModelsRepo,
+  author       = {{OpenRadioss Project}},
+  title        = {{OpenRadioss} models page (verification and validation deck library)},
+  year         = {2026},
+  howpublished = {\url{https://openradioss.org/models/}},
+  note         = {Curated public deck library for OpenRadioss. Includes drop tests, bumper-beam impacts, tensile tests, and stamping examples for validation.}
+}
+
+% ===== Auxiliary infrastructure (Lima, Apptainer, MUMPS) =====
+
+@misc{Lima2026,
+  author       = {{Lima Project}},
+  title        = {{Lima}: {Linux} machines on {macOS} (\texttt{limactl}), with {Apptainer} template},
+  year         = {2026},
+  howpublished = {\url{https://github.com/lima-vm/lima}},
+  note         = {Modern Linux-VM-on-macOS toolkit, Apache-2.0 licensed. Provides the documented host for running OpenRadioss Linux ARM64 builds on Apple Silicon via the \texttt{template://apptainer} preset.}
+}
+
+@misc{Apptainer2026,
+  author       = {{Apptainer Project}},
+  title        = {{Apptainer}: container runtime for high-performance computing},
+  year         = {2026},
+  howpublished = {\url{https://apptainer.org/}},
+  note         = {BSD-3-licensed container runtime (formerly Singularity). Documented OpenRadioss deployment path inside HPC environments and inside Lima VMs on macOS.}
+}
+
+@misc{MUMPS2024,
+  author       = {Amestoy, P. R. and Buttari, A. and L'Excellent, J.-Y. and Mary, T.},
+  title        = {{MUMPS}: a {MU}ltifrontal {M}assively {P}arallel sparse direct {S}olver},
+  year         = {2024},
+  howpublished = {\url{http://mumps-solver.org/}},
+  note         = {CeCILL-C licensed sparse direct solver used by OpenRadioss for the implicit \texttt{/IMPL/LINEAR} and \texttt{/IMPL/NONLIN} modes. The CeCILL-C copyleft is the reason the OpenRadioss implicit build is more involved than the explicit build.}
+}

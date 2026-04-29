@@ -1,0 +1,810 @@
+% =====================================================================
+% BibTeX bibliography for the canonical FEM verification test progression
+% Project: FEA_AP-PLY
+% Author : J.C. Vaught
+% Date   : 2026-04-29
+% =====================================================================
+
+% ---------------------------------------------------------------------
+% Stage 1 - Linear-elastic beam (Euler-Bernoulli, Timoshenko)
+% ---------------------------------------------------------------------
+
+@book{Timoshenko1972MechanicsOfMaterials,
+  author    = {Timoshenko, Stephen P. and Gere, James M.},
+  title     = {Mechanics of Materials},
+  publisher = {Van Nostrand Reinhold},
+  year      = {1972},
+  address   = {New York}
+}
+
+@book{GereGoodno2012MechanicsOfMaterials,
+  author    = {Gere, James M. and Goodno, Barry J.},
+  title     = {Mechanics of Materials},
+  edition   = {8},
+  publisher = {Cengage Learning},
+  year      = {2012},
+  address   = {Stamford, CT}
+}
+
+@misc{ASTM_D7264,
+  author       = {{ASTM International}},
+  title        = {{ASTM D7264 / D7264M-21: Standard Test Method for Flexural Properties of Polymer Matrix Composite Materials}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2021},
+  note         = {\url{https://store.astm.org/d7264_d7264m-21.html}}
+}
+
+@misc{ASTM_D790,
+  author       = {{ASTM International}},
+  title        = {{ASTM D790-17: Standard Test Methods for Flexural Properties of Unreinforced and Reinforced Plastics and Electrical Insulating Materials}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2017}
+}
+
+@misc{Bleyer2024CometFenicsx,
+  author       = {Bleyer, Jeremy},
+  title        = {Computational Mechanics Numerical Tours with {FEniCSx}},
+  howpublished = {\url{https://bleyerj.github.io/comet-fenicsx/}},
+  year         = {2024}
+}
+
+@misc{Dokken2024DolfinxTutorial,
+  author       = {Dokken, J{\o}rgen S.},
+  title        = {The {FEniCSx} Tutorial},
+  howpublished = {\url{https://jsdokken.com/dolfinx-tutorial/}},
+  year         = {2024}
+}
+
+@article{Elishakoff2020TimoshenkoEhrenfest,
+  author  = {Elishakoff, Isaac},
+  title   = {Who Developed the so-Called {T}imoshenko Beam Theory?},
+  journal = {Mathematics and Mechanics of Solids},
+  volume  = {25},
+  number  = {1},
+  pages   = {97--116},
+  year    = {2020}
+}
+
+% ---------------------------------------------------------------------
+% Stage 2 - Cantilever beam with large deflection (elastica)
+% ---------------------------------------------------------------------
+
+@article{BisshoppDrucker1945,
+  author  = {Bisshopp, K. E. and Drucker, D. C.},
+  title   = {Large Deflection of Cantilever Beams},
+  journal = {Quarterly of Applied Mathematics},
+  volume  = {3},
+  number  = {3},
+  pages   = {272--275},
+  year    = {1945}
+}
+
+@book{FrischFay1962FlexibleBars,
+  author    = {Frisch-Fay, R.},
+  title     = {Flexible Bars},
+  publisher = {Butterworths},
+  address   = {London},
+  year      = {1962}
+}
+
+@article{Belendez2002LargeDeflection,
+  author  = {Bel{\'e}ndez, T. and Neipp, C. and Bel{\'e}ndez, A.},
+  title   = {Numerical and Experimental Analysis of a Cantilever Beam: A Laboratory Project to Introduce Geometric Nonlinearity in {M}echanics of {M}aterials},
+  journal = {International Journal of Engineering Education},
+  volume  = {19},
+  number  = {6},
+  pages   = {885--892},
+  year    = {2003}
+}
+
+% ---------------------------------------------------------------------
+% Stage 3 - Tensile coupon, isotropic (ASTM E8 dogbone)
+% ---------------------------------------------------------------------
+
+@misc{ASTM_E8,
+  author       = {{ASTM International}},
+  title        = {{ASTM E8/E8M-22: Standard Test Methods for Tension Testing of Metallic Materials}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2022},
+  note         = {\url{https://store.astm.org/e0008_e0008m-22.html}}
+}
+
+@book{SimoHughes1998,
+  author    = {Simo, J. C. and Hughes, T. J. R.},
+  title     = {Computational Inelasticity},
+  publisher = {Springer},
+  address   = {New York},
+  year      = {1998},
+  series    = {Interdisciplinary Applied Mathematics},
+  volume    = {7}
+}
+
+@book{deSouzaNetoPericOwen2008,
+  author    = {{de Souza Neto}, E. A. and Peri{\'c}, D. and Owen, D. R. J.},
+  title     = {Computational Methods for Plasticity: Theory and Applications},
+  publisher = {Wiley},
+  year      = {2008},
+  address   = {Chichester, UK}
+}
+
+% ---------------------------------------------------------------------
+% Stage 4 - Open-hole tension and Kirsch closed form
+% ---------------------------------------------------------------------
+
+@misc{ASTM_D5766,
+  author       = {{ASTM International}},
+  title        = {{ASTM D5766/D5766M-23: Standard Test Method for Open-Hole Tensile Strength of Polymer Matrix Composite Laminates}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2023},
+  note         = {\url{https://store.astm.org/d5766_d5766m-11r18.html}}
+}
+
+@article{Kirsch1898,
+  author  = {Kirsch, E. G.},
+  title   = {Die {T}heorie der {E}lastizit{\"a}t und die {B}ed{\"u}rfnisse der {F}estigkeitslehre},
+  journal = {Zeitschrift des Vereines deutscher Ingenieure},
+  volume  = {42},
+  pages   = {797--807},
+  year    = {1898}
+}
+
+@article{Howland1929,
+  author  = {Howland, R. C. J.},
+  title   = {On the Stresses in the Neighbourhood of a Circular Hole in a Strip under Tension},
+  journal = {Philosophical Transactions of the Royal Society of London A},
+  volume  = {229},
+  pages   = {49--86},
+  year    = {1929}
+}
+
+@book{Peterson1974StressConcentration,
+  author    = {Peterson, R. E.},
+  title     = {Stress Concentration Factors},
+  publisher = {Wiley},
+  address   = {New York},
+  year      = {1974}
+}
+
+@book{Heywood1952DesigningByPhotoelasticity,
+  author    = {Heywood, R. B.},
+  title     = {Designing by Photoelasticity},
+  publisher = {Chapman and Hall},
+  address   = {London},
+  year      = {1952}
+}
+
+@book{PilkeyPilkey2008PetersonStressConcentration,
+  author    = {Pilkey, W. D. and Pilkey, D. F.},
+  title     = {Peterson's Stress Concentration Factors},
+  publisher = {Wiley},
+  address   = {Hoboken, NJ},
+  edition   = {3rd},
+  year      = {2008}
+}
+
+@misc{ASMAerospace6061T6,
+  author       = {{ASM Aerospace Specification Metals}},
+  title        = {{Aluminum 6061-T6; 6061-T651: Material Property Data Sheet}},
+  howpublished = {\url{https://asm.matweb.com/search/SpecificMaterial.asp?bassnum=ma6061t6}},
+  year         = {2024},
+  note         = {E = 68.9 GPa, $\nu$ = 0.33, $\sigma_y$ = 276 MPa, $\sigma_u$ = 310 MPa; values used in linear-elastic regime only.}
+}
+
+@article{Camanho2007SizeEffectsCDM,
+  author  = {Camanho, P. P. and Maim{\'i}, P. and D{\'a}vila, C. G.},
+  title   = {Prediction of Size Effects in Notched Laminates Using Continuum Damage Mechanics},
+  journal = {Composites Science and Technology},
+  volume  = {67},
+  number  = {13},
+  pages   = {2715--2727},
+  year    = {2007}
+}
+
+@article{Lavoie2000ApparentStrengthScaling,
+  author  = {Lavoie, J. A. and Soutis, C. and Morton, J.},
+  title   = {Apparent Strength Scaling in Continuous Fiber Composite Laminates},
+  journal = {Composites Science and Technology},
+  volume  = {60},
+  pages   = {283--299},
+  year    = {2000}
+}
+
+@article{Green2007NotchedScaling,
+  author  = {Green, B. G. and Wisnom, M. R. and Hallett, S. R.},
+  title   = {An Experimental Investigation into the Tensile Strength Scaling of Notched Composites},
+  journal = {Composites Part A},
+  volume  = {38},
+  pages   = {867--878},
+  year    = {2007}
+}
+
+% ---------------------------------------------------------------------
+% Stage 5 - Damage (Mazars, Lemaitre)
+% ---------------------------------------------------------------------
+
+@article{Mazars1986,
+  author  = {Mazars, J.},
+  title   = {A Description of Micro- and Macroscale Damage of Concrete Structures},
+  journal = {Engineering Fracture Mechanics},
+  volume  = {25},
+  number  = {5--6},
+  pages   = {729--737},
+  year    = {1986}
+}
+
+@incollection{PijaudierCabotMazars2001,
+  author    = {Pijaudier-Cabot, G. and Mazars, J.},
+  title     = {Damage Models for Concrete},
+  booktitle = {Handbook of Materials Behavior Models},
+  editor    = {Lemaitre, J.},
+  publisher = {Academic Press},
+  year      = {2001},
+  pages     = {500--512}
+}
+
+@article{Lemaitre1985,
+  author  = {Lemaitre, J.},
+  title   = {A Continuous Damage Mechanics Model for Ductile Fracture},
+  journal = {Journal of Engineering Materials and Technology},
+  volume  = {107},
+  number  = {1},
+  pages   = {83--89},
+  year    = {1985}
+}
+
+@article{Vassaux2022ModifiedMazars,
+  author  = {Vassaux, M. and Oliver-Leblond, C. and Richard, B. and Ragueneau, F.},
+  title   = {A Modified {M}azars Damage Model with Energy Regularization},
+  journal = {Engineering Fracture Mechanics},
+  volume  = {261},
+  pages   = {108213},
+  year    = {2022}
+}
+
+@misc{HelferMGISFenics,
+  author       = {Helfer, T. and Bleyer, J. and Frondelius, T. and Yashchuk, I. and Bouziani, M. and Shriver, J.},
+  title        = {{MFront} Generic Interface Support: Phase-field Damage with {F}eni{CS}},
+  howpublished = {\url{https://thelfer.github.io/mgis/web/mgis_fenics_phase_field.html}},
+  year         = {2024}
+}
+
+% ---------------------------------------------------------------------
+% Stage 6 - Failure criteria (Tsai-Wu, Hashin, Puck, Pinho)
+% ---------------------------------------------------------------------
+
+@article{TsaiWu1971,
+  author  = {Tsai, S. W. and Wu, E. M.},
+  title   = {A General Theory of Strength for Anisotropic Materials},
+  journal = {Journal of Composite Materials},
+  volume  = {5},
+  number  = {1},
+  pages   = {58--80},
+  year    = {1971}
+}
+
+@article{Hashin1980,
+  author  = {Hashin, Z.},
+  title   = {Failure Criteria for Unidirectional Fiber Composites},
+  journal = {Journal of Applied Mechanics},
+  volume  = {47},
+  number  = {2},
+  pages   = {329--334},
+  year    = {1980}
+}
+
+@article{PuckSchurmann1998,
+  author  = {Puck, A. and Sch{\"u}rmann, H.},
+  title   = {Failure Analysis of {FRP} Laminates by Means of Physically Based Phenomenological Models},
+  journal = {Composites Science and Technology},
+  volume  = {58},
+  number  = {7},
+  pages   = {1045--1067},
+  year    = {1998}
+}
+
+@article{PuckSchurmann2002,
+  author  = {Puck, A. and Sch{\"u}rmann, H.},
+  title   = {Failure Analysis of {FRP} Laminates by Means of Physically Based Phenomenological Models (Revised)},
+  journal = {Composites Science and Technology},
+  volume  = {62},
+  number  = {12--13},
+  pages   = {1633--1662},
+  year    = {2002}
+}
+
+@article{PinhoPartI2006,
+  author  = {Pinho, S. T. and Iannucci, L. and Robinson, P.},
+  title   = {Physically Based Failure Models and Criteria for Laminated Fibre-reinforced Composites with Emphasis on Fibre Kinking. {P}art {I}: {D}evelopment},
+  journal = {Composites Part A: Applied Science and Manufacturing},
+  volume  = {37},
+  number  = {1},
+  pages   = {63--73},
+  year    = {2006}
+}
+
+@article{PinhoPartII2006,
+  author  = {Pinho, S. T. and Iannucci, L. and Robinson, P.},
+  title   = {Physically Based Failure Models and Criteria for Laminated Fibre-reinforced Composites with Emphasis on Fibre Kinking. {P}art {II}: {FE} Implementation},
+  journal = {Composites Part A: Applied Science and Manufacturing},
+  volume  = {37},
+  number  = {5},
+  pages   = {766--777},
+  year    = {2006}
+}
+
+@article{HintonKaddourSoden2002,
+  author  = {Hinton, M. J. and Kaddour, A. S. and Soden, P. D.},
+  title   = {A Comparison of the Predictive Capabilities of Current Failure Theories for Composite Laminates, Judged Against Experimental Evidence},
+  journal = {Composites Science and Technology},
+  volume  = {62},
+  number  = {12--13},
+  pages   = {1725--1797},
+  year    = {2002}
+}
+
+@article{KaddourHinton2013WWFEII,
+  author  = {Kaddour, A. S. and Hinton, M. J.},
+  title   = {Maturity of {3D} Failure Criteria for Fibre-reinforced Composites: Comparison Between Theories and Experiments: Part {B} of {WWFE-II}},
+  journal = {Journal of Composite Materials},
+  volume  = {47},
+  number  = {6--7},
+  pages   = {925--966},
+  year    = {2013}
+}
+
+@article{KaddourHinton2013WWFEIII,
+  author  = {Kaddour, A. S. and Hinton, M. J. and Smith, P. A. and Li, S.},
+  title   = {The Background to the Third World-wide Failure Exercise},
+  journal = {Journal of Composite Materials},
+  volume  = {47},
+  number  = {20--21},
+  pages   = {2417--2426},
+  year    = {2013}
+}
+
+% ---------------------------------------------------------------------
+% Stage 7 - Anisotropic single-tow tension (UD CFRP, ASTM D3039)
+% ---------------------------------------------------------------------
+
+@misc{ASTM_D3039,
+  author       = {{ASTM International}},
+  title        = {{ASTM D3039/D3039M-17: Standard Test Method for Tensile Properties of Polymer Matrix Composite Materials}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2017},
+  note         = {\url{https://store.astm.org/d3039_d3039m-08.html}}
+}
+
+@article{SodenHintonKaddour1998,
+  author  = {Soden, P. D. and Hinton, M. J. and Kaddour, A. S.},
+  title   = {Lamina Properties, Lay-up Configurations and Loading Conditions for a Range of Fibre-reinforced Composite Laminates},
+  journal = {Composites Science and Technology},
+  volume  = {58},
+  number  = {7},
+  pages   = {1011--1022},
+  year    = {1998}
+}
+
+@book{DanielIshai2006,
+  author    = {Daniel, I. M. and Ishai, O.},
+  title     = {Engineering Mechanics of Composite Materials},
+  edition   = {2},
+  publisher = {Oxford University Press},
+  address   = {Oxford},
+  year      = {2006}
+}
+
+@article{PaganoHalpin1968,
+  author  = {Pagano, N. J. and Halpin, J. C.},
+  title   = {Influence of End Constraint in the Testing of Anisotropic Bodies},
+  journal = {Journal of Composite Materials},
+  volume  = {2},
+  number  = {1},
+  pages   = {18--31},
+  year    = {1968}
+}
+
+% ---------------------------------------------------------------------
+% Stage 8/9 - Anisotropic ply rotation; Classical Lamination Theory
+% ---------------------------------------------------------------------
+
+@book{Reddy2003LaminatedPlatesShells,
+  author    = {Reddy, J. N.},
+  title     = {Mechanics of Laminated Composite Plates and Shells: Theory and Analysis},
+  edition   = {2},
+  publisher = {CRC Press},
+  address   = {Boca Raton, FL},
+  year      = {2003}
+}
+
+@book{Jones1999MechanicsCompositeMaterials,
+  author    = {Jones, R. M.},
+  title     = {Mechanics of Composite Materials},
+  edition   = {2},
+  publisher = {Taylor and Francis},
+  address   = {Philadelphia, PA},
+  year      = {1999}
+}
+
+@book{Tsai1992CompositesDesign,
+  author    = {Tsai, S. W.},
+  title     = {Theory of Composites Design},
+  publisher = {Think Composites},
+  address   = {Dayton, OH},
+  year      = {1992}
+}
+
+@misc{CMH17V3,
+  author       = {{Composite Materials Handbook (CMH-17)}},
+  title        = {{CMH-17 Volume 3: Polymer Matrix Composites - Materials Usage, Design, and Analysis}},
+  howpublished = {SAE International},
+  year         = {2012}
+}
+
+@misc{ASTM_D3518,
+  author       = {{ASTM International}},
+  title        = {{ASTM D3518/D3518M-18: Standard Test Method for In-Plane Shear Response of Polymer Matrix Composite Materials by Tensile Test of a $\pm 45^{\circ}$ Laminate}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2018}
+}
+
+% ---------------------------------------------------------------------
+% Stage 10 - UD-fiber RVE micromechanics (Sun-Vaidya, Halpin-Tsai, Hashin-Shtrikman)
+% ---------------------------------------------------------------------
+
+@article{SunVaidya1996,
+  author  = {Sun, C. T. and Vaidya, R. S.},
+  title   = {Prediction of Composite Properties from a Representative Volume Element},
+  journal = {Composites Science and Technology},
+  volume  = {56},
+  number  = {2},
+  pages   = {171--179},
+  year    = {1996}
+}
+
+@article{XiaZhangEllyin2003,
+  author  = {Xia, Z. and Zhang, Y. and Ellyin, F.},
+  title   = {A Unified Periodical Boundary Conditions for Representative Volume Elements of Composites and Applications},
+  journal = {International Journal of Solids and Structures},
+  volume  = {40},
+  number  = {8},
+  pages   = {1907--1921},
+  year    = {2003}
+}
+
+@article{HashinShtrikman1963,
+  author  = {Hashin, Z. and Shtrikman, S.},
+  title   = {A Variational Approach to the Theory of the Elastic Behaviour of Multiphase Materials},
+  journal = {Journal of the Mechanics and Physics of Solids},
+  volume  = {11},
+  number  = {2},
+  pages   = {127--140},
+  year    = {1963}
+}
+
+@techreport{HalpinTsai1969,
+  author      = {Halpin, J. C. and Tsai, S. W.},
+  title       = {Effects of Environmental Factors on Composite Materials},
+  institution = {Air Force Materials Laboratory},
+  number      = {AFML-TR-67-423},
+  year        = {1969}
+}
+
+@misc{Bleyer2024PeriodicHomog,
+  author       = {Bleyer, Jeremy},
+  title        = {Periodic Homogenization of Linear Elasticity ({COMET-FEniCSx} tour)},
+  howpublished = {\url{https://bleyerj.github.io/comet-fenicsx/tours/homogenization/periodic_elasticity/periodic_elasticity.html}},
+  year         = {2024}
+}
+
+% ---------------------------------------------------------------------
+% Stage 11 - Mesoscale woven / pseudo-woven (AP-PLY) RVE
+% ---------------------------------------------------------------------
+
+@article{Lomov2007MesoFE,
+  author  = {Lomov, S. V. and Ivanov, D. S. and Verpoest, I. and Zako, M. and Kurashiki, T. and Nakai, H. and Hirosawa, S.},
+  title   = {Meso-{FE} Modelling of Textile Composites: Road Map, Data Flow and Algorithms},
+  journal = {Composites Science and Technology},
+  volume  = {67},
+  number  = {9},
+  pages   = {1870--1891},
+  year    = {2007}
+}
+
+@phdthesis{Sherburn2007TexGen,
+  author = {Sherburn, M.},
+  title  = {Geometric and Mechanical Modelling of Textiles},
+  school = {University of Nottingham},
+  year   = {2007}
+}
+
+@article{EspadasEscalante2017PeriodicTextile,
+  author  = {Espadas-Escalante, J. J. and van Dijk, N. P. and Isaksson, P.},
+  title   = {On the Application of Periodic Boundary Conditions for Multiscale Analysis of Textile Composites},
+  journal = {Composite Structures},
+  volume  = {164},
+  pages   = {293--303},
+  year    = {2017}
+}
+
+@article{Catalanotti2024ABDWoven,
+  author  = {Catalanotti, G. and others},
+  title   = {A Mesoscale Computational Approach to Predict {ABD} Matrix of Thin Woven Composites},
+  journal = {Composite Structures},
+  volume  = {333},
+  pages   = {117944},
+  year    = {2024},
+  note    = {\url{https://www.sciencedirect.com/science/article/abs/pii/S0263822324001594}}
+}
+
+@article{Falco2017APPLYDelamination,
+  author  = {Falc{\'o}, O. and Mayugo, J. A. and Lopes, C. S. and Gascons, N. and Costa, J.},
+  title   = {Prediction of Delamination Onset and Growth for {AP-PLY} Composite Laminates Using the Finite Element Method},
+  journal = {Composites Part A: Applied Science and Manufacturing},
+  volume  = {103},
+  pages   = {230--243},
+  year    = {2017}
+}
+
+@article{Falco2022APPLYTensile,
+  author  = {Falc{\'o}, O. and Mayugo, J. A. and Lopes, C. S. and Costa, J.},
+  title   = {Tensile Response of {AP-PLY} Composites: A Multiscale Experimental and Numerical Study},
+  journal = {Composites Part A: Applied Science and Manufacturing},
+  volume  = {161},
+  pages   = {107101},
+  year    = {2022}
+}
+
+@article{Tavares2022DynamicAPPLY,
+  author  = {Tavares, R. P. and Bouvet, C. and Lopes, C. S. and others},
+  title   = {Dynamic Response of {A}dvanced {P}laced {P}ly Composites},
+  journal = {Composites Science and Technology},
+  year    = {2022},
+  note    = {\url{https://www.sciencedirect.com/science/article/pii/S135983682200720X}}
+}
+
+@inproceedings{LiSikorski2014APPLY,
+  author    = {Li, X. and Sikorski, A. and Kruse, J.},
+  title     = {{AP-PLY}: A New Fibre Placement Architecture for Fabric Replacement},
+  booktitle = {Proceedings of the SAMPE Conference},
+  year      = {2014}
+}
+
+% ---------------------------------------------------------------------
+% Stage 12 - Cohesive zone delamination (DCB, ENF) and VCCT
+% ---------------------------------------------------------------------
+
+@misc{ASTM_D5528,
+  author       = {{ASTM International}},
+  title        = {{ASTM D5528/D5528M-21: Standard Test Method for Mode I Interlaminar Fracture Toughness of Unidirectional Fiber-Reinforced Polymer Matrix Composites}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2021},
+  note         = {\url{https://store.astm.org/d5528_d5528m-21.html}}
+}
+
+@misc{ASTM_D7905,
+  author       = {{ASTM International}},
+  title        = {{ASTM D7905/D7905M-19e1: Standard Test Method for Determination of the Mode II Interlaminar Fracture Toughness of Unidirectional Fiber-Reinforced Polymer Matrix Composites}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2019},
+  note         = {\url{https://store.astm.org/d7905_d7905m-19e01.html}}
+}
+
+@misc{ASTM_D6671,
+  author       = {{ASTM International}},
+  title        = {{ASTM D6671/D6671M-22: Standard Test Method for Mixed Mode I-Mode II Interlaminar Fracture Toughness of Unidirectional Fiber-Reinforced Polymer Matrix Composites}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2022}
+}
+
+@article{CamanhoDavila2003,
+  author  = {Camanho, P. P. and D{\'a}vila, C. G. and de Moura, M. F.},
+  title   = {Numerical Simulation of Mixed-mode Progressive Delamination in Composite Materials},
+  journal = {Journal of Composite Materials},
+  volume  = {37},
+  number  = {16},
+  pages   = {1415--1438},
+  year    = {2003}
+}
+
+@article{Turon2007MeshSize,
+  author  = {Turon, A. and D{\'a}vila, C. G. and Camanho, P. P. and Costa, J.},
+  title   = {An Engineering Solution for Mesh Size Effects in the Simulation of Delamination Using Cohesive Zone Models},
+  journal = {Engineering Fracture Mechanics},
+  volume  = {74},
+  number  = {10},
+  pages   = {1665--1682},
+  year    = {2007}
+}
+
+@article{Krueger2004VCCT,
+  author  = {Krueger, R.},
+  title   = {Virtual Crack Closure Technique: History, Approach, and Applications},
+  journal = {Applied Mechanics Reviews},
+  volume  = {57},
+  number  = {2},
+  pages   = {109--143},
+  year    = {2004}
+}
+
+@techreport{KruegerCarvalho2018NASATM,
+  author      = {Krueger, R. and Carvalho, N. V.},
+  title       = {{VCCT} with Progressive Nodal Release for Simulating Mixed-Mode Delamination: Formulation, Algorithmic Improvements and Implications},
+  institution = {NASA},
+  number      = {NASA/CR-2018-XXXX},
+  year        = {2018}
+}
+
+@misc{BleyerCZMTour,
+  author       = {Bleyer, Jeremy},
+  title        = {Cohesive Zone Modeling of Debonding and Bulk Fracture ({COMET-FEniCSx} tour)},
+  howpublished = {\url{https://bleyerj.github.io/comet-fenicsx/tours/interfaces/intrinsic_czm/intrinsic_czm.html}},
+  year         = {2024}
+}
+
+% ---------------------------------------------------------------------
+% Stage 13 - Compression after impact (CAI)
+% ---------------------------------------------------------------------
+
+@misc{ASTM_D7137,
+  author       = {{ASTM International}},
+  title        = {{ASTM D7137/D7137M-17: Standard Test Method for Compressive Residual Strength Properties of Damaged Polymer Matrix Composite Plates}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2017},
+  note         = {\url{https://store.astm.org/d7137_d7137m-17.html}}
+}
+
+@article{SoutisCurtis1996,
+  author  = {Soutis, C. and Curtis, P. T.},
+  title   = {Prediction of the Post-impact Compressive Strength of {CFRP} Laminated Composites},
+  journal = {Composites Science and Technology},
+  volume  = {56},
+  number  = {6},
+  pages   = {677--684},
+  year    = {1996}
+}
+
+@article{DaviesHitchings2006,
+  author  = {Davies, G. A. O. and Hitchings, D. and Ankersen, J.},
+  title   = {Predicting Delamination and Debonding in Modern Aerospace Composite Structures},
+  journal = {Composites Science and Technology},
+  volume  = {66},
+  number  = {6},
+  pages   = {846--854},
+  year    = {2006}
+}
+
+% ---------------------------------------------------------------------
+% Stage 14 - Low velocity impact (drop tower, ASTM D7136)
+% ---------------------------------------------------------------------
+
+@misc{ASTM_D7136,
+  author       = {{ASTM International}},
+  title        = {{ASTM D7136/D7136M-20: Standard Test Method for Measuring the Damage Resistance of a Fiber-Reinforced Polymer Matrix Composite to a Drop-Weight Impact Event}},
+  howpublished = {ASTM International, West Conshohocken, PA},
+  year         = {2020},
+  note         = {\url{https://store.astm.org/d7136_d7136m-20.html}}
+}
+
+@article{Olsson2001LargeMass,
+  author  = {Olsson, R.},
+  title   = {Analytical Prediction of Large Mass Impact Damage in Composite Laminates},
+  journal = {Composites Part A: Applied Science and Manufacturing},
+  volume  = {32},
+  number  = {9},
+  pages   = {1207--1215},
+  year    = {2001}
+}
+
+@article{Olsson2010SmallMass,
+  author  = {Olsson, R.},
+  title   = {Closed Form Prediction of Peak Load and Delamination Onset Under Small Mass Impact},
+  journal = {Composite Structures},
+  volume  = {94},
+  number  = {1},
+  pages   = {100--107},
+  year    = {2010}
+}
+
+@article{DaviesOlsson2004,
+  author  = {Davies, G. A. O. and Olsson, R.},
+  title   = {Impact on Composite Structures},
+  journal = {Aeronautical Journal},
+  volume  = {108},
+  number  = {1089},
+  pages   = {541--563},
+  year    = {2004}
+}
+
+@article{Lopes2009LVIPart2,
+  author  = {Lopes, C. S. and Camanho, P. P. and G{\"u}rdal, Z. and Maim{\'i}, P. and Gonz{\'a}lez, E. V.},
+  title   = {Low-velocity Impact Damage on Dispersed Stacking Sequence Laminates. {P}art {II}: Numerical Simulations},
+  journal = {Composites Science and Technology},
+  volume  = {69},
+  number  = {7--8},
+  pages   = {937--947},
+  year    = {2009}
+}
+
+@article{Costa2024APPLYLVI,
+  author  = {Costa, A. P. and Tavares, R. P. and Lopes, C. S. and others},
+  title   = {Low Velocity Impact Response of Automated Fiber Placement Advanced Placed Ply Composites},
+  journal = {Composites Part B: Engineering},
+  volume  = {283},
+  pages   = {111585},
+  year    = {2024},
+  note    = {\url{https://www.sciencedirect.com/science/article/pii/S0266353824002069}}
+}
+
+% ---------------------------------------------------------------------
+% Stage 15 - High velocity / ballistic impact
+% ---------------------------------------------------------------------
+
+@misc{MILSTD662F,
+  author       = {{U.S. Department of Defense}},
+  title        = {{MIL-STD-662F: V50 Ballistic Test for Armor}},
+  howpublished = {Department of Defense Test Method Standard},
+  year         = {1997},
+  note         = {\url{https://everyspec.com/MIL-STD/MIL-STD-0500-0699/MIL-STD-662F_6718/}}
+}
+
+@misc{NIJ010106,
+  author       = {{National Institute of Justice}},
+  title        = {{NIJ Standard-0101.06: Ballistic Resistance of Body Armor}},
+  howpublished = {U.S. Department of Justice, Washington, DC},
+  year         = {2008},
+  note         = {\url{https://www.nist.gov/system/files/documents/oles/ballistic.pdf}}
+}
+
+@misc{STANAG2920,
+  author       = {{NATO Standardization Agency}},
+  title        = {{STANAG 2920: Ballistic Test Method for Personal Armours}},
+  howpublished = {NATO Allied Engineering Publication},
+  year         = {2003}
+}
+
+@article{RechtIpson1963,
+  author  = {Recht, R. F. and Ipson, T. W.},
+  title   = {Ballistic Perforation Dynamics},
+  journal = {Journal of Applied Mechanics},
+  volume  = {30},
+  number  = {3},
+  pages   = {384--390},
+  year    = {1963}
+}
+
+@techreport{LambertJonas1976,
+  author      = {Lambert, J. P. and Jonas, G. H.},
+  title       = {Towards Standardization in Terminal Ballistics Testing: Velocity Representation},
+  institution = {U.S. Army Ballistic Research Laboratory},
+  number      = {BRL-R-1852},
+  year        = {1976}
+}
+
+@article{Cunniff1992WovenFabrics,
+  author  = {Cunniff, P. M.},
+  title   = {An Analysis of the System Effects in Woven Fabrics under Ballistic Impact},
+  journal = {Textile Research Journal},
+  volume  = {62},
+  number  = {9},
+  pages   = {495--509},
+  year    = {1992}
+}
+
+@article{NaikShrirao2004,
+  author  = {Naik, N. K. and Shrirao, P.},
+  title   = {Composite Structures Under Ballistic Impact},
+  journal = {Composite Structures},
+  volume  = {66},
+  number  = {1--4},
+  pages   = {579--590},
+  year    = {2004}
+}
+
+@article{Karthikeyan2014DyneemaPanels,
+  author  = {Karthikeyan, K. and Russell, B. P.},
+  title   = {Polyethylene Ballistic Laminates: Failure Mechanics and Interface Effects},
+  journal = {International Journal of Impact Engineering},
+  volume  = {70},
+  pages   = {53--65},
+  year    = {2014}
+}

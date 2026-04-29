@@ -1,0 +1,482 @@
+% FEniCSx capability audit — bibliography
+% Author: J.C. Vaught
+% Last updated: 2026-04-29
+% Key convention: LastName<Year><Topic>
+
+% =============================================================
+% Core FEniCSx / DOLFINx
+% =============================================================
+
+@misc{Baratta2023DOLFINx,
+  author       = {Baratta, Igor A. and Dean, Joseph P. and Dokken, J{\o}rgen S. and Habera, Michal and Hale, Jack S. and Richardson, Chris N. and Rognes, Marie E. and Scroggs, Matthew W. and Sime, Nathan and Wells, Garth N.},
+  title        = {{DOLFINx: The next generation FEniCS problem solving environment}},
+  year         = {2023},
+  doi          = {10.5281/zenodo.10447666},
+  url          = {https://doi.org/10.5281/zenodo.10447666},
+  note         = {See also DOLFINx GitHub: \url{https://github.com/FEniCS/dolfinx}}
+}
+
+@misc{Dokken2024Tutorial,
+  author       = {Dokken, J{\o}rgen S.},
+  title        = {{The FEniCSx Tutorial}},
+  year         = {2024},
+  url          = {https://jsdokken.com/dolfinx-tutorial/},
+  note         = {Maintained tutorial; chapters on Poisson, linear elasticity, hyperelasticity, nonlinear Poisson, custom Newton solvers, MPI parallelism.}
+}
+
+@misc{FEniCSx2024Demos,
+  author       = {{FEniCS Project}},
+  title        = {{DOLFINx Python Demos}},
+  year         = {2024},
+  url          = {https://docs.fenicsproject.org/dolfinx/main/python/demos.html},
+  note         = {Includes GMSH I/O, PyVista visualization, hyperelasticity, Navier-Stokes DG.}
+}
+
+@misc{FEniCSx2024Hyperelasticity,
+  author       = {{FEniCS Project}},
+  title        = {{DOLFINx Hyperelasticity Demo (compressible Neo-Hookean)}},
+  year         = {2024},
+  url          = {https://docs.fenicsproject.org/dolfinx/main/cpp/demos/demo_hyperelasticity.html}
+}
+
+% =============================================================
+% Bleyer COMET-FEniCSx tours
+% =============================================================
+
+@misc{Bleyer2024CometFenicsx,
+  author       = {Bleyer, J{\'e}r{\'e}my},
+  title        = {{Computational Mechanics Numerical Tours with FEniCSx}},
+  year         = {2024},
+  url          = {https://bleyerj.github.io/comet-fenicsx/},
+  note         = {Online compendium covering linear elasticity, hyperelasticity, plasticity, viscoelasticity, phase-field fracture, cohesive zone, Newmark elastodynamics, plates and shells, periodic homogenization.}
+}
+
+@misc{Bleyer2024Plasticity,
+  author       = {Bleyer, J{\'e}r{\'e}my},
+  title        = {{Elasto-plastic analysis of a 2D von Mises material (FEniCSx tour)}},
+  year         = {2024},
+  url          = {https://bleyerj.github.io/comet-fenicsx/tours/nonlinear_problems/plasticity/plasticity.html}
+}
+
+@misc{Bleyer2024Newmark,
+  author       = {Bleyer, J{\'e}r{\'e}my},
+  title        = {{Transient elastodynamics with Newmark time integration (FEniCSx tour)}},
+  year         = {2024},
+  url          = {https://bleyerj.github.io/comet-fenicsx/tours/dynamics/elastodynamics_newmark/elastodynamics_newmark.html}
+}
+
+@misc{Bleyer2024MassLumping,
+  author       = {Bleyer, J{\'e}r{\'e}my},
+  title        = {{Lumping a mass matrix (FEniCSx tip)}},
+  year         = {2024},
+  url          = {https://bleyerj.github.io/comet-fenicsx/tips/mass_lumping/mass_lumping.html},
+  note         = {Demonstrates GLL quadrature trick for diagonal mass matrix in DOLFINx.}
+}
+
+@misc{Bleyer2024IntrinsicCZM,
+  author       = {Bleyer, J{\'e}r{\'e}my},
+  title        = {{Cohesive zone modeling of debonding and bulk fracture (FEniCSx tour)}},
+  year         = {2024},
+  url          = {https://bleyerj.github.io/comet-fenicsx/tours/interfaces/intrinsic_czm/intrinsic_czm.html}
+}
+
+@misc{Bleyer2024PeriodicHomogenization,
+  author       = {Bleyer, J{\'e}r{\'e}my},
+  title        = {{Periodic homogenization of elasticity (FEniCSx tour)}},
+  year         = {2024},
+  url          = {https://bleyerj.github.io/comet-fenicsx/}
+}
+
+% =============================================================
+% dolfinx_materials and external operator
+% =============================================================
+
+@misc{Bleyer2025DolfinxMaterials,
+  author       = {Bleyer, J{\'e}r{\'e}my},
+  title        = {{dolfinx\_materials: A Python add-on for complex constitutive behaviors in FEniCSx}},
+  year         = {2025},
+  version      = {v0.4.0},
+  url          = {https://github.com/bleyerj/dolfinx_materials},
+  note         = {Targets DOLFINx 0.10. Backends: JAX, MFront/MGIS, NumPy, Numba, neural-network inference, CVXPY. Demos for elastoplasticity (small and finite strain), hyperelasticity, multi-material, yield-surface computation.}
+}
+
+@article{Latyshev2025ExternalOperator,
+  author       = {Latyshev, Andrey and Bleyer, J{\'e}r{\'e}my and Maurini, Corrado and Hale, Jack S.},
+  title        = {{Expressing general constitutive models in FEniCSx using external operators and algorithmic automatic differentiation}},
+  journal      = {Journal of Theoretical, Computational and Applied Mechanics},
+  year         = {2025},
+  url          = {https://jtcam.episciences.org/16616},
+  note         = {Demonstrates Numba (von Mises) and JAX (Mohr-Coulomb with apex smoothing) external operators. Open access.}
+}
+
+@misc{Latyshev2024DolfinxExtOp,
+  author       = {Latyshev, Andrey and Bleyer, J{\'e}r{\'e}my and Maurini, Corrado and Hale, Jack S.},
+  title        = {{dolfinx-external-operator: External operators within FEniCSx/DOLFINx}},
+  year         = {2024},
+  url          = {https://github.com/a-latyshev/dolfinx-external-operator},
+  note         = {Companion software for Latyshev2025ExternalOperator. Documentation: \url{https://a-latyshev.github.io/dolfinx-external-operator/}}
+}
+
+@misc{Helfer2024MGIS,
+  author       = {Helfer, Thomas and Bleyer, J{\'e}r{\'e}my and Frondelius, Tero and Yashchuk, Ivan and Bardelcik, Alexander and Mattei, Lorenzo},
+  title        = {{The MFront Generic Interface Support project (MGIS) and FEniCS bindings}},
+  year         = {2024},
+  url          = {https://thelfer.github.io/mgis/web/mgis_fenics.html},
+  note         = {Original mgis.fenics targeted legacy FEniCS; FEniCSx interfacing now via dolfinx\_materials.}
+}
+
+@inproceedings{Bleyer2019MFront,
+  author       = {Bleyer, J{\'e}r{\'e}my and Helfer, Thomas},
+  title        = {{Modelling non-linear constitutive material laws in FEniCS with MFront}},
+  booktitle    = {MFront User Days 2019},
+  year         = {2019},
+  url          = {https://enpc.hal.science/hal-02320418/file/FEniCS-Bleyer-MFrontUserDays-2019.pdf}
+}
+
+% =============================================================
+% Phase-field and fracture
+% =============================================================
+
+@misc{NewFrac2024Training,
+  author       = {{NewFrac MSCA Network}},
+  title        = {{NewFrac FEniCSx Training: Finite Elasticity, Phase-Field Fracture, MPI}},
+  year         = {2024},
+  url          = {https://newfrac.gitlab.io/newfrac-fenicsx-training/},
+  note         = {Includes phase-field gradient damage demo on DOLFINx and parallelism module.}
+}
+
+@misc{NewFrac2024FractureExamples,
+  author       = {{NewFrac MSCA Network}},
+  title        = {{FEniCSx Fracture Mechanics Examples (v1.0)}},
+  year         = {2024},
+  url          = {https://newfrac.github.io/fenicsx-fracture/}
+}
+
+@misc{Kamarei2025PhaseField,
+  author       = {Kamarei, Farhad},
+  title        = {{Phase-Field Fracture Modeling with FEniCSx: An Open-Source Initiative}},
+  year         = {2025},
+  url          = {https://farhadkama.github.io/posts/2025/08/fenicsx-phasefield-fracture/}
+}
+
+@article{Bleyer2018Anisotropic,
+  author       = {Bleyer, J{\'e}r{\'e}my and Alessi, Roberto},
+  title        = {{Phase-field modeling of anisotropic brittle fracture including several damage mechanisms}},
+  journal      = {Computer Methods in Applied Mechanics and Engineering},
+  volume       = {336},
+  pages        = {213--236},
+  year         = {2018},
+  doi          = {10.1016/j.cma.2018.03.012},
+  url          = {https://enpc.hal.science/hal-01736465}
+}
+
+% =============================================================
+% Contact
+% =============================================================
+
+@misc{Wells2026AsimovContact,
+  author       = {{Wells Group, University of Cambridge}},
+  title        = {{asimov-contact: Contact models for ASiMoV (DOLFINx)}},
+  year         = {2026},
+  version      = {v0.10.0},
+  url          = {https://github.com/Wells-Group/asimov-contact},
+  note         = {Highly experimental. Demos: Hertzian, sliding wedges, box-key 3D, christmas-tree 3D, thermo-mechanical, Nitsche unbiased.}
+}
+
+@article{Engwer2025PenaltyNitsche,
+  author       = {Engwer, Christian and Mengaldo, Gianmarco and Werner, Florian},
+  title        = {{Finite element methods for elastic contact: penalty and Nitsche}},
+  journal      = {arXiv preprint},
+  year         = {2025},
+  eprint       = {2505.21776},
+  url          = {https://arxiv.org/abs/2505.21776},
+  note         = {Theoretical comparison; penalty does not achieve optimal rate, Nitsche does.}
+}
+
+% =============================================================
+% Multi-point constraints, multiphysics, shells, scaling tools
+% =============================================================
+
+@misc{Dokken2024DolfinxMpc,
+  author       = {Dokken, J{\o}rgen S.},
+  title        = {{dolfinx\_mpc: Extension of DOLFINx for multi-point constraints}},
+  year         = {2024},
+  url          = {https://github.com/jorgensd/dolfinx_mpc},
+  note         = {Documentation: \url{https://jsdokken.com/dolfinx_mpc/}. Geometrical and topological periodic BC APIs; slip constraints.}
+}
+
+@misc{Ballarin2024Multiphenicsx,
+  author       = {Ballarin, Francesco},
+  title        = {{multiphenicsx: Easy prototyping of multiphysics problems in FEniCSx}},
+  year         = {2024},
+  url          = {https://multiphenics.github.io/}
+}
+
+@misc{Habera2024Dolfiny,
+  author       = {Habera, Michal and Z{\'\i}len, Andreas},
+  title        = {{dolfiny: High-level convenience wrappers for DOLFINx}},
+  year         = {2024},
+  url          = {https://github.com/fenics-dolfiny/dolfiny}
+}
+
+@misc{HaleMaurini2025FenicsxShells,
+  author       = {Hale, Jack S. and Maurini, Corrado and Brunetti, Matteo and Bleyer, J{\'e}r{\'e}my},
+  title        = {{FEniCSx-Shells: A FEniCS Project-based library for thin structures}},
+  year         = {2025},
+  url          = {https://github.com/fenics-shells/fenicsx-shells},
+  note         = {Experimental; targets DOLFINx 0.10. Reissner-Mindlin and Kirchhoff-Love. No laminate layup as of 2026-04.}
+}
+
+@misc{Hirschvogel2024Ambit,
+  author       = {Hirschvogel, Marc},
+  title        = {{Ambit: A FEniCSx-based cardiovascular multi-physics solver}},
+  year         = {2024},
+  url          = {https://github.com/marchirschvogel/ambit},
+  note         = {Production-grade demo of finite-strain elastodynamics with generalized-alpha on DOLFINx.}
+}
+
+@misc{Finsberg2024FenicsxPulse,
+  author       = {Finsberg, Henrik},
+  title        = {{fenicsx-pulse: Cardiac mechanics solver based on FEniCSx}},
+  year         = {2024},
+  url          = {https://github.com/finsberg/fenicsx-pulse}
+}
+
+@article{Finsberg2019Pulse,
+  author       = {Finsberg, Henrik},
+  title        = {{pulse: A python package based on FEniCS for solving problems in cardiac mechanics}},
+  journal      = {Journal of Open Source Software},
+  volume       = {4},
+  number       = {41},
+  pages        = {1539},
+  year         = {2019},
+  doi          = {10.21105/joss.01539}
+}
+
+@misc{Delaisse2024FESTIM,
+  author       = {Dela{\"i}sse, R{\'e}mi and Mey-Cloutier, J. and Hodille, E. and Grisolia, C.},
+  title        = {{Towards FESTIM 2.0: A powerful and accessible hydrogen transport code built on FEniCSx}},
+  year         = {2024},
+  url          = {https://scientificcomputing.github.io/fenics2024/festim},
+  note         = {FEniCS 2024 conference talk.}
+}
+
+% =============================================================
+% Performance
+% =============================================================
+
+@misc{FEniCS2024PerformanceTest,
+  author       = {{FEniCS Project}},
+  title        = {{FEniCSx performance-test mini-app}},
+  year         = {2024},
+  url          = {https://github.com/FEniCS/performance-test}
+}
+
+@article{Rehor2024Pctools,
+  author       = {{\v R}ehor, Martin and Blechta, Jan and Habera, Michal},
+  title        = {{FEniCSx-pctools: Tools for PETSc block linear algebra preconditioning in FEniCSx}},
+  journal      = {Journal of Open Research Software},
+  year         = {2024},
+  doi          = {10.5334/jors.494},
+  url          = {https://arxiv.org/abs/2402.02523},
+  note         = {Weak scaling demonstrated to 8192 MPI ranks on a 3-field thermal convection problem.}
+}
+
+@misc{Pachev2026CudaDolfinx,
+  author       = {Pachev, Benjamin},
+  title        = {{cuda-dolfinx: GPU acceleration extension for FEniCSx}},
+  year         = {2026},
+  version      = {v0.10.0.post1},
+  url          = {https://github.com/bpachev/cuda-dolfinx},
+  note         = {Linear assembly only. Requires custom CUDA-PETSc build (Spack).}
+}
+
+@misc{Kim2025FenicsxCudaSpack,
+  author       = {Kim, Jeenseok},
+  title        = {{How to install FEniCSx with CUDA-enabled PETSc using Spack}},
+  year         = {2025},
+  url          = {https://jeenskim.github.io/2025-04-06-Installing-FeniCSx-with-CUDA-enabled-PETSc-using-Spack/}
+}
+
+@misc{ScientificComputing2024GpuDolfinx,
+  author       = {{Scientific Computing Group, University of Cambridge}},
+  title        = {{Leveraging DOLFINx data-oriented design for GPU implementation}},
+  year         = {2024},
+  url          = {https://scientificcomputing.github.io/fenics2024/leveraging-dolfinx},
+  note         = {FEniCS 2024 talk on Numba CUDA stiffness/mass kernels.}
+}
+
+% =============================================================
+% Mesh generation / GMSH
+% =============================================================
+
+@misc{Lavigne2024GmshFenicsx,
+  author       = {Lavigne, Thomas},
+  title        = {{FEniCSx + GMSH tutorials (I2M Bordeaux Workshop, September 2024)}},
+  year         = {2024},
+  url          = {https://github.com/Th0masLavigne/FEniCSx_GMSH_tutorials}
+}
+
+@misc{Geuzaine2024Gmsh,
+  author       = {Geuzaine, Christophe and Remacle, Jean-Fran{\c c}ois},
+  title        = {{Gmsh: A three-dimensional finite element mesh generator with built-in pre- and post-processing facilities}},
+  year         = {2024},
+  url          = {https://gmsh.info},
+  note         = {Native FEniCSx interface via dolfinx.io.gmshio.}
+}
+
+% =============================================================
+% Composites: AP-PLY / pseudo-woven, Hashin, Puck, LaRC
+% =============================================================
+
+@article{Belnoue2017APPLY,
+  author       = {Belnoue, Jonathan P.-H. and Mesogitis, Theodoros and Nixon-Pearson, Olivia J. and Kratz, James and Ivanov, Dmitry S. and Partridge, Ivana K. and Potter, Kevin D. and Hallett, Stephen R.},
+  title        = {{Prediction of delamination onset and growth for AP-PLY composite laminates using the finite element method}},
+  journal      = {Composites Part A: Applied Science and Manufacturing},
+  year         = {2017},
+  doi          = {10.1016/j.compositesa.2017.06.027},
+  url          = {https://www.sciencedirect.com/science/article/abs/pii/S1359835X17302579}
+}
+
+@inproceedings{Nagelsmit2011APPLY,
+  author       = {Nagelsmit, M. H. and Kassapoglou, C. and G{\"u}rdal, Z.},
+  title        = {{AP-PLY: A New Fibre Placement Architecture for Fabric Replacement}},
+  booktitle    = {SAMPE Journal},
+  year         = {2011},
+  url          = {https://www.researchgate.net/publication/297311997}
+}
+
+@article{Lau2023AutomaticPly,
+  author       = {Lau, Pok Lam Marvin and Belnoue, Jonathan P.-H. and Hallett, Stephen R.},
+  title        = {{Automatic ply detection and finite element model generation for composite laminates}},
+  journal      = {Composites Part C},
+  year         = {2023},
+  doi          = {10.1177/26349833231178331},
+  url          = {https://journals.sagepub.com/doi/10.1177/26349833231178331}
+}
+
+@article{Hashin1980Failure,
+  author       = {Hashin, Zvi},
+  title        = {{Failure Criteria for Unidirectional Fiber Composites}},
+  journal      = {Journal of Applied Mechanics},
+  volume       = {47},
+  number       = {2},
+  pages        = {329--334},
+  year         = {1980},
+  doi          = {10.1115/1.3153664}
+}
+
+@article{Puck1998Failure,
+  author       = {Puck, Alfred and Sch{\"u}rmann, Helmut},
+  title        = {{Failure analysis of FRP laminates by means of physically based phenomenological models}},
+  journal      = {Composites Science and Technology},
+  volume       = {58},
+  number       = {7},
+  pages        = {1045--1067},
+  year         = {1998},
+  doi          = {10.1016/S0266-3538(96)00140-6}
+}
+
+@article{Pinho2006LaRC,
+  author       = {Pinho, S. T. and D{\'a}vila, C. G. and Camanho, P. P. and Iannucci, L. and Robinson, P.},
+  title        = {{Failure models and criteria for FRP under in-plane or three-dimensional stress states including shear non-linearity (LaRC04)}},
+  journal      = {NASA TM-2005-213530},
+  year         = {2006}
+}
+
+@article{TsaiWu1971,
+  author       = {Tsai, Stephen W. and Wu, Edward M.},
+  title        = {{A general theory of strength for anisotropic materials}},
+  journal      = {Journal of Composite Materials},
+  volume       = {5},
+  number       = {1},
+  pages        = {58--80},
+  year         = {1971},
+  doi          = {10.1177/002199837100500106}
+}
+
+% =============================================================
+% Cohesive zone modeling
+% =============================================================
+
+@article{Russo2020CZM,
+  author       = {Russo, Riccardo and Chen, Boyang},
+  title        = {{Overcoming the cohesive zone limit in composites delamination: modeling with slender structural elements and higher-order adaptive integration}},
+  journal      = {International Journal for Numerical Methods in Engineering},
+  year         = {2020},
+  doi          = {10.1002/nme.6497}
+}
+
+@article{Russo2024StructuralCZM,
+  author       = {Russo, Riccardo and Chen, Boyang},
+  title        = {{Structural cohesive element for the modelling of delamination in composite laminates without the cohesive zone limit}},
+  journal      = {arXiv preprint},
+  year         = {2024},
+  eprint       = {2405.17018},
+  url          = {https://arxiv.org/abs/2405.17018}
+}
+
+% =============================================================
+% Johnson-Cook / High-velocity impact context (not FEniCSx, for tool comparison)
+% =============================================================
+
+@article{JohnsonCook1985,
+  author       = {Johnson, Gordon R. and Cook, William H.},
+  title        = {{Fracture characteristics of three metals subjected to various strains, strain rates, temperatures and pressures}},
+  journal      = {Engineering Fracture Mechanics},
+  volume       = {21},
+  number       = {1},
+  pages        = {31--48},
+  year         = {1985},
+  doi          = {10.1016/0013-7944(85)90052-9}
+}
+
+@article{Borvik2002Plates,
+  author       = {B{\o}rvik, Tore and Hopperstad, Odd S. and Berstad, Torodd and Langseth, Magnus},
+  title        = {{Perforation of 12mm thick steel plates by 20mm diameter projectiles with flat, hemispherical and conical noses, Part II: numerical simulations}},
+  journal      = {International Journal of Impact Engineering},
+  volume       = {27},
+  number       = {1},
+  pages        = {37--64},
+  year         = {2002},
+  doi          = {10.1016/S0734-743X(01)00035-5}
+}
+
+% =============================================================
+% Discourse threads / community references (with caveats)
+% =============================================================
+
+@misc{Discourse2025SelfContact,
+  author       = {{FEniCS Discourse}},
+  title        = {{Self-contact in FEniCSx for large-deformation compression of a microstructured solid}},
+  year         = {2025},
+  url          = {https://fenicsproject.discourse.group/t/self-contact-in-fenicsx-for-large-deformation-compression-of-a-microstructured-solid-is-there-any-working-example-or-recommended-approach/19202},
+  note         = {No working example reported.}
+}
+
+@misc{Discourse2024OrthotropicMultiple,
+  author       = {{FEniCS Discourse}},
+  title        = {{Domain with multiple different orthotropic materials in DOLFINx}},
+  year         = {2024},
+  url          = {https://fenicsproject.discourse.group/t/domain-with-multiple-different-orthotropic-materials-in-dolphinx/11511}
+}
+
+@misc{Discourse2024Softening,
+  author       = {{FEniCS Discourse}},
+  title        = {{Any guides to implement a material model with softening with DOLFINx?}},
+  year         = {2024},
+  url          = {https://fenicsproject.discourse.group/t/any-guides-to-implement-a-material-model-with-softening-with-dolfinx/12770}
+}
+
+% =============================================================
+% Enriched constitutive integration in FEniCSx (2025)
+% =============================================================
+
+@article{Rosafalco2025Custom,
+  author       = {Rosafalco, Luca and Mariani, Stefano and Corigliano, Alberto},
+  title        = {{Integrating custom constitutive models into FEniCSx: A versatile approach and case studies}},
+  journal      = {Advances in Engineering Software},
+  year         = {2025},
+  doi          = {10.1016/j.advengsoft.2025.103942},
+  url          = {https://www.sciencedirect.com/science/article/pii/S0965997825000602}
+}

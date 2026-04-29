@@ -1,0 +1,21 @@
+# OpenRadioss engine deck for Stage 13 LVI (ASTM D7136)
+/RUN/stage_13_LVI_D7136/1
+        5.0e-3        0
+/PRINT/-100
+/STOP
+/TFILE/1
+        1.0e-6
+/ANIM/DT
+        0.0       2.5e-5
+/ANIM/BRICK/STRESS/ALL
+/ANIM/BRICK/DAMA
+/ANIM/BRICK/EPSP
+/ANIM/INTER
+/H3D/DT
+        0.0       2.5e-5
+/H3D/COMPRESS
+/DT/BRICK/CST
+        0.667     5.0e-9
+/INISTA/STATE_OUT
+        4.5e-3
+/END

@@ -1,0 +1,65 @@
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+miniforge3/
+miniconda3/
+mambaforge/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# OpenRadioss build / run artifacts
+OpenRadioss_linux64/
+OpenRadioss_linuxa64/
+OpenRadioss/exec/
+OpenRadioss-src/
+*.rst
+*.out
+*.lis
+*A0[0-9][0-9]
+*A0[0-9][0-9].gz
+*T01
+*T01.gz
+runs/
+_run/
+
+# Mesh / VTK intermediates (regenerable; keep figures/PNG/MP4/PDF as outputs)
+*.msh
+*.med
+*.unv
+*.vtu
+*.pvd
+*.vtkhdf
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+._*
+*.swp
+*.swo
+Thumbs.db
+
+# Secrets
+*.env
+.env.local
+credentials.json
+
+# Tectonic / LaTeX caches (keep .tex and .pdf)
+*.aux
+*.log
+*.toc
+*.fdb_latexmk
+*.fls
+*.synctex.gz

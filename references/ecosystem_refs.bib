@@ -1,0 +1,528 @@
+% ecosystem_refs.bib
+% New entries supporting open_source_ecosystem_survey.md
+% Author: J.C. Vaught
+% Date: 2026-04-29
+%
+% Keys not already present in fenicsx_refs.bib, impact_refs.bib,
+% test_progression_refs.bib, or uofsc_refs.bib have been added below.
+% Existing keys (e.g. Vocialta2017Fragmentation, Wolper2020AnisoMPM,
+% Sulsky1994MPM, DeVaucorbeil2021Karamelo, Banerjee2009UintahShaped,
+% Patzak2001OOFEM, Helfer2024MGIS, Bleyer2025DolfinxMaterials,
+% Singer2022KratosMPM, Dadvand2010Kratos, Richart2024AkantuJOSS) are
+% intentionally not redefined here.
+
+% ===== Peridynamics codes =====
+
+@article{Littlewood2023Peridigm,
+  author  = {Littlewood, David J. and Parks, Michael L. and Mitchell, John A. and Silling, Stewart A.},
+  title   = {The {Peridigm} Meshfree Peridynamics Code},
+  journal = {Journal of Peridynamics and Nonlocal Modeling},
+  year    = {2023},
+  volume  = {5},
+  number  = {2},
+  pages   = {118--148},
+  doi     = {10.1007/s42102-023-00100-0},
+  note    = {Peridigm reference. BSD-3 license. Sandia National Laboratories.}
+}
+
+@article{Parks2008PDLammps,
+  author  = {Parks, Michael L. and Lehoucq, Richard B. and Plimpton, Steven J. and Silling, Stewart A.},
+  title   = {Implementing peridynamics within a molecular dynamics code},
+  journal = {Computer Physics Communications},
+  year    = {2008},
+  volume  = {179},
+  number  = {11},
+  pages   = {777--783},
+  doi     = {10.1016/j.cpc.2008.06.011},
+  note    = {Original PDLAMMPS paper.}
+}
+
+@article{Boys2021PeriPy,
+  author  = {Boys, Benjamin and Dodwell, Tim J. and Hobbs, Mark and Girolami, Mark},
+  title   = {{PeriPy} -- A high performance {OpenCL} peridynamics package},
+  journal = {Computer Methods in Applied Mechanics and Engineering},
+  year    = {2021},
+  volume  = {386},
+  pages   = {114085},
+  doi     = {10.1016/j.cma.2021.114085},
+  note    = {MIT-licensed Python + OpenCL peridynamics. Composite multi-bond support.}
+}
+
+@misc{ORNL2025CabanaPD,
+  author       = {Reeve, Sam and Diehl, Patrick and Trageser, Jeremy and Wachowiak, Greg and Mitchell, John and others},
+  title        = {{CabanaPD}: Peridynamics with the Cabana library, version 0.4},
+  year         = {2025},
+  howpublished = {Zenodo + GitHub \url{https://github.com/ORNL/CabanaPD}},
+  note         = {BSD-3 license. ORNL. Multi-material, GPU-portable via Kokkos.}
+}
+
+@article{Hu2023CompositePeridynamics,
+  author  = {Hu, You and Yu, Yang and Wang, Hai},
+  title   = {A bond-based peridynamic model with matrix plasticity for impact damage analysis of composite materials},
+  journal = {Materials},
+  year    = {2023},
+  volume  = {16},
+  number  = {7},
+  pages   = {2884},
+  doi     = {10.3390/ma16072884},
+  note    = {Bond-based peridynamic LaRC05 + matrix plasticity for ballistic CFRP. Paper-only; no upstream code release.}
+}
+
+@article{Madenci2014Peridynamics,
+  author  = {Madenci, Erdogan and Oterkus, Erkan},
+  title   = {Peridynamic Theory and Its Applications},
+  publisher = {Springer},
+  year    = {2014},
+  doi     = {10.1007/978-1-4614-8465-3},
+  note    = {Reference for fiber and matrix bond derivations in peridynamic composite lamina.}
+}
+
+% ===== SPH and MPM codes =====
+
+@article{DominguezDualSPHysics2022,
+  author  = {Dom{\'\i}nguez, J. M. and Fourtakas, G. and Altomare, C. and Canelas, R. B. and Tafuni, A. and others},
+  title   = {{DualSPHysics}: from fluid dynamics to multiphysics problems},
+  journal = {Computational Particle Mechanics},
+  year    = {2022},
+  volume  = {9},
+  pages   = {867--895},
+  doi     = {10.1007/s40571-021-00404-2},
+  note    = {LGPL-licensed GPU SPH solver.}
+}
+
+@article{Ramachandran2021PySPH,
+  author  = {Ramachandran, Prabhu and Bhosale, Aditya and Puri, Kunal and Negi, Pawan and Muta, Abhinav and others},
+  title   = {{PySPH}: a Python-based framework for smoothed particle hydrodynamics},
+  journal = {ACM Transactions on Mathematical Software},
+  year    = {2021},
+  volume  = {47},
+  number  = {4},
+  pages   = {1--38},
+  doi     = {10.1145/3460773},
+  note    = {BSD-3 licensed Python SPH.}
+}
+
+@misc{KumarKulkarni2019CBGeoMPM,
+  author       = {Kumar, Krishna and Salmond, Jeffrey and Kularathna, Shyamini and Wilkes, Christopher and Tjung, Ezra and others},
+  title        = {{CB-Geo} {MPM}: Material {P}oint {M}ethod for granular materials},
+  year         = {2019},
+  howpublished = {\url{https://github.com/cb-geo/mpm}},
+  note         = {MIT license. Cambridge / Berkeley collaboration.}
+}
+
+@inproceedings{Hu2018MLSMPM,
+  author    = {Hu, Yuanming and Fang, Yu and Ge, Ziheng and Qu, Ziyin and Zhu, Yixin and Pradhana, Andre and Jiang, Chenfanfu},
+  title     = {A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling},
+  booktitle = {ACM Transactions on Graphics (SIGGRAPH 2018)},
+  year      = {2018},
+  volume    = {37},
+  number    = {4},
+  pages     = {150:1--150:14},
+  doi       = {10.1145/3197517.3201293},
+  note      = {MLS-MPM and the genesis of taichi\_mpm.}
+}
+
+@misc{Macklin2024Warp,
+  author       = {Macklin, Miles and Hu, Yuanming and Storey, Eric and Bahanik, Charlie and Howard, Aaron and others},
+  title        = {{NVIDIA Warp}: A Python framework for high-performance {GPU} simulation and graphics, v1.12},
+  year         = {2026},
+  howpublished = {\url{https://github.com/NVIDIA/warp}},
+  note         = {Apache-2.0 license. warp.fem Galerkin FEM, MPM-style PIC quadratures.}
+}
+
+@article{Shi2024GeoTaichi,
+  author  = {Shi, Yihao and Liu, Lei and Wang, Yu and others},
+  title   = {{GeoTaichi}: A {Taichi}-powered high-performance numerical simulator for multiscale geophysical problems},
+  journal = {Computer Physics Communications},
+  year    = {2024},
+  volume  = {300},
+  pages   = {109200},
+  doi     = {10.1016/j.cpc.2024.109200},
+  note    = {GPL-3.0 license. DEM + MPM + MPDEM + FEM for geophysics.}
+}
+
+@article{Hu2020DiffTaichi,
+  author  = {Hu, Yuanming and Anderson, Luke and Li, Tzu-Mao and Sun, Qi and Carr, Nathan and Ragan-Kelley, Jonathan and Durand, Fr{\'e}do},
+  title   = {{DiffTaichi}: Differentiable Programming for Physical Simulation},
+  journal = {International Conference on Learning Representations},
+  year    = {2020},
+  url     = {https://openreview.net/forum?id=B1eB5xSFvr},
+  note    = {Differentiable MPM and ten other simulators, MIT-licensed.}
+}
+
+@article{Bender2022SPlisHSPlasH,
+  author  = {Bender, Jan and Koschier, Dan and Kugelstadt, Tassilo and Weiler, Marcel},
+  title   = {Implementing Smoothed Particle Hydrodynamics: A Hands-On Tutorial},
+  journal = {Computer Graphics Forum (EuroGraphics)},
+  year    = {2022},
+  doi     = {10.1111/cgf.14528},
+  note    = {SPlisHSPlasH. MIT license.}
+}
+
+% ===== DEM codes =====
+
+@article{Smilauer2021Yade,
+  author  = {{\v S}milauer, V{\'a}clav and Catalano, Emanuele and Chareyre, Bruno and Dorofeenko, Sergei and Duriez, J{\'e}r{\^o}me and others},
+  title   = {{YADE} -- An extensible framework for the interactive simulation of multiscale, multiphase, and multiphysics particulate systems},
+  journal = {Computer Physics Communications},
+  year    = {2024},
+  volume  = {304},
+  pages   = {109293},
+  doi     = {10.1016/j.cpc.2024.109293},
+  note    = {Yade overview after 19 years. GPL-2.}
+}
+
+@article{Kloss2012LIGGGHTS,
+  author  = {Kloss, Christoph and Goniva, Christoph and Hager, Alice and Amberger, Stefan and Pirker, Stefan},
+  title   = {Models, algorithms and validation for opensource {DEM} and {CFD-DEM}},
+  journal = {Progress in Computational Fluid Dynamics, an International Journal},
+  year    = {2012},
+  volume  = {12},
+  number  = {2-3},
+  pages   = {140--152},
+  doi     = {10.1504/PCFD.2012.047457},
+  note    = {LIGGGHTS and CFDEMcoupling reference paper.}
+}
+
+@article{Weinhart2020MercuryDPM,
+  author  = {Weinhart, Thomas and Orefice, Luca and Post, Marko and van Schrojenstein Lantman, Marnix P. and Denissen, Irana F. C. and others},
+  title   = {Fast, flexible particle simulations -- An introduction to {MercuryDPM}},
+  journal = {Computer Physics Communications},
+  year    = {2020},
+  volume  = {249},
+  pages   = {107129},
+  doi     = {10.1016/j.cpc.2019.107129},
+  note    = {BSD-3 license.}
+}
+
+@article{Dosta2020MUSEN,
+  author  = {Dosta, Maksym and Skorych, Vasyl},
+  title   = {{MUSEN}: An open-source framework for {GPU}-accelerated {DEM} simulations},
+  journal = {SoftwareX},
+  year    = {2020},
+  volume  = {12},
+  pages   = {100618},
+  doi     = {10.1016/j.softx.2020.100618},
+  note    = {BSD-3 license.}
+}
+
+@inproceedings{Stransky2013DEMFEM,
+  author    = {Str{\'a}nsk{\'y}, Jan and Jir{\'a}sek, Milan},
+  title     = {Open Source {DEM-FEM} Coupling},
+  booktitle = {Particles 2013 -- III International Conference on Particle-Based Methods},
+  year      = {2013},
+  pages     = {46--57},
+  url       = {https://upcommons.upc.edu/handle/2117/188310},
+  note      = {Yade-OOFEM bridge. GitHub stranskyjan/dem-fem-coupling.}
+}
+
+% ===== Modern Python and GPU FEM =====
+
+@article{Xue2023JAXFEM,
+  author  = {Xue, Tianju and Liao, Shuheng and Gan, Zhengtao and Park, Chanwook and Xie, Xiaoyu and Liu, Wing Kam and Cao, Jian},
+  title   = {{JAX-FEM}: A differentiable {GPU}-accelerated {3D} finite element solver for automatic inverse design and mechanistic data science},
+  journal = {Computer Physics Communications},
+  year    = {2023},
+  volume  = {291},
+  pages   = {108802},
+  doi     = {10.1016/j.cpc.2023.108802},
+  note    = {GPL-3.0; commercial license available from author.}
+}
+
+@article{Rathgeber2017Firedrake,
+  author  = {Rathgeber, Florian and Ham, David A. and Mitchell, Lawrence and Lange, Michael and Luporini, Fabio and McRae, Andrew T. T. and Bercea, Gheorghe-Teodor and Markall, Graham R. and Kelly, Paul H. J.},
+  title   = {Firedrake: automating the finite element method by composing abstractions},
+  journal = {ACM Transactions on Mathematical Software},
+  year    = {2017},
+  volume  = {43},
+  number  = {3},
+  pages   = {24:1--24:27},
+  doi     = {10.1145/2998441},
+  note    = {LGPL-3 license. Sister project to FEniCS.}
+}
+
+@article{Gustafsson2020ScikitFem,
+  author  = {Gustafsson, Tom and McBain, Geordie D.},
+  title   = {scikit-fem: A {P}ython package for finite element assembly},
+  journal = {Journal of Open Source Software},
+  year    = {2020},
+  volume  = {5},
+  number  = {52},
+  pages   = {2369},
+  doi     = {10.21105/joss.02369},
+  note    = {BSD-3 license.}
+}
+
+@misc{Dutzler2024Felupe,
+  author       = {Dutzler, Andreas},
+  title        = {{FElupe}: finite element analysis for continuum mechanics of solid bodies},
+  year         = {2024},
+  howpublished = {\url{https://github.com/adtzlr/felupe}},
+  note         = {GPL-3 license.}
+}
+
+@article{Cimrman2019SfePy,
+  author  = {Cimrman, Robert and Luke{\v{s}}, Vladim{\'\i}r and Rohan, Eduard},
+  title   = {Multiscale finite element calculations in {Python} using {SfePy}},
+  journal = {Advances in Computational Mathematics},
+  year    = {2019},
+  volume  = {45},
+  number  = {4},
+  pages   = {1897--1921},
+  doi     = {10.1007/s10444-019-09666-0},
+  note    = {BSD-3 license.}
+}
+
+@article{Schoof2024PolyFEM,
+  author  = {Schoof, Tobias and Ferguson, Zachary and Panozzo, Daniele and Zorin, Denis and others},
+  title   = {{PolyFEM}: A {C++} library for polyvalent {FEM} simulation with {IPC} contact},
+  journal = {ACM Transactions on Graphics},
+  year    = {2024},
+  note    = {MIT license. Citation placeholder; see polyfem.github.io for current canonical paper.}
+}
+
+@inproceedings{Li2020IPC,
+  author    = {Li, Minchen and Ferguson, Zachary and Schneider, Teseo and Langlois, Timothy R. and Zorin, Denis and Panozzo, Daniele and Jiang, Chenfanfu and Kaufman, Danny M.},
+  title     = {Incremental Potential Contact: Intersection- and Inversion-free, Large-Deformation Dynamics},
+  booktitle = {ACM Transactions on Graphics (SIGGRAPH)},
+  year      = {2020},
+  volume    = {39},
+  number    = {4},
+  doi       = {10.1145/3386569.3392425},
+  note      = {MIT-licensed IPC Toolkit reference.}
+}
+
+@misc{OpenRadioss2025,
+  author       = {{Altair Engineering, Inc.}},
+  title        = {{OpenRadioss}: an open-source explicit finite element solver},
+  year         = {2025},
+  howpublished = {\url{https://github.com/OpenRadioss/OpenRadioss}},
+  note         = {AGPL-3.0 license. Open-sourced from Altair Radioss in September 2022. Contains MAT\_LAW\_25 (CRASURV Tsai-Wu), Hashin/Tsai-Wu/Puck/Johnson failure cards, element erosion, composite shells. Python keyword scripting since 2024.}
+}
+
+% ===== Material model and constitutive infrastructure =====
+
+@article{Helfer2015MFront,
+  author  = {Helfer, Thomas and Michel, Bruno and Proix, Jean-Michel and Salvo, Marc and Sercombe, J{\'e}r{\^o}me and Casella, Michel},
+  title   = {Introducing the open-source {mfront} code generator: Application to mechanical behaviours and material knowledge management within the {PLEIADES} fuel element modelling platform},
+  journal = {Computers \& Mathematics with Applications},
+  year    = {2015},
+  volume  = {70},
+  number  = {5},
+  pages   = {994--1023},
+  doi     = {10.1016/j.camwa.2015.06.027},
+  note    = {LGPL-3 license. The MFront code generator.}
+}
+
+@article{Bleyer2024MFrontFEniCSx,
+  author  = {Bleyer, J{\'e}r{\'e}my and Helfer, Thomas},
+  title   = {Elasto-plastic and damage analysis using the {MFront} / {FEniCSx} bridge},
+  journal = {Numerical Tours of Computational Mechanics with FEniCSx},
+  year    = {2024},
+  url     = {https://bleyerj.github.io/comet-fenicsx/},
+  note    = {dolfinx\_materials + MGIS-FEniCSx workflow for user-coded constitutive laws.}
+}
+
+% ===== Textile / draping codes =====
+
+@article{Sherburn2007TexGenJournal,
+  author  = {Sherburn, Martin},
+  title   = {Geometric and mechanical modelling of textiles},
+  school  = {University of Nottingham},
+  year    = {2007},
+  type    = {{P}h{D} dissertation},
+  note    = {TexGen origins at Nottingham. GPL-2 license.}
+}
+
+@misc{Brown2024TexGenSoftware,
+  author       = {Brown, Louise P. and Sherburn, Martin and Long, Andrew C.},
+  title        = {{TexGen}: open source textile geometric modelling, v3.13.1},
+  year         = {2023},
+  howpublished = {\url{https://github.com/louisepb/TexGen}},
+  note         = {GPL-2 license. Released August 2023.}
+}
+
+@article{Krogh2021KinDrape,
+  author  = {Krogh, Christian and Bak, Brian L. V. and Lindgaard, Esben and Olesen, Anders M. and Hermansen, Sissel M. and Broberg, Peder H. and J{\o}rgensen, Jakob H. and others},
+  title   = {A simple {MATLAB} draping code for fiber-reinforced composites with application to optimization of manufacturing process parameters},
+  journal = {Structural and Multidisciplinary Optimization},
+  year    = {2021},
+  volume  = {64},
+  pages   = {457--471},
+  doi     = {10.1007/s00158-021-02925-z},
+  note    = {KinDrape origin paper. MATLAB + Python + Octave ports on GitHub chrkrogh/KinDrape.}
+}
+
+% ===== Sandia / LLNL / ORNL HPC FEM =====
+
+@article{Anderson2021MFEM,
+  author  = {Anderson, Robert W. and Andrej, Julian and Barker, Andrew T. and Bramwell, Jamie and Camier, Jean-Sylvain and others},
+  title   = {{MFEM}: A modular finite element methods library},
+  journal = {Computers \& Mathematics with Applications},
+  year    = {2021},
+  volume  = {81},
+  pages   = {42--74},
+  doi     = {10.1016/j.camwa.2020.06.009},
+  note    = {BSD-3 license.}
+}
+
+@article{Permann2020MOOSE,
+  author  = {Permann, Cody J. and Gaston, Derek R. and Andr{\v s}, David and Carlsen, Robert W. and Kong, Fande and others},
+  title   = {{MOOSE}: Enabling massively parallel multiphysics simulation},
+  journal = {SoftwareX},
+  year    = {2020},
+  volume  = {11},
+  pages   = {100430},
+  doi     = {10.1016/j.softx.2020.100430},
+  note    = {LGPL-2.1.}
+}
+
+@article{Salinger2016Albany,
+  author  = {Salinger, Andrew G. and Bartlett, Roscoe A. and Bradley, Andrew M. and Chen, Qiushi and Demeshko, Irina P. and others},
+  title   = {{Albany}: Using component-based design to develop a flexible, generic multiphysics analysis code},
+  journal = {International Journal for Multiscale Computational Engineering},
+  year    = {2016},
+  volume  = {14},
+  number  = {4},
+  pages   = {415--438},
+  doi     = {10.1615/IntJMultCompEng.2016017040},
+  note    = {BSD-3 license. Sandia.}
+}
+
+@misc{LLNL2023ExaConstit,
+  author       = {Carson, Robert A. and Wopschall, Steven and Bhattacharyya, Joydeep},
+  title        = {{ExaConstit}: A crystal plasticity {FEM} code that runs on the {GPU}, version 2024},
+  year         = {2024},
+  howpublished = {\url{https://github.com/LLNL/ExaConstit}},
+  note         = {BSD-3 license. LLNL. Built on MFEM.}
+}
+
+% ===== Visualisation =====
+
+@article{Ramachandran2011Mayavi,
+  author  = {Ramachandran, Prabhu and Varoquaux, Ga{\"e}l},
+  title   = {Mayavi: 3{D} visualization of scientific data},
+  journal = {Computing in Science \& Engineering},
+  year    = {2011},
+  volume  = {13},
+  number  = {2},
+  pages   = {40--51},
+  doi     = {10.1109/MCSE.2011.35},
+  note    = {BSD-3 license.}
+}
+
+@misc{Kitware2025Trame,
+  author       = {O'Leary, Patrick and Tsai, Tony and Schroeder, William and others},
+  title        = {{Trame}: Python web-app framework for {VTK} / {ParaView} visualisations},
+  year         = {2025},
+  howpublished = {\url{https://github.com/Kitware/trame}},
+  note         = {Apache-2.0 (core) and BSD-3 (trame-vtk) licenses. Kitware.}
+}
+
+@misc{Kitware2024Catalyst,
+  author       = {Ayachit, Utkarsh and Bauer, Andy and Geveci, Berk and O'Leary, Patrick and Moreland, Kenneth and Fabian, Nathan and Mauldin, Jeffrey},
+  title        = {{ParaView Catalyst}: in-situ visualisation, version 2024},
+  year         = {2024},
+  howpublished = {\url{https://gitlab.kitware.com/paraview/catalyst}},
+  note         = {BSD-3 license.}
+}
+
+@inproceedings{Larsen2017Ascent,
+  author    = {Larsen, Matthew and Brugger, Eric and Childs, Hank and Harrison, Cyrus and Bremer, Peer-Timo and others},
+  title     = {The {Ascent} infrastructure: flyweight in situ visualization and analysis for {HPC} simulations},
+  booktitle = {Proceedings of the In Situ Infrastructures for Enabling Extreme-Scale Analysis and Visualization (ISAV)},
+  year      = {2017},
+  pages     = {42--46},
+  doi       = {10.1145/3144769.3144778},
+  note      = {BSD-3 license. LLNL.}
+}
+
+@misc{f3dApp2025,
+  author       = {Migliore, Michael and Westphal, Mathieu and {F3D-APP Foundation}},
+  title        = {{F3D}: a fast and minimalist 3{D} viewer},
+  year         = {2025},
+  howpublished = {\url{https://github.com/f3d-app/f3d}},
+  note         = {BSD-3 license.}
+}
+
+@article{Schroeder2024K3DJupyter,
+  author  = {Chudoba, Artur and others},
+  title   = {{K3D-jupyter}: Jupyter widget for fast {WebGL}-based 3{D} plots},
+  journal = {Journal of Open Source Software},
+  year    = {2019},
+  doi     = {10.21105/joss.01087},
+  note    = {MIT license.}
+}
+
+% ===== Coupling / multi-physics =====
+
+@article{Chourdakis2022PreCICE,
+  author  = {Chourdakis, Gerasimos and Davis, Kyle and Rodenberg, Benjamin and Schulte, Miriam and Simonis, Frederic and Uekermann, Benjamin and others},
+  title   = {pre{CICE} v2: A sustainable and user-friendly coupling library},
+  journal = {Open Research Europe},
+  year    = {2022},
+  volume  = {2},
+  pages   = {51},
+  doi     = {10.12688/openreseurope.14445.2},
+  note    = {LGPL-3 license. Coupling library for partitioned multi-physics.}
+}
+
+% ===== Mesh and post-processing =====
+
+@misc{SchloeMeshio2024,
+  author       = {Schl{\"o}mer, Nico},
+  title        = {{meshio}: I/O for various mesh formats},
+  year         = {2024},
+  howpublished = {\url{https://github.com/nschloe/meshio}},
+  note         = {MIT license.}
+}
+
+@article{Sullivan2019PyVista,
+  author  = {Sullivan, C. Bane and Kaszynski, Alexander A.},
+  title   = {{PyVista}: 3{D} plotting and mesh analysis through a streamlined interface for the {Visualization Toolkit (VTK)}},
+  journal = {Journal of Open Source Software},
+  year    = {2019},
+  volume  = {4},
+  number  = {37},
+  pages   = {1450},
+  doi     = {10.21105/joss.01450},
+  note    = {MIT license.}
+}
+
+@article{Geuzaine2009Gmsh,
+  author  = {Geuzaine, Christophe and Remacle, Jean-Fran{\c{c}}ois},
+  title   = {{Gmsh}: A 3-{D} finite element mesh generator with built-in pre- and post-processing facilities},
+  journal = {International Journal for Numerical Methods in Engineering},
+  year    = {2009},
+  volume  = {79},
+  number  = {11},
+  pages   = {1309--1331},
+  doi     = {10.1002/nme.2579},
+  note    = {GPL-2 license.}
+}
+
+@misc{SchloePygmsh2024,
+  author       = {Schl{\"o}mer, Nico},
+  title        = {{pygmsh}: a {P}ython interface to {Gmsh}},
+  year         = {2024},
+  howpublished = {\url{https://github.com/nschloe/pygmsh}},
+  note         = {GPL-3 license.}
+}
+
+% ===== License-policy references =====
+
+@misc{FSF2007AGPL,
+  author       = {{Free Software Foundation}},
+  title        = {{GNU Affero General Public License}, version 3},
+  year         = {2007},
+  howpublished = {\url{https://www.gnu.org/licenses/agpl-3.0.html}},
+  note         = {AGPL-3 reference text. Network-use clause distinguishes AGPL from GPL.}
+}
+
+@misc{OSIApprovedLicenses,
+  author       = {{Open Source Initiative}},
+  title        = {{OSI}-approved licenses},
+  year         = {2025},
+  howpublished = {\url{https://opensource.org/licenses}},
+  note         = {Authoritative list of OSI-approved licenses.}
+}
