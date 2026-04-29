@@ -1,0 +1,450 @@
+Stage 02 cantilever_large
+OpenRadioss root: /mnt/storage/j-vaught/openradioss/OpenRadioss
+EI=11.25 N m^2, inertia_z=5.62500000e-11 m^4
+[stage02_implicit_coarse_a1p00] mesh=coarse elements=600 nodes=984 alpha=1 P=11.25 N mode=implicit
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_02_cantilever_large/runs/stage02_implicit_coarse_a1p00/stage02_implicit_coarse_a1p00_0000.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+Stage 02 alpha 1 implicit large-deflection cantilever
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    1 THREAD
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. CONCENTRATED LOADS                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  13:42:10
+ EXECUTION COMPLETED    :      2026/04/29  13:42:10
+  
+ ELAPSED TIME...........=          0.24 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     NORMAL TERMINATION                                                                  
+     ------------------                                                                  
+              0 ERROR(S)            
+              0 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_02_cantilever_large/runs/stage02_implicit_coarse_a1p00/stage02_implicit_coarse_a1p00_0001.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage02_implicit_coarse_a1p00  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     1
+
+MESSAGE ID :        296
+** WARNING /IMPL/SOLVER/N
+      N=5 IS NO MORE SUPPORTED, SWITCHING TO DEFAULT SOLVER : MUMPS
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 2.0000E-02 ERR=  0.0% DM/M= 0.0000E+00
+        8528 Fatal error: MUMPS required
+
+     ERROR TERMINATION
+[exit 2]
+[auto] implicit path failed: engine failed for stage02_implicit_coarse_a1p00
+[auto] falling back to explicit dynamic relaxation
+[stage02_explicit_coarse_a1p00] mesh=coarse elements=600 nodes=984 alpha=1 P=11.25 N mode=explicit
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_02_cantilever_large/runs/stage02_explicit_coarse_a1p00/stage02_explicit_coarse_a1p00_0000.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                        OpenRadioss Starter                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+Stage 02 alpha 1 explicit large-deflection cantilever
+ .. UNITS SYSTEM                                                                         
+ .. CONTROL VARIABLES                                                                    
+ .. STARTER RUNNING ON    1 THREAD
+ .. FUNCTIONS & TABLES
+ .. MATERIALS                                                                            
+ .. NODES                                                                                
+ .. PROPERTIES                                                                           
+ .. 3D SOLID ELEMENTS                                                                    
+ .. SUBSETS
+ .. ELEMENT GROUPS
+ .. PART GROUPS
+ .. NODE GROUP
+ .. BOUNDARY CONDITIONS                                                                  
+ .. CONCENTRATED LOADS                                                                   
+ .. DOMAIN DECOMPOSITION
+ .. ELEMENT GROUPS                                                                       
+ .. ELEMENT BUFFER INITIALIZATION                                                        
+ .. GEOMETRY PLOT FILE                                                                   
+ .. PARALLEL RESTART FILES GENERATION                                                    
+  
+------------------------------------------------------------------------
+  
+                   ** COMPUTE TIME INFORMATION **
+  
+ EXECUTION STARTED      :      2026/04/29  13:42:10
+ EXECUTION COMPLETED    :      2026/04/29  13:42:10
+  
+ ELAPSED TIME...........=          0.25 s
+                               00:00:00
+  
+------------------------------------------------------------------------
+
+
+
+     NORMAL TERMINATION                                                                  
+     ------------------                                                                  
+              0 ERROR(S)            
+              0 WARNING(S)          
+
+
+
+
+PLEASE CHECK LISTING FILE FOR FURTHER DETAILS
+
+
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf -i /mnt/storage/j-vaught/fea_apply/tests/stage_02_cantilever_large/runs/stage02_explicit_coarse_a1p00/stage02_explicit_coarse_a1p00_0001.rad -nt 1
+************************************************************************
+**                                                                    **
+**                                                                    **
+**                         OpenRadioss Engine                         **
+**                                                                    **
+**            Non-linear Finite Element Analysis Software             **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+**                    Linux 64 bits, GNU compiler                     **
+**                      Double Precision Version                      **
+**                                                                    **
+**                                                                    **
+**                                                                    **
+************************************************************************
+** OpenRadioss Software                                               **
+** COPYRIGHT (C) 1986-2026 Altair Engineering, Inc.                   **
+** Licensed under GNU Affero General Public License.                  **
+** See License file.                                                  **
+************************************************************************
+ 
+ ROOT: stage02_explicit_coarse_a1p00  RESTART: 0001
+ NUMBER OF HMPP PROCESSES     1
+ 29/04/2026
+ NC=       0 T= 0.0000E+00 DT= 1.0000E-04 ERR=  0.0% DM/M= 4.6789E+05
+ NC=     100 T= 1.0000E-02 DT= 1.0000E-04 ERR=  0.4% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.04 s  REMAINING TIME=          4.15 s
+ NC=     200 T= 2.0000E-02 DT= 1.0000E-04 ERR=  0.4% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.07 s  REMAINING TIME=          3.47 s
+ NC=     300 T= 3.0000E-02 DT= 1.0000E-04 ERR=  0.4% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.10 s  REMAINING TIME=          3.34 s
+ NC=     400 T= 4.0000E-02 DT= 1.0000E-04 ERR=  0.4% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.14 s  REMAINING TIME=          3.25 s
+ NC=     500 T= 5.0000E-02 DT= 1.0000E-04 ERR=  0.4% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.17 s  REMAINING TIME=          3.14 s
+ NC=     600 T= 6.0000E-02 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.20 s  REMAINING TIME=          3.19 s
+ NC=     700 T= 7.0000E-02 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.24 s  REMAINING TIME=          3.17 s
+ NC=     800 T= 8.0000E-02 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.27 s  REMAINING TIME=          3.08 s
+ NC=     900 T= 9.0000E-02 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.30 s  REMAINING TIME=          3.03 s
+ NC=    1000 T= 1.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.33 s  REMAINING TIME=          2.95 s
+ NC=    1100 T= 1.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.36 s  REMAINING TIME=          2.89 s
+ NC=    1200 T= 1.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.39 s  REMAINING TIME=          2.83 s
+ NC=    1300 T= 1.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.42 s  REMAINING TIME=          2.82 s
+ NC=    1400 T= 1.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.45 s  REMAINING TIME=          2.78 s
+ NC=    1500 T= 1.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.48 s  REMAINING TIME=          2.73 s
+ NC=    1600 T= 1.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.53 s  REMAINING TIME=          2.76 s
+ NC=    1700 T= 1.7000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.56 s  REMAINING TIME=          2.73 s
+ NC=    1800 T= 1.8000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.59 s  REMAINING TIME=          2.70 s
+ NC=    1900 T= 1.9000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.62 s  REMAINING TIME=          2.65 s
+ NC=    2000 T= 2.0000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.65 s  REMAINING TIME=          2.60 s
+ NC=    2100 T= 2.1000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.68 s  REMAINING TIME=          2.55 s
+ NC=    2200 T= 2.2000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.71 s  REMAINING TIME=          2.51 s
+ NC=    2300 T= 2.3000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.74 s  REMAINING TIME=          2.48 s
+ NC=    2400 T= 2.4000E-01 DT= 1.0000E-04 ERR=  0.2% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.77 s  REMAINING TIME=          2.44 s
+ NC=    2500 T= 2.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.80 s  REMAINING TIME=          2.40 s
+ NC=    2600 T= 2.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.83 s  REMAINING TIME=          2.36 s
+ NC=    2700 T= 2.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.86 s  REMAINING TIME=          2.32 s
+ NC=    2800 T= 2.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.89 s  REMAINING TIME=          2.30 s
+ NC=    2900 T= 2.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.92 s  REMAINING TIME=          2.26 s
+ NC=    3000 T= 3.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.96 s  REMAINING TIME=          2.24 s
+ NC=    3100 T= 3.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          0.99 s  REMAINING TIME=          2.20 s
+ NC=    3200 T= 3.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.02 s  REMAINING TIME=          2.17 s
+ NC=    3300 T= 3.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.06 s  REMAINING TIME=          2.14 s
+ NC=    3400 T= 3.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.08 s  REMAINING TIME=          2.10 s
+ NC=    3500 T= 3.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.11 s  REMAINING TIME=          2.07 s
+ NC=    3600 T= 3.6000E-01 DT= 1.0000E-04 ERR=  0.4% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.14 s  REMAINING TIME=          2.03 s
+ NC=    3700 T= 3.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.17 s  REMAINING TIME=          2.00 s
+ NC=    3800 T= 3.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.20 s  REMAINING TIME=          1.96 s
+ NC=    3900 T= 3.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.24 s  REMAINING TIME=          1.93 s
+ NC=    4000 T= 4.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.27 s  REMAINING TIME=          1.90 s
+ NC=    4100 T= 4.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.30 s  REMAINING TIME=          1.87 s
+ NC=    4200 T= 4.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.33 s  REMAINING TIME=          1.83 s
+ NC=    4300 T= 4.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.36 s  REMAINING TIME=          1.81 s
+ NC=    4400 T= 4.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.40 s  REMAINING TIME=          1.78 s
+ NC=    4500 T= 4.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.43 s  REMAINING TIME=          1.74 s
+ NC=    4600 T= 4.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.46 s  REMAINING TIME=          1.71 s
+ NC=    4700 T= 4.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.49 s  REMAINING TIME=          1.68 s
+ NC=    4800 T= 4.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.52 s  REMAINING TIME=          1.65 s
+ NC=    4900 T= 4.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.55 s  REMAINING TIME=          1.61 s
+     RESTART FILES: stage02_explicit_coarse_a1p00_0001_[0001-0001].rst WRITTEN
+ NC=    5000 T= 5.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.58 s  REMAINING TIME=          1.58 s
+ NC=    5100 T= 5.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.61 s  REMAINING TIME=          1.54 s
+ NC=    5200 T= 5.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.64 s  REMAINING TIME=          1.51 s
+ NC=    5300 T= 5.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.67 s  REMAINING TIME=          1.48 s
+ NC=    5400 T= 5.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.70 s  REMAINING TIME=          1.45 s
+ NC=    5500 T= 5.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.73 s  REMAINING TIME=          1.41 s
+ NC=    5600 T= 5.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.76 s  REMAINING TIME=          1.39 s
+ NC=    5700 T= 5.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.80 s  REMAINING TIME=          1.36 s
+ NC=    5800 T= 5.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.83 s  REMAINING TIME=          1.32 s
+ NC=    5900 T= 5.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.87 s  REMAINING TIME=          1.30 s
+ NC=    6000 T= 6.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.90 s  REMAINING TIME=          1.27 s
+ NC=    6100 T= 6.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.94 s  REMAINING TIME=          1.24 s
+ NC=    6200 T= 6.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          1.98 s  REMAINING TIME=          1.21 s
+ NC=    6300 T= 6.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.01 s  REMAINING TIME=          1.18 s
+ NC=    6400 T= 6.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.04 s  REMAINING TIME=          1.15 s
+ NC=    6500 T= 6.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.07 s  REMAINING TIME=          1.11 s
+ NC=    6600 T= 6.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.10 s  REMAINING TIME=          1.08 s
+ NC=    6700 T= 6.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.13 s  REMAINING TIME=          1.05 s
+ NC=    6800 T= 6.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.16 s  REMAINING TIME=          1.02 s
+ NC=    6900 T= 6.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.19 s  REMAINING TIME=          0.99 s
+ NC=    7000 T= 7.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.22 s  REMAINING TIME=          0.95 s
+ NC=    7100 T= 7.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.25 s  REMAINING TIME=          0.92 s
+ NC=    7200 T= 7.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.28 s  REMAINING TIME=          0.89 s
+ NC=    7300 T= 7.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.32 s  REMAINING TIME=          0.86 s
+ NC=    7400 T= 7.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.34 s  REMAINING TIME=          0.82 s
+ NC=    7500 T= 7.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.37 s  REMAINING TIME=          0.79 s
+ NC=    7600 T= 7.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.40 s  REMAINING TIME=          0.76 s
+ NC=    7700 T= 7.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.43 s  REMAINING TIME=          0.73 s
+ NC=    7800 T= 7.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.46 s  REMAINING TIME=          0.69 s
+ NC=    7900 T= 7.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.49 s  REMAINING TIME=          0.66 s
+ NC=    8000 T= 8.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.52 s  REMAINING TIME=          0.63 s
+ NC=    8100 T= 8.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.55 s  REMAINING TIME=          0.60 s
+ NC=    8200 T= 8.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.59 s  REMAINING TIME=          0.57 s
+ NC=    8300 T= 8.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.62 s  REMAINING TIME=          0.54 s
+ NC=    8400 T= 8.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.65 s  REMAINING TIME=          0.50 s
+ NC=    8500 T= 8.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.68 s  REMAINING TIME=          0.47 s
+ NC=    8600 T= 8.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.71 s  REMAINING TIME=          0.44 s
+ NC=    8700 T= 8.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.74 s  REMAINING TIME=          0.41 s
+ NC=    8800 T= 8.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.77 s  REMAINING TIME=          0.38 s
+ NC=    8900 T= 8.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.80 s  REMAINING TIME=          0.35 s
+ NC=    9000 T= 9.0000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.83 s  REMAINING TIME=          0.31 s
+ NC=    9100 T= 9.1000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.86 s  REMAINING TIME=          0.28 s
+ NC=    9200 T= 9.2000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.89 s  REMAINING TIME=          0.25 s
+ NC=    9300 T= 9.3000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.92 s  REMAINING TIME=          0.22 s
+ NC=    9400 T= 9.4000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.95 s  REMAINING TIME=          0.19 s
+ NC=    9500 T= 9.5000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          2.98 s  REMAINING TIME=          0.16 s
+ NC=    9600 T= 9.6000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          3.01 s  REMAINING TIME=          0.13 s
+ NC=    9700 T= 9.7000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          3.04 s  REMAINING TIME=          0.09 s
+ NC=    9800 T= 9.8000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          3.07 s  REMAINING TIME=          0.06 s
+ NC=    9900 T= 9.9000E-01 DT= 1.0000E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          3.10 s  REMAINING TIME=          0.03 s
+     RESTART FILES: stage02_explicit_coarse_a1p00_0001_[0001-0001].rst WRITTEN
+ NC=   10000 T= 1.0000E+00 DT= 1.0022E-04 ERR=  0.3% DM/M= 4.6997E+05
+ ELAPSED TIME=          3.13 s  REMAINING TIME=         -0.00 s
+     ANIMATION FILE: stage02_explicit_coarse_a1p00A001 WRITTEN
+  
+                           ** CPU USER TIME **
+  
+  
+                        ** SUMMARY **
+  
+ #PROC  ELEMENT   KINCOND   INTEG     IO        T0        ASM       RESOL    
+   1   .2389E+01 .3532E-01 .6502E-01 .7688E-01 .4705E-01 .8216E-01 .2969E+01
+ 
+                   ** CUMULATIVE CPU TIME SUMMARY **
+  
+ CONTACT SORTING.............: .0000E+00     0.00 % 
+ CONTACT FORCES..............: .2414E-02     0.08 % 
+ ELEMENT FORCES..............: .2389E+01    80.48 % 
+ KINEMATIC COND..............: .3532E-01     1.19 % 
+ INTEGRATION.................: .6502E-01     2.19 % 
+ ASSEMBLING..................: .8216E-01     2.77 % 
+ OTHERS (including I/O)......: .3945E+00    13.29 % 
+ TOTAL.......................: .2969E+01   100.00 % 
+  
+                   ** MEMORY USAGE STATISTICS **
+  
+ TOTAL MEMORY USED .........................:       36 MB
+ MAXIMUM MEMORY PER PROCESSOR...............:       36 MB
+ MINIMUM MEMORY PER PROCESSOR...............:       36 MB
+ AVERAGE MEMORY PER PROCESSOR...............:       36 MB
+  
+                   ** DISK USAGE STATISTICS **
+  
+ TOTAL DISK SPACE USED .....................:          0 MB
+ ANIMATION/H3D/TH/OUTP SIZE ................:          0 MB
+ RESTART FILE SIZE .........................:          0 MB
+  
+ ELAPSED TIME     =          3.14 s
+                          0:00:03
+  
+     NORMAL TERMINATION      
+     TOTAL NUMBER OF CYCLES  :   10001
+[exit 0]
+$ /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/anim_to_vtk_linux64_gf /mnt/storage/j-vaught/fea_apply/tests/stage_02_cantilever_large/runs/stage02_explicit_coarse_a1p00/stage02_explicit_coarse_a1p00A001
+[exit 0] wrote /mnt/storage/j-vaught/fea_apply/tests/stage_02_cantilever_large/runs/stage02_explicit_coarse_a1p00/stage02_explicit_coarse_a1p00A001.vtk
+[stage02_explicit_coarse_a1p00] dx/L=1.03340057e-08 ref=5.64332363e-02 err=100.000% | dy/L=3.40068509e-05 ref=3.01720774e-01 err=99.989% verdict=FAIL
