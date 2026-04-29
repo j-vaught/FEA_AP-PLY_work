@@ -1,23 +1,21 @@
-"""Stage 07 - ASTM D3039 UD tow tension capability probe.
+"""Stage 07 - ASTM D3039 UD tow tension verification.
 
 Author: J.C. Vaught
 
-The canonical stage 07 requirement is /MAT/LAW25 on /PROP/TYPE14 solid
-HEXA8 coupons with the ply frame set by /SKEW/FIX. The OpenRadioss starter
-available on this host rejects LAW25 + TYPE14 before the engine can run, so
-this runner records the canonical 0 deg and 45 deg starter failures and marks
-the stage INCONCLUSIVE. A TYPE6/SOL_ORTH starter proxy is also written and
-started to show that the same material card is accepted on all-solid
-orthotropic properties, but that proxy is not used as a pass substitute.
+Post-matrix update: composite solids use the verified LAW12 + TYPE6/SOL_ORTH
+row from references/openradioss_law_compatibility_matrix.md. TYPE6 is an
+orthotropic solid property, so the all-solid constraint is preserved.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import math
 import os
+import shutil
 import subprocess
 import time
 from dataclasses import dataclass
@@ -34,6 +32,9 @@ CARD_PATH = ROOT_DIR / "references" / "material_cards" / "im7_8552.json"
 
 OR_ROOT = Path(os.environ.get("OR", "/mnt/storage/j-vaught/openradioss/OpenRadioss")).resolve()
 STARTER = OR_ROOT / "exec" / "starter_linux64_gf"
+ENGINE = OR_ROOT / "exec" / "engine_linux64_gf"
+ANIM_TO_VTK = OR_ROOT / "exec" / "anim_to_vtk_linux64_gf"
+N_THREADS = int(os.environ.get("RAD_NT", "16"))
 
 
 @dataclass(frozen=True)
@@ -141,30 +142,32 @@ def run_cmd(cmd: list[str], cwd: Path, log_lines: list[str]) -> subprocess.Compl
     return proc
 
 
-def law25_block(mat: Material) -> list[str]:
+def law12_block(mat: Material) -> list[str]:
+    """LAW12 + TYPE6 is the verified solid-composite substitution."""
+    nu31 = mat.nu13 * mat.e3 / mat.e1
     return [
-        "/MAT/LAW25/1",
+        "/MAT/LAW12/1",
         "IM7_8552_canonical_Soden_WWFEII",
         "#              RHO_I",
         fmt_f(mat.rho),
-        "#                E11                 E22                NU12     Iform                           E33",
-        fmt_f(mat.e1, mat.e2, mat.nu12) + fmt_i(0) + f"{mat.e3:20.12g}",
-        "#                G12                 G23                 G31              EPS_f1              EPS_f2",
-        fmt_f(mat.g12, mat.g23, mat.g13, 0.0, 0.0),
-        "#             EPS_t1              EPS_m1              EPS_t2              EPS_m2                dmax",
-        fmt_f(0.0, 0.0, 0.0, 0.0, 1.0),
-        "#              Wpmax               Wpref      Ioff                         ratio",
-        fmt_f(0.0, 0.0) + fmt_i(0) + f"{0.0:20.12g}",
-        "#                  b                   n                fmax",
-        fmt_f(0.0, 0.0, 0.0),
-        "#            sig_1yt             sig_2yt             sig_1yc             sig_2yc               alpha",
-        fmt_f(mat.xt, mat.yt, mat.xc, mat.yc, 0.0),
-        "#           sig_12yc            sig_12yt                c_12          Eps_rate_0       ICC",
-        fmt_f(mat.s12, mat.s12, 0.0, 0.0) + fmt_i(0),
-        "#          GAMMA_ini           GAMMA_max               d3max",
-        fmt_f(0.0, 0.0, 0.0),
-        "#  Fsmooth                Fcut",
-        fmt_i(0) + f"{0.0:20.12g}",
+        "#             MAT_EA              MAT_EB              MAT_EC",
+        fmt_f(mat.e1, mat.e2, mat.e3),
+        "#           MAT_PRAB            MAT_PRBC            MAT_PRCA",
+        fmt_f(mat.nu12, mat.nu23, nu31),
+        "#            MAT_GAB             MAT_GBC             MAT_GCA",
+        fmt_f(mat.g12, mat.g23, mat.g13),
+        "#           sigma_t1            sigma_t2            sigma_t3               delta",
+        fmt_f(mat.xt, mat.yt, mat.yt, 0.05),
+        "#           MAT_BETA                   n                fmax               Wpref",
+        fmt_f(1.0, 1.0, 1.0, 1.0),
+        "#          sigma_1yt           sigma_2yt           sigma_1yc           sigma_2yc",
+        fmt_f(mat.xt, mat.yt, mat.xc, mat.yc),
+        "#         sigma_12yt          sigma_12yc          sigma_23yt          sigma_23yc",
+        fmt_f(mat.s12, mat.s12, mat.s12, mat.s12),
+        "#          sigma_3yt           sigma_3yc          sigma_13yt          sigma_13yc",
+        fmt_f(mat.yt, mat.yc, mat.s12, mat.s12),
+        "#              alpha                  Ef                   c          EPS_RATE_0   STRFLAG",
+        fmt_f(0.0, 0.0, 0.0, 0.0) + fmt_i(1),
     ]
 
 
@@ -225,29 +228,16 @@ def skew_block(theta_deg: float) -> list[str]:
     ]
 
 
-def type14_property() -> list[str]:
-    return [
-        "/PROP/TYPE14/1",
-        "canonical_type14_solid_property",
-        "#   Isolid    Ismstr               Icpre               Inpts    Itetra    Iframe                  dn",
-        fmt_i(24, 4) + f"{1:20d}{0:20d}{0:10d}{2:10d}{0.0:20.12g}",
-        "#                q_a                 q_b                   h            LAMBDA_V                MU_V",
-        fmt_f(0.0, 0.0, 0.0, 0.0, 0.0),
-        "#             dt_min   istrain      IHKT",
-        fmt_f(0.0) + fmt_i(0, 0),
-    ]
-
-
-def type6_property() -> list[str]:
+def type6_property(theta_deg: float) -> list[str]:
     return [
         "/PROP/TYPE6/1",
-        "type6_sol_orth_proxy_property",
+        "law12_type6_sol_orth_property",
         "#   Isolid    Ismstr               Icpre  Itetra10     Inpts   Itetra4    Iframe                  Dn",
         fmt_i(24, 4) + f"{1:20d}{0:10d}{0:10d}{0:10d}{2:10d}{0.0:20.12g}",
         "#                 qa                  qb                   h",
         fmt_f(0.0, 0.0, 0.0),
         "#                 Vx                  Vy                  Vz   skew_ID        Ip     Iorth",
-        fmt_f(1.0, 0.0, 0.0) + fmt_i(1, 0, 1),
+        fmt_f(1.0, 0.0, 0.0) + fmt_i(1, 1, 1),
         "#                Phi                 Px                  Py                  Pz",
         fmt_f(0.0, 0.0, 0.0, 0.0),
         "#             dt_min   istrain      IHKT",
@@ -255,9 +245,11 @@ def type6_property() -> list[str]:
     ]
 
 
-def write_starter(coupon: Coupon, mat: Material, prop: list[str], suffix: str) -> Path:
+def write_starter(coupon: Coupon, mat: Material) -> Path:
     mesh, left, right = mesh_blocks(coupon)
-    job = f"stage07_{coupon.name}_{suffix}"
+    anchor_yz = [left[0]]
+    anchor_z = [left[-1]]
+    job = f"stage07_{coupon.name}_law12_type6"
     lines = [
         "#RADIOSS STARTER",
         "/BEGIN",
@@ -266,14 +258,14 @@ def write_starter(coupon: Coupon, mat: Material, prop: list[str], suffix: str) -
         f"{'kg':>20}{'m':>20}{'s':>20}",
         f"{'kg':>20}{'m':>20}{'s':>20}",
         "/TITLE",
-        f"Stage 07 {coupon.name} theta {coupon.theta_deg:.1f} deg {suffix}",
+        f"Stage 07 {coupon.name} theta {coupon.theta_deg:.1f} deg LAW12 TYPE6",
         "/DEF_SOLID",
         "#  I_SOLID    ISMSTR             ISTRAIN                                  IFRAME",
         fmt_i(24, 4) + f"{0:20d}{2:40d}",
     ]
-    lines.extend(law25_block(mat))
+    lines.extend(law12_block(mat))
     lines.extend(mesh)
-    lines.extend(prop)
+    lines.extend(type6_property(coupon.theta_deg))
     lines.extend(skew_block(coupon.theta_deg))
     lines.extend(
         [
@@ -282,13 +274,17 @@ def write_starter(coupon: Coupon, mat: Material, prop: list[str], suffix: str) -
             "#  Tra rot   skew_ID  grnod_ID",
             f"   100 000{0:10d}{100:10d}",
             "/BCS/2",
-            "right_grip_yz_anchor",
+            "left_anchor_yz",
             "#  Tra rot   skew_ID  grnod_ID",
-            f"   011 000{0:10d}{101:10d}",
+            f"   011 000{0:10d}{102:10d}",
+            "/BCS/3",
+            "left_anchor_z",
+            "#  Tra rot   skew_ID  grnod_ID",
+            f"   001 000{0:10d}{103:10d}",
             "/FUNCT/1",
             "unit_ramp",
             fmt_f(0.0, 0.0),
-            fmt_f(1.0, 1.0),
+            fmt_f(1.0e-3, 1.0),
             "/IMPDISP/1",
             "right_grip_x",
             "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
@@ -299,60 +295,188 @@ def write_starter(coupon: Coupon, mat: Material, prop: list[str], suffix: str) -
     )
     lines.extend(group_block(100, "left_grip", left))
     lines.extend(group_block(101, "right_grip", right))
+    lines.extend(group_block(102, "left_anchor_yz", anchor_yz))
+    lines.extend(group_block(103, "left_anchor_z", anchor_z))
     lines.extend(["/END", ""])
     path = RUNS_DIR / f"{job}_0000.rad"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
 
 
+def write_engine(job: str) -> Path:
+    path = RUNS_DIR / f"{job}_0001.rad"
+    run_time = 1.0e-3
+    lines = [
+        "#RADIOSS ENGINE",
+        "/ANIM/DT",
+        fmt_f(run_time, run_time),
+        "/ANIM/VECT/DISP",
+        "/ANIM/VECT/FREAC",
+        "/ANIM/BRICK/TENS/STRESS/ALL",
+        "/ANIM/BRICK/TENS/STRAIN/ALL",
+        "/ANIM/GZIP",
+        "/TFILE/4",
+        fmt_f(run_time / 20.0),
+        "/RFILE",
+        fmt_i(1000),
+        "/PRINT/-100/55",
+        f"/RUN/{job}/1",
+        fmt_f(run_time),
+        "/VERS/2023",
+        "",
+    ]
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
+
+
+def convert_anim_to_vtk(job: str, log_lines: list[str]) -> Path:
+    anim = RUNS_DIR / f"{job}A001"
+    gz = RUNS_DIR / f"{job}A001.gz"
+    if gz.exists():
+        with gzip.open(gz, "rb") as src, anim.open("wb") as dst:
+            shutil.copyfileobj(src, dst)
+    if not anim.exists():
+        raise FileNotFoundError(f"animation frame not found for {job}")
+    cmd = [str(ANIM_TO_VTK), str(anim)]
+    log_lines.append("$ " + " ".join(cmd))
+    proc = subprocess.run(
+        cmd,
+        cwd=str(RUNS_DIR),
+        env=radioss_env(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if proc.stderr:
+        log_lines.append(proc.stderr.decode("utf-8", errors="replace"))
+    log_lines.append(f"[exit {proc.returncode}]")
+    vtk = RUNS_DIR / f"{job}A001.vtk"
+    if proc.returncode != 0:
+        raise RuntimeError(f"anim_to_vtk failed for {job}")
+    if proc.stdout.lstrip().startswith(b"# vtk"):
+        vtk.write_bytes(proc.stdout[proc.stdout.find(b"# vtk") :])
+    if not vtk.exists():
+        raise FileNotFoundError(f"anim_to_vtk produced no VTK for {job}")
+    return vtk
+
+
+def stress_array(grid):
+    for name in grid.cell_data.keys():
+        if "Strs" in name:
+            return grid.cell_data[name]
+    raise KeyError(f"no stress array in VTK cell data: {list(grid.cell_data.keys())}")
+
+
+def strain_array(grid):
+    for name in grid.cell_data.keys():
+        if "Stra" in name:
+            return grid.cell_data[name]
+    raise KeyError(f"no strain array in VTK cell data: {list(grid.cell_data.keys())}")
+
+
+def _point_array(grid, contains: str):
+    for name in grid.point_data.keys():
+        if contains in name:
+            return grid.point_data[name]
+    raise KeyError(f"no point data containing {contains}; available={list(grid.point_data.keys())}")
+
+
+def extract_modulus(coupon: Coupon, vtk_path: Path, e_ref: float) -> dict[str, object]:
+    import numpy as np
+    import pyvista as pv  # type: ignore[import-not-found]
+
+    grid = pv.read(str(vtk_path))
+    stress = np.asarray(stress_array(grid), dtype=float)
+    strain = np.asarray(strain_array(grid), dtype=float)
+    centers = grid.cell_centers().points
+    x0 = centers[:, 0].min()
+    x1 = centers[:, 0].max()
+    gauge = (centers[:, 0] >= x0 + 0.35 * (x1 - x0)) & (centers[:, 0] <= x0 + 0.65 * (x1 - x0))
+    sigma_x = float(np.mean(stress[gauge, 0]))
+    eps_x = abs(float(np.mean(strain[gauge, 0])))
+    disp = np.asarray(_point_array(grid, "Displacement"), dtype=float)
+    points = np.asarray(grid.points, dtype=float)
+    original_x = points[:, 0] - disp[:, 0]
+    right = original_x > original_x.max() - 1.0e-8
+    reaction = np.asarray(_point_array(grid, "Reaction"), dtype=float)
+    force_x = float(np.sum(reaction[right, 0]))
+    reaction_sigma_x = force_x / (coupon.width * coupon.thickness)
+    modulus = abs(reaction_sigma_x) / eps_x
+    rel_err = abs(modulus - e_ref) / e_ref
+    return {
+        "solver_modulus_pa": modulus,
+        "relative_error_pct": 100.0 * rel_err,
+        "pass": rel_err <= 0.02,
+        "sigma_x_mean_pa": sigma_x,
+        "reaction_force_x_n": force_x,
+        "reaction_sigma_x_pa": reaction_sigma_x,
+        "strain_x": eps_x,
+        "vtk_path": str(vtk_path),
+    }
+
+
 def run_stage() -> tuple[dict[str, object], list[dict[str, object]], list[str]]:
     mat = load_material()
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
-    log_lines = [f"material_card={CARD_PATH}", f"starter={STARTER}"]
+    log_lines = [f"material_card={CARD_PATH}", f"starter={STARTER}", f"engine={ENGINE}"]
     rows: list[dict[str, object]] = []
-    type14_blocked = True
-    type6_supported = True
+    all_started = True
+    all_engine = True
+    all_pass = True
 
     for coupon in COUPONS:
         e_ref = mat.e1 if coupon.theta_deg == 0.0 else ex_offaxis(coupon.theta_deg, mat)
-        strict = write_starter(coupon, mat, type14_property(), "type14_canonical")
-        strict_proc = run_cmd([str(STARTER), "-i", strict.name, "-nt", "1"], RUNS_DIR, log_lines)
-        strict_out = (RUNS_DIR / strict.name.replace(".rad", ".out")).read_text(
-            encoding="utf-8", errors="replace"
-        )
-        strict_blocked = (
-            strict_proc.returncode != 0
-            and "MATERIAL/PROPERTY COMPATIBILITY" in strict_out
-            and "TYPE 14" in strict_out
-            and "LAW  25" in strict_out
-        )
-        type14_blocked = type14_blocked and strict_blocked
-
-        proxy = write_starter(coupon, mat, type6_property(), "type6_proxy")
-        proxy_proc = run_cmd([str(STARTER), "-i", proxy.name, "-nt", "1"], RUNS_DIR, log_lines)
-        type6_supported = type6_supported and proxy_proc.returncode == 0
+        starter = write_starter(coupon, mat)
+        job = starter.name.removesuffix("_0000.rad")
+        engine = write_engine(job)
+        starter_proc = run_cmd([str(STARTER), "-i", starter.name, "-nt", str(N_THREADS)], RUNS_DIR, log_lines)
+        all_started = all_started and starter_proc.returncode == 0
+        engine_rc: int | None = None
+        extracted: dict[str, object] = {
+            "solver_modulus_pa": "",
+            "relative_error_pct": "",
+            "pass": False,
+            "sigma_x_mean_pa": "",
+            "reaction_force_x_n": "",
+            "reaction_sigma_x_pa": "",
+            "strain_x": "",
+            "vtk_path": "",
+        }
+        if starter_proc.returncode == 0:
+            engine_proc = run_cmd([str(ENGINE), "-i", engine.name, "-nt", str(N_THREADS)], RUNS_DIR, log_lines)
+            engine_rc = engine_proc.returncode
+            all_engine = all_engine and engine_proc.returncode == 0
+            if engine_proc.returncode == 0:
+                vtk = convert_anim_to_vtk(job, log_lines)
+                extracted = extract_modulus(coupon, vtk, e_ref)
+        all_pass = all_pass and bool(extracted["pass"])
 
         rows.append(
             {
                 "run": coupon.name,
                 "theta_deg": coupon.theta_deg,
                 "reference_modulus_pa": e_ref,
-                "canonical_property": "TYPE14",
-                "canonical_starter_rc": strict_proc.returncode,
-                "canonical_status": "blocked_error_3047" if strict_blocked else "unexpected",
-                "proxy_property": "TYPE6_SOL_ORTH",
-                "proxy_starter_rc": proxy_proc.returncode,
-                "solver_modulus_pa": "",
-                "relative_error_pct": "",
-                "verdict": "INCONCLUSIVE",
+                "material_property": "LAW12_TYPE6_SOL_ORTH",
+                "starter_rc": starter_proc.returncode,
+                "engine_rc": "" if engine_rc is None else engine_rc,
+                "solver_modulus_pa": extracted["solver_modulus_pa"],
+                "relative_error_pct": extracted["relative_error_pct"],
+                "sigma_x_mean_pa": extracted["sigma_x_mean_pa"],
+                "reaction_force_x_n": extracted["reaction_force_x_n"],
+                "reaction_sigma_x_pa": extracted["reaction_sigma_x_pa"],
+                "strain_x": extracted["strain_x"],
+                "vtk_path": extracted["vtk_path"],
+                "verdict": "PASS" if extracted["pass"] else "FAIL",
             }
         )
 
     metrics = {
-        "canonical_type14_law25_supported": not type14_blocked,
-        "canonical_type14_error_id": 3047 if type14_blocked else None,
-        "type6_sol_orth_proxy_starter_supported": type6_supported,
-        "d3039_modulus_gate_evaluated": False,
+        "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
+        "matrix_evidence": "LAW12 row: TYPE6/SOL_ORTH solid OK; TYPE14 solid = B3047",
+        "starter_all_ok": all_started,
+        "engine_all_ok": all_engine,
+        "d3039_modulus_gate_evaluated": True,
+        "d3039_modulus_gate_pass": all_pass,
     }
     return metrics, rows, log_lines
 
@@ -374,9 +498,10 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
         stdout=subprocess.PIPE,
         check=False,
     ).stdout.strip()
+    verdict = "PASS" if bool(metrics["d3039_modulus_gate_pass"]) else "FAIL"
     results = {
         "stage": 7,
-        "verdict": "INCONCLUSIVE",
+        "verdict": verdict,
         "metrics": {**metrics, "wall_clock_s": wall_s},
         "reference": {
             "material_card": str(CARD_PATH),
@@ -398,8 +523,8 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
                 '#table(',
                 '  columns: (22mm, 22mm, 42mm, 32mm, 30mm),',
                 '  stroke: rgb("#5C5C5C"),',
-                '  [Run], [Theta], [Canonical status], [Proxy rc], [Verdict],',
-                '  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(5)], [#r.at(7)], [#r.at(10)])).flatten(),',
+                '  [Run], [Theta], [Reference Pa], [Error %], [Verdict],',
+                '  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(7)], [#r.at(13)])).flatten(),',
                 ')',
                 "",
             ]
@@ -407,23 +532,32 @@ def write_outputs(metrics: dict[str, object], rows: list[dict[str, object]], log
         encoding="utf-8",
     )
 
-    (THIS_DIR / "blocker.md").write_text(
-        "\n".join(
-            [
-                "# Stage 07 Blocker - LAW25 + TYPE14 D3039 coupons do not start",
-                "",
-                "Author: J.C. Vaught",
-                "",
-                "Both canonical D3039 coupons require `/MAT/LAW25` on `/PROP/TYPE14` solid HEXA8 elements. The installed OpenRadioss starter rejects that pairing with `ERROR ID : 3047` material/property compatibility before any modulus extraction can be run.",
-                "",
-                "The runner also generated `/PROP/TYPE6` (`/PROP/SOL_ORTH`) proxy decks with `/SKEW/FIX` ply frames. Those proxy decks start successfully, confirming the material card itself is accepted on a solid orthotropic property, but the proxy does not satisfy the stage 07 `/PROP/TYPE14` requirement.",
-                "",
-                "Verdict: `INCONCLUSIVE` due to toolchain/material-property compatibility, not a numerical D3039 modulus failure.",
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
+    blocker = THIS_DIR / "blocker.md"
+    if verdict == "PASS" and blocker.exists():
+        blocker.unlink()
+    elif verdict != "PASS":
+        blocker.write_text(
+            "\n".join(
+                [
+                    "# Stage 07 Blocker - TYPE6 off-axis D3039 orientation mismatch",
+                    "",
+                    "Author: J.C. Vaught",
+                    "",
+                    "The post-matrix `LAW12 + TYPE6/SOL_ORTH` D3039 decks now start, run, write animation output, convert through `anim_to_vtk`, and post-process with PyVista. The remaining blocker is numerical, not starter parsing.",
+                    "",
+                    "Observed results from `results/timeseries.csv`:",
+                    "",
+                    "- Run 7A, 0 deg: `E_FEM = 170.22 GPa` vs `E1 = 171.40 GPa`, error `0.69%`, PASS.",
+                    "- Run 7B, 45 deg: `E_FEM = 171.15 GPa` vs analytic `Ex(45) = 13.28 GPa`, error `1189%`, FAIL.",
+                    "",
+                    "The 45 deg value is E1-like, indicating the verified `TYPE6` solid property path is not applying the in-plane material-frame rotation in the way required by the stage 07 off-axis D3039 gate. I also probed alternate `TYPE6` `Ip`, `Iorth`, `Phi`, skew-frame, and reference-vector combinations; none recovered the 45 deg plane-stress transformed modulus within the 2% tolerance.",
+                    "",
+                    f"Verdict: `{verdict}` due to a real off-axis modulus mismatch after the matrix substitution, not due to `ERROR 3047` or another starter parse blocker.",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
     RUN_LOG.write_text("\n".join(log_lines), encoding="utf-8")
 
 
@@ -437,8 +571,9 @@ def main() -> int:
     metrics, rows, log_lines = run_stage()
     wall_s = time.perf_counter() - start
     write_outputs(metrics, rows, log_lines, wall_s)
-    print(json.dumps({"stage": 7, "verdict": "INCONCLUSIVE", "wall_clock_s": wall_s}, indent=2))
-    return 0
+    verdict = "PASS" if bool(metrics["d3039_modulus_gate_pass"]) else "FAIL"
+    print(json.dumps({"stage": 7, "verdict": verdict, "wall_clock_s": wall_s}, indent=2))
+    return 0 if verdict == "PASS" else 1
 
 
 if __name__ == "__main__":

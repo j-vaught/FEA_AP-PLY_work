@@ -1,3 +1,3 @@
-run,theta_deg,reference_modulus_pa,canonical_property,canonical_starter_rc,canonical_status,proxy_property,proxy_starter_rc,solver_modulus_pa,relative_error_pct,verdict
-7A,0.0,171400000000.0,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
-7B,45.0,13277196220.353676,TYPE14,2,blocked_error_3047,TYPE6_SOL_ORTH,0,,,INCONCLUSIVE
+run,theta_deg,reference_modulus_pa,material_property,starter_rc,engine_rc,solver_modulus_pa,relative_error_pct,sigma_x_mean_pa,reaction_force_x_n,reaction_sigma_x_pa,strain_x,vtk_path,verdict
+7A,0.0,171400000000.0,LAW12_TYPE6_SOL_ORTH,0,0,170221002933.32254,0.6878629327173044,341200438.0,5082.897064208984,338859804.28059894,0.0019907050154870376,/mnt/storage/j-vaught/fea_apply/tests/stage_07_UD_tow_D3039/runs/stage07_7A_law12_type6A001.vtk,PASS
+7B,45.0,13277196220.353676,LAW12_TYPE6_SOL_ORTH,0,0,171154982127.20483,1189.089799432411,340578789.3333333,8502.203918457031,340088156.73828125,0.001987018738873303,/mnt/storage/j-vaught/fea_apply/tests/stage_07_UD_tow_D3039/runs/stage07_7B_law12_type6A001.vtk,FAIL
