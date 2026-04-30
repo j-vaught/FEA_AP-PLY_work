@@ -7,6 +7,12 @@ Master plan reference: `plan/master_plan.md` §3 row 16, §1 (single tool, all s
 OpenRadioss audit verdict: PASS (`references/openradioss_endtoend_audit.md`, row 16 and row C)
 Upstream stages assumed verified: 1-15 inclusive. The Kok geometry pipeline is proven at small scale by Stage 11; the explicit-dynamic ballistic erosion stack with LAW25 plus /FAIL/HASHIN plus /INTER/TYPE7 is proven on a flat coupon by Stage 15.
 
+## 2026-04-30 Execution Addendum
+
+The original text below predates the empirical LAW/PROP compatibility matrix and still names the old LAW25 + TYPE14 route in several places. The binding recipe for any rerun is now the verified solid-composite route in `references/openradioss_law_compatibility_matrix.md` and `references/openradioss_orientation_convention.md`: `/MAT/LAW12` + `/PROP/TYPE6/SOL_ORTH`, per-element `/INIBRI/ORTHO` for tow rotation, and `/FAIL/HASHIN` erosion with `IFAIL_SO=1` and `PTHICKFAIL=1.0`.
+
+The 200 mm x 200 mm P1-TWT Kok geometry requested in section 2 was attempted with `timeout 900` and did not write a mesh within the 15 minute cap. Per the finish brief, the representative section was downscaled to 100 mm x 100 mm with the same 24-ply `[+45/90/-45/0]`, `10001000`, 6.35 mm tape, and 4.55 mm total-thickness definition. The 100 mm coarse 2 mm TETRA10 preflight mesh wrote successfully and contains 1,120,178 nodes and 603,481 TETRA10 elements. Scaling from Stage 11 gives a lower-bound wall-clock estimate of 4.19 h per shot before contact, erosion, state output, or the required 0.5 mm impact-zone refinement. No V50 sweep was launched; the stage is `INCONCLUSIVE` with diagnostics in `blocker.md` and `results/results.json`.
+
 ---
 
 ## 1. Goal: this is the project's terminal test
