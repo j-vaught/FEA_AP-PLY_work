@@ -533,7 +533,11 @@ def render_wireframe_png(config: StageConfig, out_png: pathlib.Path) -> None:
     mesh = prepare_grid(paths[-1], 0.0)
     plotter = pv.Plotter(off_screen=True, window_size=(1800, 1200))
     setup_plotter(plotter, camera, bounds, config.view_scale)
-    plotter.add_mesh(mesh, style="wireframe", color=GARNET, line_width=0.55)
+    if mesh.n_cells <= 5000:
+        plotter.add_mesh(mesh, color=BLACK30, show_edges=True, edge_color=GARNET, line_width=1.0)
+    else:
+        plotter.add_mesh(mesh, style="wireframe", color=GARNET, line_width=0.55)
+    plotter.reset_camera_clipping_range()
     plotter.add_text(config.title, position="upper_left", font_size=18, color=CHARCOAL, font="courier")
     plotter.add_text(config.key_result, position="lower_left", font_size=12, color=CHARCOAL, font="courier")
     plotter.screenshot(str(out_png))
