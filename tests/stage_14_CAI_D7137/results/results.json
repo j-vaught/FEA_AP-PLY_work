@@ -1,0 +1,20 @@
+{
+  "stage": 14,
+  "name": "CAI_D7137",
+  "verdict": "INCONCLUSIVE",
+  "metrics": {
+    "attempted_command": "python tests/stage_14_CAI_D7137/runner.py --stage13-out tests/stage_13_LVI_D7136/out --starter-path /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/starter_linux64_gf --engine-path /mnt/storage/j-vaught/openradioss/OpenRadioss/exec/engine_linux64_gf --nthreads 16",
+    "stage13_state_found": false,
+    "starter_reached": false,
+    "engine_reached": false,
+    "blocker": "Stage 13 did not produce lvi_d7136_*.sta /STATE/BRICK/FULL restart files"
+  },
+  "reference": {
+    "standard": "ASTM D7137/D7137M compression after impact",
+    "dependency": "Stage 13 final damaged state"
+  },
+  "tolerance": {
+    "residual_strength_relative_error": 0.10
+  },
+  "git_sha": "963bedae1ccb04c2e97d25385b9c0cbd832b48c1"
+}
