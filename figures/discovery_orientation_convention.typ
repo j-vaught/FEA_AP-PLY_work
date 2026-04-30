@@ -1,0 +1,30 @@
+#import "@preview/cetz:0.3.4"
+#set page(width: 170mm, height: 92mm, margin: 7mm)
+#set text(font: "Libertinus Serif", size: 8pt, fill: rgb("#363636"))
+#let garnet = rgb("#73000A")
+#let horseshoe = rgb("#65780B")
+#let honeycomb = rgb("#A49137")
+#let atlantic = rgb("#466A9F")
+#let congaree = rgb("#1F414D")
+#let black10 = rgb("#ECECEC")
+#let black30 = rgb("#C7C7C7")
+#let black50 = rgb("#A2A2A2")
+#let charcoal = rgb("#363636")
+#let white = rgb("#FFFFFF")
+
+#align(center)[#text(size: 11pt, weight: "bold")[Discovery: Orientation Convention]]
+#v(1mm)
+#cetz.canvas(length: 1cm, {
+  import cetz.draw: *
+  rect((0.7, 4.8), (3.9, 5.8), fill: horseshoe, stroke: charcoal + 0.4pt)
+  content((2.3, 5.3), [#text(size: 7pt, fill: white)[Phi = theta coupon]], anchor: "center")
+  rect((5.0, 4.8), (8.2, 5.8), fill: honeycomb, stroke: charcoal + 0.4pt)
+  content((6.6, 5.3), [#text(size: 7pt)[/SKEW recipe rejected]], anchor: "center")
+  rect((9.3, 4.8), (12.8, 5.8), fill: horseshoe, stroke: charcoal + 0.4pt)
+  content((11.05, 5.3), [#text(size: 7pt, fill: white)[/INIBRI/ORTHO axes]], anchor: "center")
+  line((3.9, 5.3), (5.0, 5.3), stroke: charcoal + 0.55pt)
+  line((8.2, 5.3), (9.3, 5.3), stroke: charcoal + 0.55pt)
+  rect((2.4, 2.8), (11.2, 3.65), fill: black10, stroke: charcoal + 0.4pt)
+  content((6.8, 3.23), [Gate measurement: sigma_x / displacement-BC engineering strain, not VTK Stra[0]], anchor: "center")
+  content((6.8, 1.75), [Verified maximum match: 0.24% across tested LAW12/LAW14 angle rows.], anchor: "center")
+})

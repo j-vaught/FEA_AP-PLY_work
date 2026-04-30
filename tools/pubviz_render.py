@@ -1059,22 +1059,22 @@ def summary_figures() -> list[pathlib.Path]:
     out_dir.mkdir(exist_ok=True)
     produced: list[pathlib.Path] = []
     stages = [
-        (1, "PASS", "beam defl."),
-        (2, "INCONCLUSIVE", "alpha 1 only"),
-        (3, "PASS", "dogbone E8"),
-        (4, "PASS", "open hole Kt"),
-        (5, "PASS", "damage mesh"),
-        (6, "PASS", "FAIL cards"),
-        (7, "PASS", "UD coupon"),
-        (8, "PASS", "ply angle"),
-        (9, "PASS", "CLT A"),
-        (10, "INCONCLUSIVE", "KUBC bias"),
-        (11, "FAIL", "Kok gap"),
-        (12, "INCONCLUSIVE", "cohesive start"),
-        (13, "INCONCLUSIVE", "mesh pipe"),
-        (14, "INCONCLUSIVE", "no state"),
-        (15, "INCONCLUSIVE", "deck syntax"),
-        (16, "INCONCLUSIVE", "compute cap"),
+        (1, "PASS", "beam"),
+        (2, "INCONCLUSIVE", "alpha=1"),
+        (3, "PASS", "E8"),
+        (4, "PASS", "Kt"),
+        (5, "PASS", "damage"),
+        (6, "PASS", "cards"),
+        (7, "PASS", "UD"),
+        (8, "PASS", "angle"),
+        (9, "PASS", "CLT"),
+        (10, "INCONCLUSIVE", "KUBC"),
+        (11, "FAIL", "Kok"),
+        (12, "INCONCLUSIVE", "cohesive"),
+        (13, "INCONCLUSIVE", "mesh"),
+        (14, "INCONCLUSIVE", "state"),
+        (15, "INCONCLUSIVE", "syntax"),
+        (16, "INCONCLUSIVE", "compute"),
     ]
     lines = [
         '#align(center)[#text(size: 12pt, weight: "bold")[FEA_AP-PLY Final Stage Tally]]',
@@ -1089,17 +1089,19 @@ def summary_figures() -> list[pathlib.Path]:
         '  content((0.2, 5.62), [criterion], anchor: "east")',
     ]
     color_map = {"PASS": "horseshoe", "INCONCLUSIVE": "honeycomb", "FAIL": "garnet"}
+    cell_w = 0.92
     for idx, (stage, verdict, criterion) in enumerate(stages):
         x = 0.55 + idx * 0.96
         color = color_map[verdict]
         short = "PASS" if verdict == "PASS" else ("FAIL" if verdict == "FAIL" else "INC")
+        result_fill = "charcoal" if verdict == "INCONCLUSIVE" else "white"
         lines.extend(
             [
                 f'  content(({x + 0.46:.3f}, 7.05), [{stage:02d}], anchor: "center")',
-                f'  rect(({x:.3f}, 6.05), ({x+w:.3f}, 6.63), fill: {color}, stroke: charcoal + 0.35pt)',
-                f'  content(({x+0.46:.3f}, 6.34), [{short}], anchor: "center")',
-                f'  rect(({x:.3f}, 5.26), ({x+w:.3f}, 5.84), fill: white, stroke: black50 + 0.35pt)',
-                f'  content(({x+0.46:.3f}, 5.55), [{typst_escape(criterion)}], anchor: "center")',
+                f'  rect(({x:.3f}, 6.05), ({x+cell_w:.3f}, 6.63), fill: {color}, stroke: charcoal + 0.35pt)',
+                f'  content(({x+0.46:.3f}, 6.34), [#text(size: 6pt, fill: {result_fill})[{short}]], anchor: "center")',
+                f'  rect(({x:.3f}, 5.26), ({x+cell_w:.3f}, 5.84), fill: white, stroke: black50 + 0.35pt)',
+                f'  content(({x+0.46:.3f}, 5.55), [#text(size: 5.5pt)[{typst_escape(criterion)}]], anchor: "center")',
             ]
         )
     chips = [
@@ -1115,10 +1117,11 @@ def summary_figures() -> list[pathlib.Path]:
     x = 0.55
     for label, color in chips:
         width = max(1.65, 0.12 * len(label))
+        label_fill = "charcoal" if color == "honeycomb" else "white"
         lines.extend(
             [
                 f'  rect(({x:.3f}, 3.72), ({x+width:.3f}, 4.22), fill: {color}, stroke: charcoal + 0.35pt)',
-                f'  content(({x+0.08:.3f}, 3.97), [{typst_escape(label)}], anchor: "west")',
+                f'  content(({x+0.08:.3f}, 3.97), [#text(size: 7pt, fill: {label_fill})[{typst_escape(label)}]], anchor: "west")',
             ]
         )
         x += width + 0.22
@@ -1133,14 +1136,14 @@ def summary_figures() -> list[pathlib.Path]:
         '  import cetz.draw: *',
         '  let laws = ("LAW12", "LAW14", "LAW25", "LAW28", "LAW53", "LAW128")',
         '  let props = ("TYPE14", "TYPE6", "HASHIN", "PUCK", "TSAIWU")',
-        '  for i in range(6) { content((0.9 + i * 1.45, 5.9), [#laws.at(i)], anchor: "center") }',
-        '  for j in range(5) { content((0.05, 5.15 - j * 0.78), [#props.at(j)], anchor: "west") }',
+        '  for i in range(6) { content((1.75 + i * 1.45, 5.9), [#laws.at(i)], anchor: "center") }',
+        '  for j in range(5) { content((0.20, 5.15 - j * 0.78), [#props.at(j)], anchor: "west") }',
         '  for i in range(6) {',
-        '    rect((0.45 + i * 1.45, 4.85), (1.35 + i * 1.45, 5.45), fill: garnet, stroke: charcoal + 0.3pt)',
-        '    content((0.90 + i * 1.45, 5.15), [B3047], anchor: "center")',
+        '    rect((1.30 + i * 1.45, 4.85), (2.20 + i * 1.45, 5.45), fill: garnet, stroke: charcoal + 0.3pt)',
+        '    content((1.75 + i * 1.45, 5.15), [#text(fill: white)[B3047]], anchor: "center")',
         '    for j in range(4) {',
-        '      rect((0.45 + i * 1.45, 4.07 - j * 0.78), (1.35 + i * 1.45, 4.67 - j * 0.78), fill: horseshoe, stroke: charcoal + 0.3pt)',
-        '      content((0.90 + i * 1.45, 4.37 - j * 0.78), [OK], anchor: "center")',
+        '      rect((1.30 + i * 1.45, 4.07 - j * 0.78), (2.20 + i * 1.45, 4.67 - j * 0.78), fill: horseshoe, stroke: charcoal + 0.3pt)',
+        '      content((1.75 + i * 1.45, 4.37 - j * 0.78), [#text(fill: white)[OK]], anchor: "center")',
         '    }',
         '  }',
         '  content((0.55, 0.75), [Result: use LAW12 + TYPE6/SOL_ORTH for solid composite decks; TYPE14 remains blocked.], anchor: "west")',
@@ -1155,11 +1158,11 @@ def summary_figures() -> list[pathlib.Path]:
         '#cetz.canvas(length: 1cm, {',
         '  import cetz.draw: *',
         '  rect((0.7, 4.8), (3.9, 5.8), fill: horseshoe, stroke: charcoal + 0.4pt)',
-        '  content((2.3, 5.3), [Uniform coupon: TYPE6 Phi = theta, Ip=3, Iorth=0], anchor: "center")',
+        '  content((2.3, 5.3), [#text(size: 7pt, fill: white)[Phi = theta coupon]], anchor: "center")',
         '  rect((5.0, 4.8), (8.2, 5.8), fill: honeycomb, stroke: charcoal + 0.4pt)',
-        '  content((6.6, 5.3), [/SKEW with Ip=1: rejected recipe], anchor: "center")',
+        '  content((6.6, 5.3), [#text(size: 7pt)[/SKEW recipe rejected]], anchor: "center")',
         '  rect((9.3, 4.8), (12.8, 5.8), fill: horseshoe, stroke: charcoal + 0.4pt)',
-        '  content((11.05, 5.3), [Per-element tow: /INIBRI/ORTHO axes], anchor: "center")',
+        '  content((11.05, 5.3), [#text(size: 7pt, fill: white)[/INIBRI/ORTHO axes]], anchor: "center")',
         '  line((3.9, 5.3), (5.0, 5.3), stroke: charcoal + 0.55pt)',
         '  line((8.2, 5.3), (9.3, 5.3), stroke: charcoal + 0.55pt)',
         '  rect((2.4, 2.8), (11.2, 3.65), fill: black10, stroke: charcoal + 0.4pt)',
@@ -1179,7 +1182,7 @@ def summary_figures() -> list[pathlib.Path]:
         '  for i in range(4) {',
         '    let x = 1.2 + i * 3.1',
         '    rect((x, 4.6), (x + 2.25, 5.45), fill: if i < 3 { horseshoe } else { honeycomb }, stroke: charcoal + 0.4pt)',
-        '    content((x + 1.125, 5.02), [#labels.at(i)], anchor: "center")',
+        '    content((x + 1.125, 5.02), [#text(fill: if i < 3 { white } else { charcoal })[#labels.at(i)]], anchor: "center")',
         '    if i < 3 { line((x + 2.25, 5.02), (x + 3.1, 5.02), stroke: charcoal + 0.55pt) }',
         '  }',
         '  rect((1.2, 2.35), (10.85, 3.25), fill: black10, stroke: charcoal + 0.4pt)',
