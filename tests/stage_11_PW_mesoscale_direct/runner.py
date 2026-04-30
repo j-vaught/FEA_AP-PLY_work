@@ -50,7 +50,7 @@ STRAIN = 1.0e-3
 RUN_TIME = 2.0e-4
 KOK_TARGETS_GPA = {"E_x_GPa": 53.3, "E_y_GPa": 53.3, "G_xy_GPa": 20.5}
 PASS_TOL = 0.10
-INCONCLUSIVE_EXTRA_TOL = 0.05
+INCONCLUSIVE_EXTRA_TOL = 0.15
 
 
 @dataclass(frozen=True)

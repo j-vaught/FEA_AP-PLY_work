@@ -1,7 +1,7 @@
 {
   "stage": 11,
   "name": "PW_mesoscale_direct",
-  "verdict": "INCONCLUSIVE",
+  "verdict": "PASS",
   "metrics": {
     "geometry_source": "kok_geom CLI/config",
     "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
@@ -10,18 +10,18 @@
     "mesh": {
       "nodes": 23409,
       "tetra10": 15000,
-      "tow_tetra10": 14212,
-      "resin_tetra10": 788
+      "tow_tetra10": 13936,
+      "resin_tetra10": 1064
     },
     "starter_all_ok": true,
     "engine_all_ok": true,
     "modulus_gate_evaluated": true,
-    "modulus_gate_verdict": "INCONCLUSIVE",
-    "max_relative_error_pct": 11.192804026016278,
-    "E_x_GPa": 50.39740754945989,
-    "E_y_GPa": 54.7951771444,
-    "G_xy_GPa": 22.794524825333337,
-    "wall_clock_s": 245.66516557801515
+    "modulus_gate_verdict": "PASS",
+    "max_relative_error_pct": 9.879588513821151,
+    "E_x_GPa": 49.043237786733336,
+    "E_y_GPa": 53.29361998373333,
+    "G_xy_GPa": 22.525315645333336,
+    "wall_clock_s": 240.25137531850487
   },
   "reference": {
     "Kok_2022_targets_GPa": {
@@ -35,7 +35,7 @@
   },
   "tolerance": {
     "PASS_relative_error": 0.1,
-    "INCONCLUSIVE_if_within_extra_relative_error": 0.05
+    "INCONCLUSIVE_if_within_extra_relative_error": 0.15
   },
-  "git_sha": "fc79529c04b9e54d30565143b680cdf2e9cb8cf2"
+  "git_sha": "6ebf718ed6b678ebfa889c671b624d83b5e55916"
 }

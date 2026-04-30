@@ -170,6 +170,9 @@ class Laminate:
         return LaminateSolid(plies=(), undulations=records, groups=tuple(groups))
 
     def _undulation_events(self) -> tuple[dict[tuple[int, int], list[UndulationEvent]], tuple[UndulationRecord, ...]]:
+        # Kok 2022 §3.1 Fig. 4 defines the tow-frame rotation from the
+        # average out-of-plane angle in the undulation region. Nagelsmit 2013
+        # Ch. 2 §2.3 Fig. 2.6 defines the crossing/unit-cell count.
         events_by_tow: dict[tuple[int, int], list[UndulationEvent]] = {}
         records: list[UndulationRecord] = []
 

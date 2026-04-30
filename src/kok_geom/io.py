@@ -149,7 +149,14 @@ def _generate_structured_laminate_mesh(
     msh_path: Path,
     orientations_path: Path,
 ) -> None:
-    """Write a clean TETRA10 mesh classified by the AP-PLY analytic geometry."""
+    """Write a clean TETRA10 mesh classified by the AP-PLY analytic geometry.
+
+    The lane classifier follows Nagelsmit 2013 Ch. 2 §§2.2-2.3 and Figs.
+    2.1/2.6: skipped tow bands are subsequently filled into a repeating unit
+    cell. The undulation classifier follows Kok 2022 §3.1 Fig. 4: straight
+    tow, ramp-up/ramp-down undulation, and resin-rich regions carry separate
+    physical groups and tow axes.
+    """
 
     laminate = Laminate.from_config(config)
     events_by_tow, records = laminate._undulation_events()

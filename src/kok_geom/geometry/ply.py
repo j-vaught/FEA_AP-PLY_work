@@ -120,10 +120,11 @@ class Ply:
     def lane_pitch_m(self) -> float:
         """Filled AP-PLY lane pitch after skipped courses are completed.
 
-        Nagelsmit Ch. 2 §§2.2-2.3 define the skip factor for the placement
-        sequence, then the remaining spaces are filled by later courses. The
-        geometry mesh therefore uses a filled-lane pitch; ``tape_spacing``
-        remains the interlace-period parameter used by crossing bookkeeping.
+        Nagelsmit 2013 Ch. 2 §§2.2-2.3 and Figs. 2.1/2.6 define the skip
+        factor for the placement sequence, then the remaining spaces are
+        filled by later courses. The geometry mesh therefore uses a filled-lane
+        pitch; ``tape_spacing`` remains the interlace-period parameter used by
+        crossing bookkeeping.
         """
 
         return self.tape_width_m / self.tow_coverage_fraction
