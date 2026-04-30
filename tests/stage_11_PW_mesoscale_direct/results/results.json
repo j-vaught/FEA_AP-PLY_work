@@ -8,20 +8,20 @@
     "orientation_evidence": "per-tow /INIBRI/ORTHO with neutral TYPE6 Ip=1, Iorth=0, Phi=0",
     "strain_measurement": "engineering strain from imposed displacement; VTK cell Stra[0] is not used for the gate",
     "mesh": {
-      "nodes": 23409,
-      "tetra10": 15000,
-      "tow_tetra10": 15000,
+      "nodes": 42849,
+      "tetra10": 27744,
+      "tow_tetra10": 27744,
       "resin_tetra10": 0
     },
     "starter_all_ok": true,
     "engine_all_ok": true,
     "modulus_gate_evaluated": true,
     "modulus_gate_verdict": "FAIL",
-    "max_relative_error_pct": 29.61589945396949,
-    "E_x_GPa": 53.9154639276,
-    "E_y_GPa": 58.435006723866664,
-    "G_xy_GPa": 14.428740611936254,
-    "wall_clock_s": 219.34137018583715
+    "max_relative_error_pct": 29.83546992903599,
+    "E_x_GPa": 53.76192024927913,
+    "E_y_GPa": 59.306453208261246,
+    "G_xy_GPa": 14.383728664547622,
+    "wall_clock_s": 354.3622376639396
   },
   "reference": {
     "Kok_2022_targets_GPa": {
@@ -37,5 +37,5 @@
     "PASS_relative_error": 0.1,
     "INCONCLUSIVE_if_within_extra_relative_error": 0.05
   },
-  "git_sha": "b784abf78451f32cf9c84383ebbce9c143c70d44"
+  "git_sha": "efd4f7c9f7d431603fdaa84ee72aa70c803b9086"
 }

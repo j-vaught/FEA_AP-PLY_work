@@ -16,8 +16,8 @@
     "tow_coverage_fraction": 1.0
   },
   "mesh": {
-    "in_plane_target_mm_impact_zone": 1.0,
-    "in_plane_target_mm_far_field": 1.0,
+    "in_plane_target_mm_impact_zone": 0.75,
+    "in_plane_target_mm_far_field": 0.75,
     "through_thickness_target_mm": 1.0,
     "graded_zone_radius_mm": 0.0,
     "element_order": 2
