@@ -1,0 +1,30 @@
+{
+  "panel": {
+    "size_x_mm": 200.0,
+    "size_y_mm": 200.0,
+    "n_plies": 24,
+    "symmetry": "none"
+  },
+  "laydown": {
+    "fiber_angles_deg": [45.0, 90.0, -45.0, 0.0],
+    "placement_sequence": "10001000",
+    "angle_shift_deg": 0.0,
+    "tape_width_mm": 6.35,
+    "cured_ply_thickness_mm": 0.18958,
+    "undulation_ratio": 0.09,
+    "tape_spacing": 3
+  },
+  "mesh": {
+    "in_plane_target_mm_impact_zone": 2.0,
+    "in_plane_target_mm_far_field": 2.0,
+    "through_thickness_target_mm": 2.0,
+    "graded_zone_radius_mm": 0.0,
+    "element_order": 2
+  },
+  "output": {
+    "msh_path": "tests/stage_16_PW_panel_ballistic/geometry/p1_twt_200.msh",
+    "inp_path": "tests/stage_16_PW_panel_ballistic/geometry/p1_twt_200.inp",
+    "orientations_json_path": "tests/stage_16_PW_panel_ballistic/geometry/p1_twt_200_orientations.json",
+    "msh_format": "msh4_ascii"
+  }
+}

@@ -47,6 +47,10 @@ tests/stage_11_PW_mesoscale_direct/geometry/panel.*
 tests/stage_11_PW_mesoscale_direct/geometry/orientations.json
 tests/stage_11_PW_mesoscale_direct/geometry/*_0000.rad
 tests/stage_11_PW_mesoscale_direct/geometry/*_0001.rad
+tests/stage_16_PW_panel_ballistic/geometry/p1_twt_*.msh
+tests/stage_16_PW_panel_ballistic/geometry/p1_twt_*.inp
+tests/stage_16_PW_panel_ballistic/geometry/p1_twt_*_orientations.json
+tests/stage_16_PW_panel_ballistic/geometry/orientations.json
 
 # IDE / OS
 .vscode/
