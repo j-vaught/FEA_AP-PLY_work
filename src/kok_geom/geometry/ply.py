@@ -50,6 +50,7 @@ class Ply:
     angle_deg: float = 0.0
     tape_width_m: float = 6.35 * MM
     cured_ply_thickness_m: float = 0.18 * MM
+    undulation_ratio: float = 0.09
     tape_spacing: int = 1
     ply_index: int = 1
     z_bottom_m: float = 0.0
@@ -64,6 +65,7 @@ class Ply:
         angle_deg: float = 0.0,
         tape_width_mm: float = 6.35,
         cured_ply_thickness_mm: float = 0.18,
+        undulation_ratio: float = 0.09,
         tape_spacing: int = 1,
         ply_index: int = 1,
         z_bottom_mm: float = 0.0,
@@ -75,6 +77,7 @@ class Ply:
             angle_deg=angle_deg,
             tape_width_m=tape_width_mm * MM,
             cured_ply_thickness_m=cured_ply_thickness_mm * MM,
+            undulation_ratio=undulation_ratio,
             tape_spacing=tape_spacing,
             ply_index=ply_index,
             z_bottom_m=z_bottom_mm * MM,
@@ -86,6 +89,8 @@ class Ply:
             raise ValueError("ply in-plane dimensions must be positive")
         if self.tape_width_m <= 0.0 or self.cured_ply_thickness_m <= 0.0:
             raise ValueError("tape width and ply thickness must be positive")
+        if self.undulation_ratio <= 0.0:
+            raise ValueError("undulation_ratio must be positive")
         if self.tape_spacing not in {1, 2, 3}:
             raise ValueError("tape_spacing must be one of {1, 2, 3}")
 
@@ -159,6 +164,7 @@ class Ply:
                 angle_deg=self.angle_deg,
                 tape_width_m=self.tape_width_m,
                 cured_ply_thickness_m=self.cured_ply_thickness_m,
+                undulation_ratio=self.undulation_ratio,
                 center_m=(nx * offset, ny * offset, z_center),
                 name=name,
             )

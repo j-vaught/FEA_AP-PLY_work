@@ -8,6 +8,7 @@ from pathlib import Path
 import meshio
 
 from kok_geom.config import KokConfig, MM
+from kok_geom.geometry.laminate import Laminate, LaminateSolid
 from kok_geom.geometry.ply import Ply, PlySolid
 from kok_geom.geometry.tow import Tow
 from kok_geom.mesh import configure_msh_format, generate_volume_mesh
@@ -21,13 +22,19 @@ def write_orientations(
     tow: Tow | None = None,
     physical_name: str | None = None,
     ply: PlySolid | None = None,
+    laminate: LaminateSolid | None = None,
+    groups: list[dict[str, object]] | None = None,
 ) -> Path:
     out = Path(path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    groups: list[dict[str, object]] = []
-    if ply is not None:
+    orientation_groups: list[dict[str, object]] = []
+    if groups is not None:
+        orientation_groups = groups
+    elif laminate is not None:
+        orientation_groups = laminate.orientation_groups()
+    elif ply is not None:
         for ply_tow in ply.tows:
-            groups.append(
+            orientation_groups.append(
                 {
                     "name": ply_tow.name,
                     "kind": "straight_tow",
@@ -42,7 +49,7 @@ def write_orientations(
                     "through_thickness_unit_vector": [0.0, 0.0, 1.0],
                 }
             )
-        groups.append(
+        orientation_groups.append(
             {
                 "name": ply.resin.name,
                 "kind": "resin_pocket",
@@ -51,7 +58,7 @@ def write_orientations(
             }
         )
     elif tow is not None and physical_name is not None:
-        groups.append(
+        orientation_groups.append(
             {
                 "name": physical_name,
                 "kind": "straight_tow",
@@ -67,7 +74,7 @@ def write_orientations(
     data = {
         "schema_version": 1,
         "panel_config_hash": config.config_hash(),
-        "groups": groups,
+        "groups": orientation_groups,
     }
     out.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
     return out
@@ -98,23 +105,13 @@ def generate_mesh(config_path: str | Path, out: str | Path | None = None) -> tup
             config.output.msh_path = str(out_path / Path(config.output.msh_path).name)
             config.output.orientations_json_path = str(out_path / Path(config.output.orientations_json_path).name)
 
-    angle = config.laydown.fiber_angles_deg[0]
-    ply = Ply(
-        size_x_m=config.panel.size_x_m,
-        size_y_m=config.panel.size_y_m,
-        angle_deg=angle,
-        tape_width_m=config.laydown.tape_width_for_ply_mm(0) * MM,
-        cured_ply_thickness_m=config.laydown.cured_ply_thickness_m,
-        tape_spacing=config.laydown.tape_spacing,
-        ply_index=1,
-        z_bottom_m=0.0,
-    )
+    laminate = Laminate.from_config(config)
     msh_path = Path(config.output.msh_path)
     orientations_path = Path(config.output.orientations_json_path)
 
     with GmshSession("kok_geom_m1"):
         backend = OCCBackend()
-        ply_solid = ply.build_occ(backend)
+        laminate_solid = laminate.build_occ(backend)
         configure_msh_format(config.output.msh_format)
         generate_volume_mesh(
             target_size_m=config.mesh.target_size_m,
@@ -125,7 +122,7 @@ def generate_mesh(config_path: str | Path, out: str | Path | None = None) -> tup
     write_orientations(
         orientations_path,
         config=config,
-        ply=ply_solid,
+        laminate=laminate_solid,
     )
     if config.output.inp_path:
         convert_msh_to_inp(msh_path, config.output.inp_path)
