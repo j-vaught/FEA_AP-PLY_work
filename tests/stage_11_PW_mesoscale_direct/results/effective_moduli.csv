@@ -1,4 +1,4 @@
 case,metric,measured_GPa,target_GPa,relative_error_pct,starter_rc,engine_rc,vtk_path
-axial_x,E_x_GPa,53.9154639276,53.3,1.154716562101321,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_11_PW_mesoscale_direct/runs/stage11_axial_xA001.vtk
-transverse_y,E_y_GPa,58.435006723866664,53.3,9.634158956597874,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_11_PW_mesoscale_direct/runs/stage11_transverse_yA001.vtk
-shear_xy,G_xy_GPa,23.988896753333332,20.5,17.01900855284552,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_11_PW_mesoscale_direct/runs/stage11_shear_xyA001.vtk
+axial_x,E_x_GPa,50.39740754945989,53.3,5.445764447542412,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_11_PW_mesoscale_direct/runs/stage11_axial_xA001.vtk
+transverse_y,E_y_GPa,54.7951771444,53.3,2.8052104022514133,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_11_PW_mesoscale_direct/runs/stage11_transverse_yA001.vtk
+shear_xy,G_xy_GPa,22.794524825333337,20.5,11.192804026016278,0,0,/mnt/storage/j-vaught/fea_apply/tests/stage_11_PW_mesoscale_direct/runs/stage11_shear_xyA001.vtk
