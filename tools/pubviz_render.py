@@ -570,7 +570,7 @@ def color_name(hex_value: str) -> str:
 def chart_header(title: str) -> list[str]:
     return [
         '#import "@preview/cetz:0.3.4"',
-        '#set page(width: 146mm, height: 86mm, margin: 4mm)',
+        '#set page(width: 146mm, height: 96mm, margin: 4mm)',
         '#set text(font: "Libertinus Serif", size: 8.5pt, fill: rgb("#363636"))',
         f'#let garnet = rgb("{GARNET}")',
         f'#let atlantic = rgb("{ATLANTIC}")',
