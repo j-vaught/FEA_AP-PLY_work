@@ -28,6 +28,8 @@ FEA_AP-PLY is a staged OpenRadioss verification program for all-solid finite-ele
 | 15 | INCONCLUSIVE | Flat ballistic V50/residual velocity | starter reached but rejected invalid generated deck; sweep not reached | [results](tests/stage_15_flat_ballistic/results/results.json), [blocker](tests/stage_15_flat_ballistic/blocker.md) |
 | 16 | INCONCLUSIVE | P1-TWT panel V50 within 7% | 100 x 100 mm coarse preflight mesh has 603,481 TETRA10; estimated lower bound 4.19 h/shot | [results](tests/stage_16_PW_panel_ballistic/results/results.json), [blocker](tests/stage_16_PW_panel_ballistic/blocker.md) |
 
+Cross-stage visualization: [summary PDF](figures/cross_stage_summary.pdf), [Typst source](figures/cross_stage_summary.typ).
+
 ## Methodology Discoveries
 
 ### MUMPS-Linked OpenRadioss Build
@@ -38,29 +40,35 @@ The target MUMPS-linked OpenRadioss build for this run was commit `28a861a`. The
 
 The empirical compatibility matrix supersedes the earlier assumption that `/PROP/TYPE14` is usable for solid composite plies on this build. `/PROP/TYPE14` is blocked for the relevant composite rows, while `/MAT/LAW12` plus `/PROP/TYPE6` (`/PROP/SOL_ORTH`) parses and runs for solid composite decks. `/FAIL/HASHIN`, `/FAIL/PUCK`, and `/FAIL/TSAIWU` register on the LAW12 + TYPE6 row; ballistic erosion should use `IFAIL_SO=1` and `PTHICKFAIL=1.0` ([references/openradioss_law_compatibility_matrix.md](references/openradioss_law_compatibility_matrix.md)).
 
+Discovery figure: [LAW matrix PDF](figures/discovery_law_matrix.pdf), [Typst source](figures/discovery_law_matrix.typ).
+
 ### Orientation Convention
 
 The working off-axis convention is property or initial-state orientation on `/PROP/TYPE6`, not material-card orientation. Uniform off-axis coupons use `Ip=3`, `Iorth=0`, `Phi=theta`; per-element tow rotations use `/INIBRI/ORTHO` with neutral TYPE6 (`Ip=1`, `Iorth=0`, `Phi=0`). For rotated solids, modulus gates must use displacement-BC engineering strain; VTK cell `Stra[0]` is not reliable for this purpose ([references/openradioss_orientation_convention.md](references/openradioss_orientation_convention.md)).
+
+Discovery figure: [orientation convention PDF](figures/discovery_orientation_convention.pdf), [Typst source](figures/discovery_orientation_convention.typ).
 
 ### Kok Geometry Port
 
 The Kok geometry port reached single-tow, single-ply, laminate assembly, and mesh-export groundwork in commits `955ea55`, `4c8d702`, `31c0000`, and `b84ef6f`. The M4 finishing commit for this run is `942855a`, which added end-to-end CLI export behavior and wired Stage 11 to the generated `panel.msh` plus orientation sidecar. Unit coverage for the Kok package passed with `17 passed` before validation. Stage 11 shows the port is runnable through OpenRadioss, but its present clean-room geometry still lacks physical undulation solids and Kok-style mixed tow/resin unit cells, so the Kok 2022 stiffness gate fails ([tests/stage_11_PW_mesoscale_direct/results/results.json](tests/stage_11_PW_mesoscale_direct/results/results.json), [tests/stage_11_PW_mesoscale_direct/blocker.md](tests/stage_11_PW_mesoscale_direct/blocker.md)).
 
+Discovery figure: [Kok port PDF](figures/discovery_kok_port.pdf), [Typst source](figures/discovery_kok_port.typ).
+
 ## Per-Stage Results
 
 | Stage | Description | Gated criterion | Achieved value | Figures and media |
 |---:|---|---|---|---|
-| 01 | Linear elastic solid beam, 3pt and 4pt bending | Euler-Bernoulli deflection within 1% on M1 | 3pt 0.968%, 4pt 0.968% | [PNG](tests/stage_01_beam_bending/figures/stage_01_field_displacement.png), [MP4](tests/stage_01_beam_bending/figures/stage_01_motion_displacement.mp4) |
-| 02 | Large-deflection cantilever | Bisshopp-Drucker alpha 1/3/5 within 2% | alpha=1 dx error 1.574%, dy error 0.871%; alpha=3/5 blocked | [PNG](tests/stage_02_cantilever_large/figures/stage_02_field_displacement.png), [MP4](tests/stage_02_cantilever_large/figures/stage_02_motion_displacement.mp4) |
-| 03 | Isotropic ASTM E8 dogbone | uniform stress, gauge strain, yield, apparent E | apparent E error 0.044%; yield error 0.014% | [PNG](tests/stage_03_iso_dogbone_E8/figures/stage_03_field_vonmises.png), [MP4](tests/stage_03_iso_dogbone_E8/figures/stage_03_motion_vonmises.mp4) |
-| 04 | Open-hole plate | Howland Kt within 2%, far-field stress within 1% | Kt error 1.996%; far-field error 0.585% | [PNG](tests/stage_04_open_hole_kirsch/figures/stage_04_field_vonmises.png), [MP4](tests/stage_04_open_hole_kirsch/figures/stage_04_motion_vonmises.mp4) |
-| 05 | Notched dogbone damage | pre-onset mesh-ladder RMSE within 5% | coarse-medium 4.843%; medium-fine 3.736% | [PNG](tests/stage_05_dogbone_damage/figures/stage_05_field_vonmises.png), [MP4](tests/stage_05_dogbone_damage/figures/stage_05_motion_vonmises.mp4) |
-| 06 | Composite failure-card probe | LAW12 + TYPE6 starts/runs with TSAIWU, HASHIN, PUCK | all three failure cards registered and engine completed | [PNG](tests/stage_06_composite_failure_criteria/figures/stage_06_field_vonmises.png), [MP4](tests/stage_06_composite_failure_criteria/figures/stage_06_motion_vonmises.mp4) |
-| 07 | UD tow D3039 coupon | 0 deg and 45 deg modulus within 2% | 0 deg error 0.403%; 45 deg error 0.114% | [Typst figure](tests/stage_07_UD_tow_D3039/figures/stage07_d3039_probe.typ) |
-| 08 | Ply rotation sweep | analytic Ex(theta) within 1% | max error 0.815% | [Typst figure](tests/stage_08_ply_rotation/figures/stage08_ply_rotation_probe.typ) |
-| 09 | Solid laminate CLT | CLT A-matrix components within 2% | max component error 1.085% | [Typst figure](tests/stage_09_laminate_solid_CLT/figures/stage09_clt_probe.typ) |
-| 10 | UD mesoscale direct cell | ROM/Halpin-Tsai moduli within 5% | INCONCLUSIVE: transverse 11.189%, shear 99.934% | [Typst figure](tests/stage_10_UD_mesoscale_direct/figures/stage10_ud_mesoscale.typ), [blocker](tests/stage_10_UD_mesoscale_direct/blocker.md) |
-| 11 | PW mesoscale Kok block | Kok 2022 Ex/Ey/Gxy targets | FAIL: Ex 16.706 GPa, Ey 16.968 GPa, Gxy 0.0229 GPa | [Typst figure](tests/stage_11_PW_mesoscale_direct/figures/stage11_effective_moduli.typ), [blocker](tests/stage_11_PW_mesoscale_direct/blocker.md) |
+| 01 | Linear elastic solid beam, 3pt and 4pt bending | Euler-Bernoulli deflection within 1% on M1 | 3pt 0.968%, 4pt 0.968% | [Composite](tests/stage_01_beam_bending/figures/stage_01_composite.png), [HD MP4](tests/stage_01_beam_bending/figures/stage_01_motion_hd.mp4) |
+| 02 | Large-deflection cantilever | Bisshopp-Drucker alpha 1/3/5 within 2% | alpha=1 dx error 1.574%, dy error 0.871%; alpha=3/5 blocked | [Composite](tests/stage_02_cantilever_large/figures/stage_02_composite.png), [HD MP4](tests/stage_02_cantilever_large/figures/stage_02_motion_hd.mp4), [blocker](tests/stage_02_cantilever_large/blocker.md) |
+| 03 | Isotropic ASTM E8 dogbone | uniform stress, gauge strain, yield, apparent E | apparent E error 0.044%; yield error 0.014% | [Composite](tests/stage_03_iso_dogbone_E8/figures/stage_03_composite.png), [HD MP4](tests/stage_03_iso_dogbone_E8/figures/stage_03_motion_hd.mp4) |
+| 04 | Open-hole plate | Howland Kt within 2%, far-field stress within 1% | Kt error 1.996%; far-field error 0.585% | [Composite](tests/stage_04_open_hole_kirsch/figures/stage_04_composite.png), [HD MP4](tests/stage_04_open_hole_kirsch/figures/stage_04_motion_hd.mp4) |
+| 05 | Notched dogbone damage | pre-onset mesh-ladder RMSE within 5% | coarse-medium 4.843%; medium-fine 3.736% | [Composite](tests/stage_05_dogbone_damage/figures/stage_05_composite.png), [HD MP4](tests/stage_05_dogbone_damage/figures/stage_05_motion_hd.mp4) |
+| 06 | Composite failure-card probe | LAW12 + TYPE6 starts/runs with TSAIWU, HASHIN, PUCK | all three failure cards registered and engine completed | [Composite](tests/stage_06_composite_failure_criteria/figures/stage_06_composite.png), [HD MP4](tests/stage_06_composite_failure_criteria/figures/stage_06_motion_hd.mp4) |
+| 07 | UD tow D3039 coupon | 0 deg and 45 deg modulus within 2% | 0 deg error 0.403%; 45 deg error 0.114% | [Composite](tests/stage_07_UD_tow_D3039/figures/stage_07_composite.png), [Typst figure](tests/stage_07_UD_tow_D3039/figures/stage07_d3039_probe.typ) |
+| 08 | Ply rotation sweep | analytic Ex(theta) within 1% | max error 0.815% | [Composite](tests/stage_08_ply_rotation/figures/stage_08_composite.png), [Typst figure](tests/stage_08_ply_rotation/figures/stage08_ply_rotation_probe.typ) |
+| 09 | Solid laminate CLT | CLT A-matrix components within 2% | max component error 1.085% | [Composite](tests/stage_09_laminate_solid_CLT/figures/stage_09_composite.png), [Typst figure](tests/stage_09_laminate_solid_CLT/figures/stage09_clt_probe.typ) |
+| 10 | UD mesoscale direct cell | ROM/Halpin-Tsai moduli within 5% | INCONCLUSIVE: transverse 11.189%, shear 99.934% | [Wireframe](tests/stage_10_UD_mesoscale_direct/figures/stage_10_wireframe_pubviz.png), [Typst figure](tests/stage_10_UD_mesoscale_direct/figures/stage10_ud_mesoscale.typ), [blocker](tests/stage_10_UD_mesoscale_direct/blocker.md) |
+| 11 | PW mesoscale Kok block | Kok 2022 Ex/Ey/Gxy targets | FAIL: Ex 16.706 GPa, Ey 16.968 GPa, Gxy 0.0229 GPa | [Wireframe](tests/stage_11_PW_mesoscale_direct/figures/stage_11_wireframe_pubviz.png), [Typst figure](tests/stage_11_PW_mesoscale_direct/figures/stage11_effective_moduli.typ), [blocker](tests/stage_11_PW_mesoscale_direct/blocker.md) |
 | 12 | DCB/ENF cohesive | DCB/ENF peak loads within 5% | INCONCLUSIVE: starter not reached; DCB/ENF references computed | [blocker](tests/stage_12_DCB_ENF_cohesive/blocker.md) |
 | 13 | Low-velocity impact D7136 | peak force and delamination area | INCONCLUSIVE: mesh/deck pipeline stale; no valid LVI solve | [blocker](tests/stage_13_LVI_D7136/blocker.md) |
 | 14 | Compression after impact D7137 | residual strength from Stage 13 state | INCONCLUSIVE: Stage 13 restart state absent | [blocker](tests/stage_14_CAI_D7137/blocker.md) |
@@ -69,17 +77,19 @@ The Kok geometry port reached single-tow, single-ply, laminate assembly, and mes
 
 ## Key Images
 
-![Stage 01 displacement](tests/stage_01_beam_bending/figures/stage_01_field_displacement.png)
+Cross-stage and methodology figures: [stage tally](figures/cross_stage_summary.pdf), [LAW matrix](figures/discovery_law_matrix.pdf), [orientation convention](figures/discovery_orientation_convention.pdf), [Kok port](figures/discovery_kok_port.pdf).
 
-![Stage 03 von Mises](tests/stage_03_iso_dogbone_E8/figures/stage_03_field_vonmises.png)
+![Stage 01 composite](tests/stage_01_beam_bending/figures/stage_01_composite.png)
 
-![Stage 04 open-hole stress](tests/stage_04_open_hole_kirsch/figures/stage_04_field_vonmises.png)
+![Stage 03 composite](tests/stage_03_iso_dogbone_E8/figures/stage_03_composite.png)
 
-![Stage 05 damage mesh](tests/stage_05_dogbone_damage/figures/stage_05_field_vonmises.png)
+![Stage 04 composite](tests/stage_04_open_hole_kirsch/figures/stage_04_composite.png)
 
-![Stage 06 composite probe](tests/stage_06_composite_failure_criteria/figures/stage_06_field_vonmises.png)
+![Stage 05 composite](tests/stage_05_dogbone_damage/figures/stage_05_composite.png)
 
-Motion files are retained in the stage figure directories, for example [Stage 01 displacement motion](tests/stage_01_beam_bending/figures/stage_01_motion_displacement.mp4), [Stage 04 double-view motion](tests/stage_04_open_hole_kirsch/figures/stage_04_motion_doubleview.mp4), and [Stage 06 von Mises motion](tests/stage_06_composite_failure_criteria/figures/stage_06_motion_vonmises.mp4). Stages 07-11 currently provide Typst figure sources; stages 12-16 stopped before valid solver media could be generated.
+![Stage 06 composite](tests/stage_06_composite_failure_criteria/figures/stage_06_composite.png)
+
+HD motion files are retained in the stage figure directories for stages 01-06: [Stage 01](tests/stage_01_beam_bending/figures/stage_01_motion_hd.mp4), [Stage 02](tests/stage_02_cantilever_large/figures/stage_02_motion_hd.mp4), [Stage 03](tests/stage_03_iso_dogbone_E8/figures/stage_03_motion_hd.mp4), [Stage 04](tests/stage_04_open_hole_kirsch/figures/stage_04_motion_hd.mp4), [Stage 05](tests/stage_05_dogbone_damage/figures/stage_05_motion_hd.mp4), and [Stage 06](tests/stage_06_composite_failure_criteria/figures/stage_06_motion_hd.mp4). Stages 07-09 provide composite stills with embedded Typst histories; stages 10-11 provide wireframe blocker figures; stages 12-16 stopped before valid solver media could be generated.
 
 ## Open Issues
 
