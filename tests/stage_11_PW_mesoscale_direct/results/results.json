@@ -10,18 +10,18 @@
     "mesh": {
       "nodes": 23409,
       "tetra10": 15000,
-      "tow_tetra10": 12206,
-      "resin_tetra10": 2794
+      "tow_tetra10": 15000,
+      "resin_tetra10": 0
     },
     "starter_all_ok": true,
     "engine_all_ok": true,
     "modulus_gate_evaluated": true,
     "modulus_gate_verdict": "FAIL",
-    "max_relative_error_pct": 44.573023043479296,
-    "E_x_GPa": 43.53917679364661,
-    "E_y_GPa": 46.864719528066665,
-    "G_xy_GPa": 11.362530276086744,
-    "wall_clock_s": 209.6554963234812
+    "max_relative_error_pct": 29.61589945396949,
+    "E_x_GPa": 53.9154639276,
+    "E_y_GPa": 58.435006723866664,
+    "G_xy_GPa": 14.428740611936254,
+    "wall_clock_s": 219.34137018583715
   },
   "reference": {
     "Kok_2022_targets_GPa": {
@@ -37,5 +37,5 @@
     "PASS_relative_error": 0.1,
     "INCONCLUSIVE_if_within_extra_relative_error": 0.05
   },
-  "git_sha": "8120e1dcf600f75a8e56a2f898e56973e5772508"
+  "git_sha": "b784abf78451f32cf9c84383ebbce9c143c70d44"
 }

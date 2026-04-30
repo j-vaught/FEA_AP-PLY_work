@@ -13,7 +13,7 @@
     "cured_ply_thickness_mm": 0.18,
     "undulation_ratio": 0.09,
     "tape_spacing": 1,
-    "tow_coverage_fraction": 0.85
+    "tow_coverage_fraction": 1.0
   },
   "mesh": {
     "in_plane_target_mm_impact_zone": 1.0,
