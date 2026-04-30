@@ -1,10 +1,51 @@
-#set page(width: 170mm, height: auto, margin: 10mm)
-#let rows = csv("../results/effective_moduli.csv")
-#text(size: 12pt, weight: "bold")[Stage 11 AP-PLY effective moduli]
-#v(5pt)
-#table(
-  columns: (32mm, 24mm, 28mm, 28mm, 26mm),
-  stroke: rgb("#5C5C5C"),
-  [Case], [Metric], [FEM GPa], [Target GPa], [Error %],
-  ..rows.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)], [#r.at(3)], [#r.at(4)])).flatten(),
-)
+#import "@preview/cetz:0.3.4"
+#set page(width: 146mm, height: 96mm, margin: 4mm)
+#set text(font: "Libertinus Serif", size: 8.5pt, fill: rgb("#363636"))
+#let garnet = rgb("#73000A")
+#let atlantic = rgb("#466A9F")
+#let horseshoe = rgb("#65780B")
+#let honeycomb = rgb("#A49137")
+#let black10 = rgb("#ECECEC")
+#let black50 = rgb("#A2A2A2")
+#let charcoal = rgb("#363636")
+#let white = rgb("#FFFFFF")
+#align(center)[#text(size: 10.5pt, weight: "bold")[Stage 11 PW\_mesoscale\_direct — PASS — post-Kok-M5]]
+#v(1mm)
+#cetz.canvas(length: 1cm, {
+  import cetz.draw: *
+  let x0 = 1.25
+  let y0 = 0.95
+  let w = 11.8
+  let h = 5.35
+  rect((x0, y0), (x0 + w, y0 + h), fill: white, stroke: charcoal + 0.65pt)
+  line((1.25, 0.950), (13.05, 0.950), stroke: black10 + 0.45pt)
+  content((1.12, 0.950), [0.0], anchor: "east")
+  line((1.25, 2.287), (13.05, 2.287), stroke: black10 + 0.45pt)
+  content((1.12, 2.287), [15.7], anchor: "east")
+  line((1.25, 3.625), (13.05, 3.625), stroke: black10 + 0.45pt)
+  content((1.12, 3.625), [31.4], anchor: "east")
+  line((1.25, 4.962), (13.05, 4.962), stroke: black10 + 0.45pt)
+  content((1.12, 4.962), [47.2], anchor: "east")
+  line((1.25, 6.300), (13.05, 6.300), stroke: black10 + 0.45pt)
+  content((1.12, 6.300), [62.9], anchor: "east")
+  rect((1.997, 0.95), (2.705, 5.122), fill: garnet, stroke: none)
+  rect((3.201, 0.95), (3.909, 5.484), fill: atlantic, stroke: none)
+  content((3.217, 0.63), [E\_x], anchor: "north")
+  content((3.217, 5.764), [#text(size: 7pt, fill: horseshoe)[7.99\%]], anchor: "center")
+  rect((5.931, 0.95), (6.639, 5.483), fill: garnet, stroke: none)
+  rect((7.134, 0.95), (7.842, 5.484), fill: atlantic, stroke: none)
+  content((7.150, 0.63), [E\_y], anchor: "north")
+  content((7.150, 5.764), [#text(size: 7pt, fill: horseshoe)[0.01\%]], anchor: "center")
+  rect((9.864, 0.95), (10.572, 2.866), fill: garnet, stroke: none)
+  rect((11.068, 0.95), (11.776, 2.694), fill: atlantic, stroke: none)
+  content((11.083, 0.63), [G\_xy], anchor: "north")
+  content((11.083, 3.146), [#text(size: 7pt, fill: horseshoe)[9.88\%]], anchor: "center")
+  line((8.6, 6.55), (9.05, 6.55), stroke: garnet + 1.1pt)
+  content((9.18, 6.55), [measured], anchor: "west")
+  line((10.55, 6.55), (11.0, 6.55), stroke: atlantic + 1.1pt)
+  content((11.13, 6.55), [target], anchor: "west")
+  content((1.25, 6.55), [green labels = relative error percent], anchor: "west")
+  content((0.3, 3.6), [modulus (GPa)], angle: 90deg)
+})
+#v(0.4mm)
+#text(size: 7pt, fill: rgb("#5C5C5C"))[PASS gate: max relative error = 9.88% against the 10% Kok 2022 tolerance.]
