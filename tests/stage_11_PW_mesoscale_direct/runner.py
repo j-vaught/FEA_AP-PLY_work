@@ -252,18 +252,31 @@ def mesh_groups(msh_path: Path, orientations_path: Path) -> tuple[meshio.Mesh, d
     return mesh, physical_to_name, by_name
 
 
-def node_groups(points: np.ndarray) -> dict[str, list[int]]:
+def node_groups(points: np.ndarray) -> dict[str, object]:
     mins = points.min(axis=0)
     maxs = points.max(axis=0)
     span = max(maxs - mins)
     tol = max(1.0e-9, span * 1.0e-7)
-    groups: dict[str, list[int]] = {}
+    groups: dict[str, object] = {}
     for axis, name0, name1 in ((0, "x0", "x1"), (1, "y0", "y1"), (2, "z0", "z1")):
         groups[name0] = [idx + 1 for idx, xyz in enumerate(points) if abs(float(xyz[axis] - mins[axis])) <= tol]
         groups[name1] = [idx + 1 for idx, xyz in enumerate(points) if abs(float(xyz[axis] - maxs[axis])) <= tol]
     groups["anchor_xyz"] = [1]
     groups["anchor_yz"] = [max(1, len(points) // 3)]
     groups["anchor_z"] = [max(1, 2 * len(points) // 3)]
+    groups["all_nodes"] = [idx + 1 for idx in range(len(points))]
+
+    y_values = sorted({round(float(xyz[1]), 12) for xyz in points})
+    shear_slices: list[tuple[str, float]] = []
+    for idx, y_value in enumerate(y_values):
+        name = f"shear_y_{idx}"
+        groups[name] = [
+            node_idx + 1
+            for node_idx, xyz in enumerate(points)
+            if abs(round(float(xyz[1]), 12) - y_value) <= tol
+        ]
+        shear_slices.append((name, y_value))
+    groups["_shear_slices"] = shear_slices
     return groups
 
 
@@ -274,7 +287,7 @@ def group_block(group_id: int, name: str, node_ids: list[int]) -> list[str]:
     return lines
 
 
-def bcs_and_loads(case: LoadCase, groups: dict[str, list[int]]) -> list[str]:
+def bcs_and_loads(case: LoadCase, groups: dict[str, object]) -> list[str]:
     gids = {
         "x0": 100,
         "x1": 101,
@@ -332,32 +345,45 @@ def bcs_and_loads(case: LoadCase, groups: dict[str, list[int]]) -> list[str]:
             ]
         )
     elif case.name == "shear_xy":
+        gids["all_nodes"] = 107
         lines.extend(
             [
                 "/BCS/1",
-                "y0_fixed_xy",
+                "all_fixed_y",
                 "#  Tra rot   skew_ID  grnod_ID",
-                f"   110 000{0:10d}{gids['y0']:10d}",
+                f"   010 000{0:10d}{gids['all_nodes']:10d}",
                 "/BCS/2",
-                "y1_fixed_y",
+                "y0_fixed_x",
                 "#  Tra rot   skew_ID  grnod_ID",
-                f"   010 000{0:10d}{gids['y1']:10d}",
+                f"   100 000{0:10d}{gids['y0']:10d}",
                 "/BCS/3",
                 "anchor_z",
                 "#  Tra rot   skew_ID  grnod_ID",
                 f"   001 000{0:10d}{gids['anchor_xyz']:10d}",
-                "/IMPDISP/1",
-                "y1_shear_x",
-                "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
-                f"{1:10d}{'X':>10}{0:10d}{0:10d}{gids['y1']:10d}{0:10d}{0:10d}",
-                "#            Scale_x             Scale_y              Tstart               Tstop",
-                fmt_f(1.0, STRAIN * LY, 0.0, 0.0),
             ]
         )
+        y_min = min(y for _name, y in groups["_shear_slices"])  # type: ignore[index]
+        for idx, (name, y_value) in enumerate(groups["_shear_slices"], start=10):  # type: ignore[index]
+            gids[name] = 200 + idx
+            displacement = STRAIN * (y_value - y_min)
+            if abs(displacement) <= 1.0e-15:
+                continue
+            lines.extend(
+                [
+                    f"/IMPDISP/{idx}",
+                    f"{name}_shear_x",
+                    "#   Ifunct       DIR     Iskew   Isensor   Gnod_id     Frame     Icoor",
+                    f"{1:10d}{'X':>10}{0:10d}{0:10d}{gids[name]:10d}{0:10d}{0:10d}",
+                    "#            Scale_x             Scale_y              Tstart               Tstop",
+                    fmt_f(1.0, displacement, 0.0, 0.0),
+                ]
+            )
     else:
         raise ValueError(case.name)
     for name, gid in gids.items():
-        lines.extend(group_block(gid, name, groups[name]))
+        if name.startswith("_"):
+            continue
+        lines.extend(group_block(gid, name, groups[name]))  # type: ignore[arg-type]
     return lines
 
 

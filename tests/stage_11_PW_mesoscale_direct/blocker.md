@@ -6,9 +6,9 @@ The Kok geometry port generated the 25 mm x 25 mm, four-ply `[0/+45/-45/90]` AP-
 
 The solver completed status and numerical comparison are:
 
-- E_x_GPa: measured `53.76192024927913` GPa, target `53.3` GPa, error `0.8666421187225736` percent.
-- E_y_GPa: measured `59.306453208261246` GPa, target `53.3` GPa, error `11.26914297985225` percent.
-- G_xy_GPa: measured `14.383728664547622` GPa, target `20.5` GPa, error `29.83546992903599` percent.
+- E_x_GPa: measured `53.9154639276` GPa, target `53.3` GPa, error `1.154716562101321` percent.
+- E_y_GPa: measured `58.435006723866664` GPa, target `53.3` GPa, error `9.634158956597874` percent.
+- G_xy_GPa: measured `23.988896753333332` GPa, target `20.5` GPa, error `17.01900855284552` percent.
 
 Kok 2022 used VTC401 carbon/epoxy target data, while this project stage uses the canonical IM7/8552 material card. Material delta and the coarsened TETRA10 validation mesh are the leading suspected causes if the miss is near the tolerance band.
 
