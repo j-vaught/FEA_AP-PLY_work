@@ -177,22 +177,52 @@ def run_kok_preprocessor(config: APPlyConfig) -> Path:
 
 
 def _kok_standalone_fallback(config: APPlyConfig, inp_path: Path) -> None:
-    """Standalone fallback for environments without Abaqus.
+    """Standalone clean-room geometry path through :mod:`kok_geom`.
 
-    Uses Shapely + GMSH only: builds the per-ply tow polygons by mirroring
-    Kok's `tape_placement.laminate_creation` algorithm, extrudes each ply to
-    cured_ply_thickness, unions the four plies through the thickness, and
-    writes an Abaqus-compatible .inp via meshio.
-
-    The full implementation is several hundred lines and is deferred to the
-    runtime build (see spec section 10.1 risk 1).  At spec time we record the
-    interface only.
+    This replaces the earlier Abaqus-only contingency.  It writes the same
+    runner-facing Abaqus INP path plus the native MSH4 and orientations sidecar
+    under ``geometry/`` for parser and mesh sanity checks.
     """
-    raise NotImplementedError(
-        "Standalone fallback geometry generator deferred to implementation; "
-        "ensure Abaqus CAE is available in the Lima VM, or enable path B "
-        "(meshio + GMSH) at the next pipeline step."
+    from kok_geom.config import KokConfig
+    from kok_geom.io import convert_msh_to_inp, generate_mesh
+
+    kok_config = KokConfig.model_validate(
+        {
+            "panel": {
+                "size_x_mm": config.specimen_size_x,
+                "size_y_mm": config.specimen_size_y,
+                "n_plies": config.n_plies,
+                "symmetry": "none",
+            },
+            "laydown": {
+                "fiber_angles_deg": [float(v) for v in config.tape_angles],
+                "placement_sequence": "1010",
+                "angle_shift_deg": 0.0,
+                "tape_width_mm": float(config.tape_widths[0]),
+                "cured_ply_thickness_mm": config.cured_ply_thickness,
+                "undulation_ratio": config.undulation_ratio,
+                "tape_spacing": config.tape_spacing,
+            },
+            "mesh": {
+                "in_plane_target_mm_impact_zone": config.mesh_seed_size,
+                "in_plane_target_mm_far_field": config.mesh_seed_size,
+                "through_thickness_target_mm": config.cured_ply_thickness,
+                "graded_zone_radius_mm": 0.0,
+                "element_order": 2,
+            },
+            "output": {
+                "msh_path": str(GEOM_DIR / "ap_ply_block.msh"),
+                "orientations_json_path": str(GEOM_DIR / "orientations.json"),
+                "msh_format": "msh4_ascii",
+            },
+        }
     )
+    cfg_path = GEOM_DIR / "kok_config.json"
+    kok_config.to_file(cfg_path)
+    msh_path, orientations_path = generate_mesh(cfg_path)
+    convert_msh_to_inp(msh_path, inp_path)
+    print("[stage11] clean-room geometry written:", msh_path)
+    print("[stage11] orientation sidecar written:", orientations_path)
 
 
 # ---------------------------------------------------------------------------

@@ -63,7 +63,7 @@ def test_laminate_orientation_groups_include_each_physical_tow_and_resin():
         assert "RESIN_PLY_2" in names
         assert any(name.startswith("TOW_PLY_1_TAG_") for name in names)
         assert any(name.startswith("TOW_PLY_2_TAG_") for name in names)
-        assert any(name.startswith("UNDUL_PLY_1_PLY_2_TAG_") for name in names)
+        assert any(record.name.startswith("UNDUL_PLY_1_PLY_2_TAG_") for record in solid.undulations)
         for group in groups:
             vector = group.get("fiber_direction_unit_vector")
             if vector is not None:
@@ -101,4 +101,5 @@ def test_cli_mult_ply_orientation_sidecar(tmp_path):
     _, orientations_path = generate_mesh(config_path)
     sidecar = json.loads(orientations_path.read_text())
     kinds = {group["kind"] for group in sidecar["groups"]}
-    assert {"straight_tow", "resin_pocket", "undulation"}.issubset(kinds)
+    assert {"straight_tow", "resin_pocket"}.issubset(kinds)
+    assert sidecar["undulations"]

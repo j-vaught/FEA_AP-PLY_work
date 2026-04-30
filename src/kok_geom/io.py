@@ -71,11 +71,13 @@ def write_orientations(
         )
     else:
         raise ValueError("write_orientations requires either ply or tow+physical_name")
-    data = {
+    data: dict[str, object] = {
         "schema_version": 1,
         "panel_config_hash": config.config_hash(),
         "groups": orientation_groups,
     }
+    if laminate is not None:
+        data["undulations"] = laminate.undulation_metadata()
     out.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
     return out
 

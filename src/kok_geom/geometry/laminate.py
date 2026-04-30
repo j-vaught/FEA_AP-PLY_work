@@ -41,18 +41,21 @@ class LaminateSolid:
                     "isotropic": True,
                 }
             )
-        for record in self.undulations:
-            groups.append(
-                {
-                    "name": record.name,
-                    "kind": "undulation",
-                    "ply_indices": [record.lower_ply_index, record.upper_ply_index],
-                    "nominal_angles_deg": [record.lower_angle_deg, record.upper_angle_deg],
-                    "phi_avg_deg": record.phi_avg_deg,
-                    "fiber_direction_unit_vector": list(record.fiber_direction_unit_vector),
-                }
-            )
         return groups
+
+    def undulation_metadata(self) -> list[dict[str, object]]:
+        return [
+            {
+                "name": record.name,
+                "kind": "undulation",
+                "ply_indices": [record.lower_ply_index, record.upper_ply_index],
+                "nominal_angles_deg": [record.lower_angle_deg, record.upper_angle_deg],
+                "point_m": list(record.point_m),
+                "phi_avg_deg": record.phi_avg_deg,
+                "fiber_direction_unit_vector": list(record.fiber_direction_unit_vector),
+            }
+            for record in self.undulations
+        ]
 
 
 @dataclass(frozen=True)
