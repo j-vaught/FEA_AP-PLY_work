@@ -1,0 +1,23 @@
+{
+  "stage": 15,
+  "name": "flat_ballistic",
+  "verdict": "INCONCLUSIVE",
+  "metrics": {
+    "attempted_velocity_m_s": 300.0,
+    "starter_reached": true,
+    "starter_return_code": 2,
+    "engine_reached": false,
+    "v50_sweep_reached": false,
+    "blocker": "generated starter deck is invalid native OpenRadioss syntax and still uses stale LAW25 + TYPE14 path"
+  },
+  "reference": {
+    "runner_reference_V50_m_s": 300.0,
+    "runner_reference_V50_status": "UNVERIFIED",
+    "single_attempt_velocity_m_s": 300.0
+  },
+  "tolerance": {
+    "V50_relative_error": 0.05,
+    "residual_velocity_relative_error": 0.10
+  },
+  "git_sha": "6f622ec0f9eb90d217fc5f7572278709472870ad"
+}
