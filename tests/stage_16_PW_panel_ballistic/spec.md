@@ -13,6 +13,8 @@ The original text below predates the empirical LAW/PROP compatibility matrix and
 
 Post-Kok-M5 Phase A reran the 200 mm x 200 mm P1-TWT representative section with the current `kok_geom` schema, explicit midplane symmetry, and explicit `tow_coverage_fraction = 0.94` in `geometry/kok_p1_twt_200_config.json`. The coarse 2 mm preflight command `time python -m kok_geom --config tests/stage_16_PW_panel_ballistic/geometry/kok_p1_twt_200_config.json --out tests/stage_16_PW_panel_ballistic/geometry/p1_twt_200.msh` completed in `402.98 s` (`6.72 min`) and wrote a mesh with `1,979,649` nodes and `1,440,000` TETRA10 elements. This supersedes the earlier `timeout 900` blocker: the full 200 mm section now clears the Phase A geometry gate and the next blocker, if any, must come from the measured Phase B solver wall-clock rather than from meshing.
 
+Post-Kok-M5 Phase B then replaced the stale runner with a direct deck writer on the actual `200 mm` M5 mesh, including interface-plane node duplication, `23` `/INTER/TYPE2` cards, the verified `LAW12 + TYPE6 + /INIBRI/ORTHO + /FAIL/HASHIN` panel stack, and a rigid tetra4 projectile with `/INTER/TYPE7` contact. Starter passed on the real Stage 16 deck in `150.82 s` at `-nt 32`, but the live engine remained compute-bound: at `NC=500`, `T=7.3073e-07 s`, the same run had consumed `187.42 s` of engine wall-clock and OpenRadioss still reported `128051.43 s` (`35.57 h`) remaining. This is the binding post-M5 compute result for Stage 16: the geometry path is fixed, but the full single shot is still infeasible on the available workstation budget.
+
 ---
 
 ## 1. Goal: this is the project's terminal test
