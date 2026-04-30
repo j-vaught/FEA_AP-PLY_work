@@ -103,9 +103,13 @@ def generate_mesh(config_path: str | Path, out: str | Path | None = None) -> tup
         if out_path.suffix:
             config.output.msh_path = str(out_path)
             config.output.orientations_json_path = str(out_path.with_name("orientations.json"))
+            if config.output.inp_path is None and out_path.suffix.lower() == ".msh":
+                config.output.inp_path = str(out_path.with_suffix(".inp"))
         else:
             config.output.msh_path = str(out_path / Path(config.output.msh_path).name)
             config.output.orientations_json_path = str(out_path / Path(config.output.orientations_json_path).name)
+            if config.output.inp_path is None:
+                config.output.inp_path = str(out_path / Path(config.output.msh_path).with_suffix(".inp").name)
 
     laminate = Laminate.from_config(config)
     msh_path = Path(config.output.msh_path)

@@ -1,0 +1,30 @@
+{
+  "panel": {
+    "size_x_mm": 25.0,
+    "size_y_mm": 25.0,
+    "n_plies": 4,
+    "symmetry": "none"
+  },
+  "laydown": {
+    "fiber_angles_deg": [0.0, 45.0, -45.0, 90.0],
+    "placement_sequence": "1010",
+    "angle_shift_deg": 0.0,
+    "tape_width_mm": 6.35,
+    "cured_ply_thickness_mm": 0.18,
+    "undulation_ratio": 0.09,
+    "tape_spacing": 1
+  },
+  "mesh": {
+    "in_plane_target_mm_impact_zone": 1.0,
+    "in_plane_target_mm_far_field": 1.0,
+    "through_thickness_target_mm": 1.0,
+    "graded_zone_radius_mm": 0.0,
+    "element_order": 2
+  },
+  "output": {
+    "msh_path": "tests/stage_11_PW_mesoscale_direct/geometry/panel.msh",
+    "inp_path": "tests/stage_11_PW_mesoscale_direct/geometry/panel.inp",
+    "orientations_json_path": "tests/stage_11_PW_mesoscale_direct/geometry/orientations.json",
+    "msh_format": "msh4_ascii"
+  }
+}

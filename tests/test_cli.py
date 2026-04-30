@@ -45,6 +45,7 @@ def test_cli_writes_msh_and_orientation_sidecar(tmp_path):
     )
     assert proc.returncode == 0, proc.stdout
     assert out_path.exists()
+    assert out_path.with_suffix(".inp").exists()
     sidecar = out_path.with_name("orientations.json")
     assert sidecar.exists()
     assert any(block.type == "tetra10" for block in meshio.read(out_path).cells)

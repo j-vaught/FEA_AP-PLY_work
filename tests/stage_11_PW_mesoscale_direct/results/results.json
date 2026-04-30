@@ -1,0 +1,41 @@
+{
+  "stage": 11,
+  "name": "PW_mesoscale_direct",
+  "verdict": "FAIL",
+  "metrics": {
+    "geometry_source": "kok_geom CLI/config",
+    "canonical_material_property": "LAW12 + TYPE6/SOL_ORTH",
+    "orientation_evidence": "per-tow /INIBRI/ORTHO with neutral TYPE6 Ip=1, Iorth=0, Phi=0",
+    "strain_measurement": "engineering strain from imposed displacement; VTK cell Stra[0] is not used for the gate",
+    "mesh": {
+      "nodes": 48563,
+      "tetra10": 25918,
+      "tow_tetra10": 9467,
+      "resin_tetra10": 16451
+    },
+    "starter_all_ok": true,
+    "engine_all_ok": true,
+    "modulus_gate_evaluated": true,
+    "modulus_gate_verdict": "FAIL",
+    "max_relative_error_pct": 99.88833189923861,
+    "E_x_GPa": 16.705859039432056,
+    "E_y_GPa": 16.96796806103866,
+    "G_xy_GPa": 0.02289196065608415,
+    "wall_clock_s": 792.1211848314852
+  },
+  "reference": {
+    "Kok_2022_targets_GPa": {
+      "E_x_GPa": 53.3,
+      "E_y_GPa": 53.3,
+      "G_xy_GPa": 20.5
+    },
+    "material_note": "Geometry target values are Kok 2022 VTC401 AP-PLY; solver card uses project IM7/8552.",
+    "geometry_config": "/mnt/storage/j-vaught/fea_apply/tests/stage_11_PW_mesoscale_direct/geometry/kok_stage11_config.json",
+    "material_card": "/mnt/storage/j-vaught/fea_apply/references/material_cards/im7_8552.json"
+  },
+  "tolerance": {
+    "PASS_relative_error": 0.1,
+    "INCONCLUSIVE_if_within_extra_relative_error": 0.05
+  },
+  "git_sha": "dd2d45f6d6e6a273bc7b409bdba005175dd92ba5"
+}

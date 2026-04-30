@@ -42,6 +42,12 @@ _run/
 *.pvd
 *.vtkhdf
 
+# Stage 11 generated Kok/OpenRadioss intermediates
+tests/stage_11_PW_mesoscale_direct/geometry/panel.*
+tests/stage_11_PW_mesoscale_direct/geometry/orientations.json
+tests/stage_11_PW_mesoscale_direct/geometry/*_0000.rad
+tests/stage_11_PW_mesoscale_direct/geometry/*_0001.rad
+
 # IDE / OS
 .vscode/
 .idea/
