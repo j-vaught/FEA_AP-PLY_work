@@ -483,11 +483,11 @@ def setup_plotter(plotter: pv.Plotter, camera, bounds: tuple[float, float, float
     plotter.camera_position = camera
     try:
         plotter.camera.parallel_projection = True
-        plotter.camera.parallel_scale = 0.58 * max(bounds[1] - bounds[0], bounds[3] - bounds[2], bounds[5] - bounds[4], 1.0e-9)
+        plotter.camera.parallel_scale = 1.08 * max(bounds[1] - bounds[0], bounds[3] - bounds[2], bounds[5] - bounds[4], 1.0e-9)
     except Exception:
         pass
     plotter.add_axes(color=CHARCOAL, line_width=2)
-    plotter.camera.zoom(1.10)
+    plotter.camera.zoom(1.0)
 
 
 def render_field_png(
