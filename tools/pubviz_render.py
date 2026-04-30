@@ -81,6 +81,7 @@ class StageConfig:
     third_field: str
     chart_kind: str
     final_index: int = -1
+    view_scale: float = 0.58
 
     @property
     def stage_dir(self) -> pathlib.Path:
@@ -196,6 +197,8 @@ def stage_configs() -> dict[int, StageConfig]:
             ),
             "axial_stress_mpa",
             "stage06",
+            -1,
+            1.08,
         ),
         7: StageConfig(
             7,
@@ -206,6 +209,8 @@ def stage_configs() -> dict[int, StageConfig]:
             ("runs/stage07_7B_law12_type6A*.vtk", "runs/stage07_7A_law12_type6A*.vtk"),
             "axial_stress_mpa",
             "stage07",
+            -1,
+            0.38,
         ),
         8: StageConfig(
             8,
@@ -478,12 +483,12 @@ def bar_label(field: FieldChoice) -> str:
     return labels.get(field.scalar, f"{field.title} ({field.units})")
 
 
-def setup_plotter(plotter: pv.Plotter, camera, bounds: tuple[float, float, float, float, float, float]) -> None:
+def setup_plotter(plotter: pv.Plotter, camera, bounds: tuple[float, float, float, float, float, float], view_scale: float = 0.58) -> None:
     plotter.set_background(WHITE)
     plotter.camera_position = camera
     try:
         plotter.camera.parallel_projection = True
-        plotter.camera.parallel_scale = 1.08 * max(bounds[1] - bounds[0], bounds[3] - bounds[2], bounds[5] - bounds[4], 1.0e-9)
+        plotter.camera.parallel_scale = view_scale * max(bounds[1] - bounds[0], bounds[3] - bounds[2], bounds[5] - bounds[4], 1.0e-9)
     except Exception:
         pass
     plotter.add_axes(color=CHARCOAL, line_width=2)
@@ -500,10 +505,11 @@ def render_field_png(
     out_png: pathlib.Path,
     size: tuple[int, int] = PANEL_SIZE,
     scale: float = 1.0,
+    view_scale: float = 0.58,
 ) -> None:
     mesh = prepare_grid(path, warp, scale)
     plotter = pv.Plotter(off_screen=True, window_size=size)
-    setup_plotter(plotter, camera, bounds)
+    setup_plotter(plotter, camera, bounds, view_scale)
     show_edges = mesh.n_cells <= 2500
     plotter.add_mesh(
         mesh,
@@ -526,7 +532,7 @@ def render_wireframe_png(config: StageConfig, out_png: pathlib.Path) -> None:
     camera = camera_for(bounds)
     mesh = prepare_grid(paths[-1], 0.0)
     plotter = pv.Plotter(off_screen=True, window_size=(1800, 1200))
-    setup_plotter(plotter, camera, bounds)
+    setup_plotter(plotter, camera, bounds, config.view_scale)
     plotter.add_mesh(mesh, style="wireframe", color=GARNET, line_width=0.55)
     plotter.add_text(config.title, position="upper_left", font_size=18, color=CHARCOAL, font="courier")
     plotter.add_text(config.key_result, position="lower_left", font_size=12, color=CHARCOAL, font="courier")
@@ -862,7 +868,7 @@ def render_composite(config: StageConfig) -> pathlib.Path:
         tmpdir = pathlib.Path(tmp)
         for idx, field in enumerate(selected):
             out = tmpdir / f"panel_{idx}.png"
-            render_field_png(final_path, field, ranges[field.scalar], camera, bounds, warp, out)
+            render_field_png(final_path, field, ranges[field.scalar], camera, bounds, warp, out, view_scale=config.view_scale)
             panel_paths.append(out)
         chart_png = write_history_chart(config)
         out_png = config.figures_dir / f"{config.prefix}_composite.png"
@@ -887,7 +893,7 @@ def render_split_scene(
     plotter = pv.Plotter(off_screen=True, window_size=(1920, 880), shape=(1, 2), border=False)
     for idx, field in enumerate([disp_field, vm_field]):
         plotter.subplot(0, idx)
-        setup_plotter(plotter, camera, bounds)
+        setup_plotter(plotter, camera, bounds, config.view_scale)
         show_edges = mesh.n_cells <= 2500
         plotter.add_mesh(
             mesh,
