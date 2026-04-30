@@ -44,6 +44,20 @@ class GmshSession:
 class OCCBackend:
     """Thin wrapper over the subset of gmsh.model.occ used in M1."""
 
+    def add_box(
+        self,
+        *,
+        x0: float,
+        y0: float,
+        z0: float,
+        dx: float,
+        dy: float,
+        dz: float,
+    ) -> DimTag:
+        if dx <= 0.0 or dy <= 0.0 or dz <= 0.0:
+            raise ValueError("box dimensions must be positive")
+        return DimTag(3, gmsh.model.occ.addBox(x0, y0, z0, dx, dy, dz))
+
     def add_oriented_box(
         self,
         *,

@@ -8,6 +8,7 @@ from pathlib import Path
 import meshio
 
 from kok_geom.config import KokConfig, MM
+from kok_geom.geometry.ply import Ply, PlySolid
 from kok_geom.geometry.tow import Tow
 from kok_geom.mesh import configure_msh_format, generate_volume_mesh
 from kok_geom.occ_backend import GmshSession, OCCBackend
@@ -17,15 +18,40 @@ def write_orientations(
     path: str | Path,
     *,
     config: KokConfig,
-    tow: Tow,
-    physical_name: str,
+    tow: Tow | None = None,
+    physical_name: str | None = None,
+    ply: PlySolid | None = None,
 ) -> Path:
     out = Path(path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    data = {
-        "schema_version": 1,
-        "panel_config_hash": config.config_hash(),
-        "groups": [
+    groups: list[dict[str, object]] = []
+    if ply is not None:
+        for ply_tow in ply.tows:
+            groups.append(
+                {
+                    "name": ply_tow.name,
+                    "kind": "straight_tow",
+                    "ply_index": ply.ply_index,
+                    "nominal_angle_deg": config.laydown.fiber_angles_deg[0],
+                    "fiber_direction_unit_vector": list(ply_tow.orientation),
+                    "transverse_in_plane_unit_vector": [
+                        -ply_tow.orientation[1],
+                        ply_tow.orientation[0],
+                        0.0,
+                    ],
+                    "through_thickness_unit_vector": [0.0, 0.0, 1.0],
+                }
+            )
+        groups.append(
+            {
+                "name": ply.resin.name,
+                "kind": "resin_pocket",
+                "ply_index": ply.ply_index,
+                "isotropic": True,
+            }
+        )
+    elif tow is not None and physical_name is not None:
+        groups.append(
             {
                 "name": physical_name,
                 "kind": "straight_tow",
@@ -35,7 +61,13 @@ def write_orientations(
                 "transverse_in_plane_unit_vector": list(tow.transverse_in_plane),
                 "through_thickness_unit_vector": [0.0, 0.0, 1.0],
             }
-        ],
+        )
+    else:
+        raise ValueError("write_orientations requires either ply or tow+physical_name")
+    data = {
+        "schema_version": 1,
+        "panel_config_hash": config.config_hash(),
+        "groups": groups,
     }
     out.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
     return out
@@ -43,6 +75,10 @@ def write_orientations(
 
 def convert_msh_to_inp(msh_path: str | Path, inp_path: str | Path) -> Path:
     mesh = meshio.read(msh_path)
+    # meshio exposes signed GMSH bounding-entity ids as a cell set; Abaqus INP
+    # has no matching concept and its reader treats the negative ids as bad set
+    # references on round-trip. Physical-group ELSETs are preserved without it.
+    mesh.cell_sets.pop("gmsh:bounding_entities", None)
     out = Path(inp_path)
     out.parent.mkdir(parents=True, exist_ok=True)
     meshio.write(out, mesh, file_format="abaqus")
@@ -63,21 +99,22 @@ def generate_mesh(config_path: str | Path, out: str | Path | None = None) -> tup
             config.output.orientations_json_path = str(out_path / Path(config.output.orientations_json_path).name)
 
     angle = config.laydown.fiber_angles_deg[0]
-    tow = Tow(
-        length_m=config.panel.size_x_m,
+    ply = Ply(
+        size_x_m=config.panel.size_x_m,
+        size_y_m=config.panel.size_y_m,
         angle_deg=angle,
         tape_width_m=config.laydown.tape_width_for_ply_mm(0) * MM,
         cured_ply_thickness_m=config.laydown.cured_ply_thickness_m,
-        undulation_ratio=config.laydown.undulation_ratio,
-        center_m=(0.0, 0.0, 0.5 * config.laydown.cured_ply_thickness_m),
-        name="TOW_PLY_1_TAG_0",
+        tape_spacing=config.laydown.tape_spacing,
+        ply_index=1,
+        z_bottom_m=0.0,
     )
     msh_path = Path(config.output.msh_path)
     orientations_path = Path(config.output.orientations_json_path)
 
     with GmshSession("kok_geom_m1"):
         backend = OCCBackend()
-        tow.build_occ(backend, add_physical_group=True)
+        ply_solid = ply.build_occ(backend)
         configure_msh_format(config.output.msh_format)
         generate_volume_mesh(
             target_size_m=config.mesh.target_size_m,
@@ -88,8 +125,7 @@ def generate_mesh(config_path: str | Path, out: str | Path | None = None) -> tup
     write_orientations(
         orientations_path,
         config=config,
-        tow=tow,
-        physical_name=tow.name,
+        ply=ply_solid,
     )
     if config.output.inp_path:
         convert_msh_to_inp(msh_path, config.output.inp_path)

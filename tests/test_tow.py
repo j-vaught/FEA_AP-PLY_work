@@ -7,7 +7,7 @@ import numpy as np
 
 from kok_geom.config import KokConfig
 from kok_geom.geometry.tow import Tow, UndulationProfile
-from kok_geom.io import generate_mesh
+from kok_geom.io import convert_msh_to_inp, generate_mesh
 from kok_geom.mesh import configure_msh_format, generate_volume_mesh
 from kok_geom.occ_backend import GmshSession, OCCBackend
 
@@ -77,7 +77,7 @@ def test_m1_meshio_roundtrip(tmp_path):
     assert not any(block.type == "tetra" for block in mesh.cells)
 
     inp_path = tmp_path / "tow.inp"
-    meshio.write(inp_path, mesh, file_format="abaqus")
+    convert_msh_to_inp(msh_path, inp_path)
     reread = meshio.read(inp_path)
     assert sum(len(block.data) for block in reread.cells) > 0
 
