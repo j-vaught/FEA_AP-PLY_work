@@ -1,6 +1,6 @@
 {
   "stage": 10,
-  "verdict": "FAIL",
+  "verdict": "INCONCLUSIVE",
   "metrics": {
     "mesh": "20x20x4 HEXA8 voxel cell",
     "fiber_volume_fraction": 0.6,
