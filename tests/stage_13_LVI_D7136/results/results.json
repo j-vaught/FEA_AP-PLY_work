@@ -1,0 +1,27 @@
+{
+  "stage": 13,
+  "name": "LVI_D7136",
+  "verdict": "INCONCLUSIVE",
+  "metrics": {
+    "render_command": "python tests/stage_13_LVI_D7136/runner.py --render-only",
+    "execute_command": "python tests/stage_13_LVI_D7136/runner.py --execute --n-proc 16",
+    "mesh_pipeline_reached": true,
+    "mesh_pipeline_error": "mesh pipeline incomplete ('pyramid')",
+    "starter_reached": true,
+    "starter_return_code": 2,
+    "engine_reached": false,
+    "state_handoff_for_stage14": false
+  },
+  "reference": {
+    "target_peak_force_N": 8000.0,
+    "target_peak_force_tolerance": 0.10,
+    "target_delamination_area_m2": 0.0015,
+    "target_delamination_area_tolerance": 0.20,
+    "secondary_olsson_peak_force_N": 18370.0
+  },
+  "tolerance": {
+    "peak_force_relative_error": 0.10,
+    "delamination_area_relative_error": 0.20
+  },
+  "git_sha": "3b38d43b59736a06fbf5f5a23802946a30d3d7ad"
+}
