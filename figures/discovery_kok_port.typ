@@ -7,24 +7,37 @@
 #let atlantic = rgb("#466A9F")
 #let congaree = rgb("#1F414D")
 #let black10 = rgb("#ECECEC")
-#let black30 = rgb("#C7C7C7")
-#let black50 = rgb("#A2A2A2")
 #let charcoal = rgb("#363636")
 #let white = rgb("#FFFFFF")
+
+#let labels = (
+  ("M1 tow", horseshoe, white),
+  ("M2 ply", horseshoe, white),
+  ("M3 laminate", horseshoe, white),
+  ("M4 CLI/export", honeycomb, charcoal),
+  ("M5 Stage 11 PASS", horseshoe, white),
+)
 
 #align(center)[#text(size: 11pt, weight: "bold")[Discovery: Kok Geometry Port]]
 #v(1mm)
 #cetz.canvas(length: 1cm, {
   import cetz.draw: *
-  let labels = ("M1 tow", "M2 ply", "M3 laminate", "M4 CLI/export")
-  for i in range(4) {
-    let x = 1.2 + i * 3.1
-    rect((x, 4.6), (x + 2.25, 5.45), fill: if i < 3 { horseshoe } else { honeycomb }, stroke: charcoal + 0.4pt)
-    content((x + 1.125, 5.02), [#text(fill: if i < 3 { white } else { charcoal })[#labels.at(i)]], anchor: "center")
-    if i < 3 { line((x + 2.25, 5.02), (x + 3.1, 5.02), stroke: charcoal + 0.55pt) }
+  for (i, item) in labels.enumerate() {
+    let label = item.at(0)
+    let fill = item.at(1)
+    let text-fill = item.at(2)
+    let x = 0.6 + i * 2.95
+    rect((x, 4.65), (x + 2.25, 5.50), fill: fill, stroke: charcoal + 0.4pt)
+    content((x + 1.125, 5.08), [#text(size: 6.8pt, fill: text-fill)[#label]], anchor: "center")
+    if i < labels.len() - 1 {
+      line((x + 2.25, 5.08), (x + 2.95, 5.08), stroke: charcoal + 0.55pt)
+    }
   }
-  rect((1.2, 2.35), (10.85, 3.25), fill: black10, stroke: charcoal + 0.4pt)
-  line((1.6, 2.8), (4.2, 2.8), stroke: garnet + 1.4pt)
-  content((4.35, 2.8), [Stage 11 Ex = 16.7 GPa vs target 53.3 GPa], anchor: "west")
-  content((6.2, 1.6), [Port is runnable through OpenRadioss; current clean-room geometry lacks the published stiffness.], anchor: "center")
+
+  rect((0.8, 2.40), (13.80, 3.28), fill: black10, stroke: charcoal + 0.4pt)
+  line((1.2, 2.84), (4.1, 2.84), stroke: garnet + 1.2pt)
+  content((4.3, 2.84), [Stage 11 PASS: Ex 49.04 / Ey 53.29 / Gxy 22.53 GPa], anchor: "west")
+
+  rect((1.8, 1.15), (12.8, 1.95), fill: white, stroke: charcoal + 0.35pt)
+  content((7.3, 1.55), [The clean-room Kok port now runs through OpenRadioss and lands inside the 10% Kok 2022 modulus gate.], anchor: "center")
 })
