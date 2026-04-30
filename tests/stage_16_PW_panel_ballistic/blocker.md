@@ -1,78 +1,74 @@
-# Stage 16 Phase B Diagnostics - 200 mm M5 shot is compute-bound at `-nt 32`
+# Stage 16 Reduced-Section Status - Phase B1 gate clears on 75 mm deck
 
 Author: J.C. Vaught
 
-The old pre-M5 Stage 16 blocker is superseded twice over:
+The old `200 mm x 200 mm` post-M5 blocker remains useful as the full-section
+upper-bound measurement, but it is no longer the active gate for this pass.
+Part 1 of the reduced-section retry was executed with both requested levers:
 
-1. Phase A proved that the post-M5 `200 mm x 200 mm` P1-TWT section meshes in
-   minutes, so geometry is no longer the gating problem.
-2. Phase B proved that the actual OpenRadioss shot on that real post-M5 deck is
-   still compute-bound at `-nt 32`, but now with a measured live solver
-   trajectory instead of the stale pre-M5 extrapolation.
+1. Section size reduced from `200 mm x 200 mm` to `75 mm x 75 mm`.
+2. Uniform in-plane mesh relaxed from `2.0 mm` to `3.0 mm`.
 
-Phase A geometry facts retained from the accepted rerun:
+## Phase A1 - reduced geometry build
 
-- `panel.symmetry = "midplane"` to reflect the symmetric 24-ply stack.
-- `laydown.tow_coverage_fraction = 0.94` explicitly, matching the working
-  post-M5 Stage 11 geometry rather than relying on the older default.
-- The accepted Phase A mesh itself remains:
-  `1,979,649` nodes, `1,440,000` TETRA10, `402.98 s` (`6.72 min`) wall-clock.
-
-Phase B deck path:
-
-- Replaced the stale pre-M5 `runner.py` with a direct post-M5 deck writer that
-  reads `geometry/p1_twt_200.msh` plus `geometry/orientations.json`.
-- The writer duplicates only the `23` interior ply planes, remaps the upper-ply
-  connectivity on each interface, and emits:
-  `LAW12 + TYPE6 + /INIBRI/ORTHO + /FAIL/HASHIN`, `23` `/INTER/TYPE2` cards,
-  a rigid tetra4 steel projectile, `/INTER/TYPE7` impact contact, and clamped
-  cut-edge BCs.
-- Resulting starter-deck size and counts:
-  `605 MiB` starter deck, `2,909,493` total nodes after interface duplication,
-  `1,343,052` composite TETRA10, `96,948` resin TETRA10, `2,496` projectile
-  TETRA4, and `230,000` interface surface quads.
-
-Measured Phase B live run:
+Command run:
 
 ```bash
-python tests/stage_16_PW_panel_ballistic/runner.py
+python -m kok_geom \
+  --config tests/stage_16_PW_panel_ballistic/geometry/kok_p1_twt_75_config.json \
+  --out tests/stage_16_PW_panel_ballistic/geometry/p1_twt_75.msh
 ```
 
-Measured starter result on the actual Phase B run:
+Measured Phase A1 output:
 
-- Starter return code: `0` (PASS).
-- Starter wall-clock: `150.82 s` = `2.51 min`.
+- Mesh wall-clock: `58.36 s` = `0.97 min`.
+- Mesh size: `290,521` nodes, `207,936` `TETRA10`.
+- Orientation sidecar groups: `1,633`.
+- Undulation metadata records: `638`.
 
-Measured engine checkpoints on the same `-nt 32` run before manual stop:
+The reduced geometry therefore clears the `<= 15 min` meshing gate easily.
 
-- `NC = 100`, `T = 1.4615e-07 s`, elapsed `45.93 s`, remaining
-  `157101.49 s` = `43.64 h`.
-- `NC = 200`, `T = 2.9229e-07 s`, elapsed `81.16 s`, remaining
-  `138759.07 s` = `38.54 h`.
-- `NC = 300`, `T = 4.3844e-07 s`, elapsed `116.52 s`, remaining
-  `132762.79 s` = `36.88 h`.
-- `NC = 400`, `T = 5.8458e-07 s`, elapsed `152.31 s`, remaining
-  `130115.46 s` = `36.14 h`.
-- `NC = 500`, `T = 7.3073e-07 s`, elapsed `187.42 s`, remaining
-  `128051.43 s` = `35.57 h`.
+## Phase B1 - reduced single-shot wall-clock probe
 
-Manual-stop bookkeeping for that run:
+The Stage 16 runner was extended with a narrow `--stop-at-cycle` mode so the
+engine can be measured at a clean checkpoint without wasting hours on a full
+shot during the gate test.
 
-- Runner-reported starter wall-clock: `150.82 s`.
-- Runner-reported engine wall-clock before stop: `211.89 s`.
-- Runner total wall-clock before stop: `362.71 s` = `6.05 min`.
-- Engine return code after manual kill: `3`.
+Command run:
+
+```bash
+python tests/stage_16_PW_panel_ballistic/runner.py \
+  --mesh tests/stage_16_PW_panel_ballistic/geometry/p1_twt_75.msh \
+  --orientations tests/stage_16_PW_panel_ballistic/geometry/orientations.json \
+  --run-dir tests/stage_16_PW_panel_ballistic/runs/stage_16_post_m5/phase_b_single_shot_75_c2000 \
+  --threads 32 \
+  --stop-at-cycle 2000
+```
+
+Measured reduced-deck counts:
+
+- Total nodes after interface duplication: `427,509`.
+- Composite `TETRA10`: `195,348`.
+- Resin `TETRA10`: `12,588`.
+- Projectile `TETRA4`: `2,496`.
+- `/INTER/TYPE2` interfaces: `23`.
+- Interface surface quads: `33,212`.
+
+Measured solver timings:
+
+- Starter return code: `0`.
+- Starter wall-clock: `12.64 s`.
+- Engine checkpoint: `NC = 2000`, `T = 3.0867e-06 s`, `DT = 1.5433e-09 s`.
+- Engine elapsed at checkpoint: `78.55 s`.
+- Engine remaining at checkpoint: `12,645.32 s` = `3.51 h`.
+- Projected total shot wall-clock from the checkpoint: `3.53 h`.
 
 Interpretation:
 
-- The deck is no longer blocked on syntax or geometry. The full post-M5 Stage 16
-  stack starts cleanly through starter and enters the real engine on `32`
-  threads.
-- The compute bottleneck is now measured on the real deck, not inferred from
-  the old pre-M5 mesh. By `NC=500`, the live engine is still projecting
-  `35.57 h` remaining, before even reaching `0.001 ms` of simulated time.
-- Even if the remaining-time estimate improved materially after contact, it is
-  already far outside the `6 h/shot` Phase B gate. Launching the Stage 16 sweep
-  would be irresponsible use of compute.
-- Stage 16 therefore stops here with:
-  `INCONCLUSIVE: compute-bound, measured on the post-Kok-M5 200 mm deck at -nt 32`.
+- The reduced `75 mm x 75 mm`, `3 mm` mesh is **not compute-bound** against the
+  `6 h/shot` decision gate on the available `-nt 32` workstation path.
+- Phase B1 therefore clears and the next required step is **Phase C1 V50
+  sweep**, not further geometric reduction.
+- Stage 16 remains `INCONCLUSIVE` in this pass only because the V50 sweep was
+  not completed yet; the wall-clock blocker moved from "single shot infeasible"
+  to "reduced shot feasible, calibration sweep still pending."

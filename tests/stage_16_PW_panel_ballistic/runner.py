@@ -23,6 +23,8 @@ import csv
 import json
 import math
 import os
+import re
+import signal
 import shutil
 import subprocess
 import tempfile
@@ -54,6 +56,12 @@ ANIM_DT_S = 5.0e-6
 TH_DT_S = 1.0e-6
 ROUND_DIGITS = 12
 GLOBAL_TH_COLUMNS = 16
+NC_RE = re.compile(
+    r"NC=\s*(?P<cycle>\d+)\s+T=\s*(?P<time>[0-9.E+-]+)\s+DT=\s*(?P<dt>[0-9.E+-]+)"
+)
+ELAPSED_RE = re.compile(
+    r"ELAPSED TIME=\s*(?P<elapsed>[0-9.E+-]+)\s*s\s+REMAINING TIME=\s*(?P<remaining>[0-9.E+-]+)\s*s"
+)
 
 
 @dataclass(frozen=True)
@@ -164,6 +172,12 @@ class PhaseBRunSummary:
     starter_wall_clock_s: float
     engine_wall_clock_s: float
     total_wall_clock_s: float
+    stop_at_cycle: int | None
+    checkpoint_cycle: int | None
+    checkpoint_time_s: float | None
+    checkpoint_dt_s: float | None
+    checkpoint_elapsed_s: float | None
+    checkpoint_remaining_s: float | None
     t01_csv_written: bool
     parse_status: str
     residual_velocity_m_s: float | None
@@ -823,12 +837,39 @@ def write_engine(engine_path: Path) -> Path:
     return engine_path
 
 
+def parse_engine_progress(console_log: Path) -> dict[str, float | int] | None:
+    if not console_log.exists():
+        return None
+
+    latest: dict[str, float | int] | None = None
+    pending: dict[str, float | int] | None = None
+    for line in console_log.read_text(encoding="utf-8", errors="replace").splitlines():
+        nc_match = NC_RE.search(line)
+        if nc_match is not None:
+            pending = {
+                "cycle": int(nc_match.group("cycle")),
+                "time_s": float(nc_match.group("time")),
+                "dt_s": float(nc_match.group("dt")),
+            }
+            continue
+        elapsed_match = ELAPSED_RE.search(line)
+        if elapsed_match is not None and pending is not None:
+            latest = {
+                **pending,
+                "elapsed_s": float(elapsed_match.group("elapsed")),
+                "remaining_s": float(elapsed_match.group("remaining")),
+            }
+            pending = None
+    return latest
+
+
 def run_solver(
     starter_path: Path,
     engine_path: Path,
     threads: int,
     starter_only: bool,
-) -> tuple[int, int | None, float, float]:
+    stop_at_cycle: int | None = None,
+) -> tuple[int, int | None, float, float, dict[str, float | int] | None]:
     env = radioss_env()
     workdir = starter_path.parent
 
@@ -846,22 +887,56 @@ def run_solver(
         )
     starter_wall = time.monotonic() - starter_t0
     if starter_proc.returncode != 0 or starter_only:
-        return starter_proc.returncode, None, starter_wall, 0.0
+        return starter_proc.returncode, None, starter_wall, 0.0, None
 
     engine_cmd = [str(ENGINE), "-i", engine_path.name, "-nt", str(threads)]
     engine_log = workdir / (engine_path.stem + ".console.log")
     engine_t0 = time.monotonic()
+    if stop_at_cycle is None:
+        with engine_log.open("w", encoding="utf-8") as log_handle:
+            engine_proc = subprocess.run(
+                engine_cmd,
+                cwd=str(workdir),
+                env=env,
+                stdout=log_handle,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+        engine_wall = time.monotonic() - engine_t0
+        return starter_proc.returncode, engine_proc.returncode, starter_wall, engine_wall, None
+
+    checkpoint: dict[str, float | int] | None = None
+    stop_sent = False
     with engine_log.open("w", encoding="utf-8") as log_handle:
-        engine_proc = subprocess.run(
+        engine_proc = subprocess.Popen(
             engine_cmd,
             cwd=str(workdir),
             env=env,
             stdout=log_handle,
             stderr=subprocess.STDOUT,
-            check=False,
         )
+        while True:
+            rc = engine_proc.poll()
+            checkpoint = parse_engine_progress(engine_log)
+            if not stop_sent and checkpoint is not None and int(checkpoint["cycle"]) >= stop_at_cycle:
+                engine_proc.send_signal(signal.SIGINT)
+                stop_sent = True
+            if rc is not None:
+                break
+            time.sleep(2.0)
+        if stop_sent and engine_proc.returncode is None:
+            try:
+                engine_proc.wait(timeout=15.0)
+            except subprocess.TimeoutExpired:
+                engine_proc.terminate()
+                try:
+                    engine_proc.wait(timeout=10.0)
+                except subprocess.TimeoutExpired:
+                    engine_proc.kill()
+                    engine_proc.wait()
+        checkpoint = parse_engine_progress(engine_log)
     engine_wall = time.monotonic() - engine_t0
-    return starter_proc.returncode, engine_proc.returncode, starter_wall, engine_wall
+    return starter_proc.returncode, engine_proc.returncode, starter_wall, engine_wall, checkpoint
 
 
 def convert_t01_to_csv(t01_path: Path) -> Path | None:
@@ -946,6 +1021,7 @@ def run_phase_b(
     threads: int,
     write_only: bool,
     starter_only: bool,
+    stop_at_cycle: int | None,
 ) -> PhaseBRunSummary:
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -970,6 +1046,7 @@ def run_phase_b(
     engine_rc: int | None = None
     starter_wall = 0.0
     engine_wall = 0.0
+    checkpoint = None
     t01_csv_written = False
     parse_status = "NOT_RUN"
     residual_velocity = None
@@ -980,11 +1057,12 @@ def run_phase_b(
     time_end_s = None
 
     if not write_only:
-        starter_rc, engine_rc, starter_wall, engine_wall = run_solver(
+        starter_rc, engine_rc, starter_wall, engine_wall, checkpoint = run_solver(
             starter_path=starter_path,
             engine_path=engine_path,
             threads=threads,
             starter_only=starter_only,
+            stop_at_cycle=stop_at_cycle,
         )
         if starter_rc == 0 and not starter_only and engine_rc == 0:
             t01_path = run_dir / "stage16_phase_b_single_shotT01"
@@ -1007,6 +1085,8 @@ def run_phase_b(
             parse_status = "STARTER_FAILED"
         elif starter_only:
             parse_status = "STARTER_ONLY"
+        elif checkpoint is not None:
+            parse_status = "ENGINE_STOPPED_AT_CYCLE"
         else:
             parse_status = "ENGINE_FAILED"
 
@@ -1020,6 +1100,12 @@ def run_phase_b(
         starter_wall_clock_s=starter_wall,
         engine_wall_clock_s=engine_wall,
         total_wall_clock_s=starter_wall + engine_wall,
+        stop_at_cycle=stop_at_cycle,
+        checkpoint_cycle=None if checkpoint is None else int(checkpoint["cycle"]),
+        checkpoint_time_s=None if checkpoint is None else float(checkpoint["time_s"]),
+        checkpoint_dt_s=None if checkpoint is None else float(checkpoint["dt_s"]),
+        checkpoint_elapsed_s=None if checkpoint is None else float(checkpoint["elapsed_s"]),
+        checkpoint_remaining_s=None if checkpoint is None else float(checkpoint["remaining_s"]),
         t01_csv_written=t01_csv_written,
         parse_status=parse_status,
         residual_velocity_m_s=residual_velocity,
@@ -1046,6 +1132,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--threads", type=int, default=int(os.environ.get("RAD_NT", "32")))
     parser.add_argument("--write-only", action="store_true")
     parser.add_argument("--starter-only", action="store_true")
+    parser.add_argument("--stop-at-cycle", type=int, default=None)
     args = parser.parse_args(argv)
 
     summary = run_phase_b(
@@ -1056,6 +1143,7 @@ def main(argv: list[str] | None = None) -> int:
         threads=args.threads,
         write_only=args.write_only,
         starter_only=args.starter_only,
+        stop_at_cycle=args.stop_at_cycle,
     )
 
     print(json.dumps(asdict(summary), indent=2, default=str))
