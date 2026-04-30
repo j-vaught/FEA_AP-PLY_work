@@ -52,6 +52,7 @@ class Ply:
     cured_ply_thickness_m: float = 0.18 * MM
     undulation_ratio: float = 0.09
     tape_spacing: int = 1
+    tow_coverage_fraction: float = 0.85
     ply_index: int = 1
     z_bottom_m: float = 0.0
     origin_offset_m: float = 0.0
@@ -67,6 +68,7 @@ class Ply:
         cured_ply_thickness_mm: float = 0.18,
         undulation_ratio: float = 0.09,
         tape_spacing: int = 1,
+        tow_coverage_fraction: float = 0.85,
         ply_index: int = 1,
         z_bottom_mm: float = 0.0,
         origin_offset_mm: float = 0.0,
@@ -79,6 +81,7 @@ class Ply:
             cured_ply_thickness_m=cured_ply_thickness_mm * MM,
             undulation_ratio=undulation_ratio,
             tape_spacing=tape_spacing,
+            tow_coverage_fraction=tow_coverage_fraction,
             ply_index=ply_index,
             z_bottom_m=z_bottom_mm * MM,
             origin_offset_m=origin_offset_mm * MM,
@@ -93,6 +96,8 @@ class Ply:
             raise ValueError("undulation_ratio must be positive")
         if self.tape_spacing not in {1, 2, 3}:
             raise ValueError("tape_spacing must be one of {1, 2, 3}")
+        if not 0.0 < self.tow_coverage_fraction <= 1.0:
+            raise ValueError("tow_coverage_fraction must be in (0, 1]")
 
     @property
     def angle_rad(self) -> float:
@@ -110,6 +115,18 @@ class Ply:
     @property
     def active_pitch_m(self) -> float:
         return (self.tape_spacing + 1) * self.tape_width_m
+
+    @property
+    def lane_pitch_m(self) -> float:
+        """Filled AP-PLY lane pitch after skipped courses are completed.
+
+        Nagelsmit Ch. 2 §§2.2-2.3 define the skip factor for the placement
+        sequence, then the remaining spaces are filled by later courses. The
+        geometry mesh therefore uses a filled-lane pitch; ``tape_spacing``
+        remains the interlace-period parameter used by crossing bookkeeping.
+        """
+
+        return self.tape_width_m / self.tow_coverage_fraction
 
     @property
     def panel_area_m2(self) -> float:
@@ -135,12 +152,12 @@ class Ply:
         return max(projections) - min(projections)
 
     def expected_tow_count(self) -> int:
-        return max(1, int(math.floor((self.transverse_span_m() + 1.0e-12) / self.active_pitch_m)))
+        return max(1, int(math.ceil((self.transverse_span_m() + self.tape_width_m) / self.lane_pitch_m)))
 
     def center_offsets_m(self) -> tuple[float, ...]:
         count = self.expected_tow_count()
-        first = -0.5 * (count - 1) * self.active_pitch_m + self.origin_offset_m
-        return tuple(first + i * self.active_pitch_m for i in range(count))
+        first = -0.5 * (count - 1) * self.lane_pitch_m + self.origin_offset_m
+        return tuple(first + i * self.lane_pitch_m for i in range(count))
 
     def build_occ(self, backend: OCCBackend | None = None) -> PlySolid:
         occ = backend or OCCBackend()

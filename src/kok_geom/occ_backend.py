@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from pathlib import Path
+from collections.abc import Callable
 
 import gmsh
 
@@ -83,6 +84,103 @@ class OCCBackend:
         if any(not math.isclose(v, 0.0, abs_tol=1.0e-15) for v in center_m):
             gmsh.model.occ.translate([(3, tag)], *center_m)
         return DimTag(3, tag)
+
+    def add_ramped_box(
+        self,
+        *,
+        projected_length_m: float,
+        rise_m: float,
+        width_m: float,
+        thickness_m: float,
+        angle_rad: float,
+        projected_center_m: tuple[float, float, float],
+    ) -> DimTag:
+        """Add a rectangular tow ramp as a tilted OCC box.
+
+        The local x-axis projects to ``projected_length_m`` in the laminate
+        plane and rises by ``rise_m`` through thickness.
+        """
+
+        if projected_length_m <= 0.0 or width_m <= 0.0 or thickness_m <= 0.0:
+            raise ValueError("ramped box dimensions must be positive")
+        slope_rad = math.atan2(rise_m, projected_length_m)
+        true_length_m = math.hypot(projected_length_m, rise_m)
+        tag = gmsh.model.occ.addBox(
+            -true_length_m / 2.0,
+            -width_m / 2.0,
+            -thickness_m / 2.0,
+            true_length_m,
+            width_m,
+            thickness_m,
+        )
+        if not math.isclose(slope_rad, 0.0, abs_tol=1.0e-15):
+            gmsh.model.occ.rotate([(3, tag)], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -slope_rad)
+        if not math.isclose(angle_rad, 0.0, abs_tol=1.0e-15):
+            gmsh.model.occ.rotate([(3, tag)], 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, angle_rad)
+        gmsh.model.occ.translate([(3, tag)], *projected_center_m)
+        return DimTag(3, tag)
+
+    def add_swept_box(
+        self,
+        *,
+        direction_xy: tuple[float, float],
+        transverse_xy: tuple[float, float],
+        width_m: float,
+        thickness_m: float,
+        center_at: Callable[[float], tuple[float, float, float]],
+        tangent_at: Callable[[float], tuple[float, float, float]],
+        s_values_m: list[float],
+    ) -> DimTag:
+        """Loft a rectangular tow section through sampled centerline stations."""
+
+        if width_m <= 0.0 or thickness_m <= 0.0:
+            raise ValueError("swept section dimensions must be positive")
+        if len(s_values_m) < 2:
+            raise ValueError("at least two sweep stations are required")
+
+        vx, vy = transverse_xy
+        width_axis = (vx, vy, 0.0)
+        width_norm = math.sqrt(sum(value * value for value in width_axis))
+        if width_norm <= 0.0:
+            raise ValueError("transverse axis must be nonzero")
+        width_axis = tuple(value / width_norm for value in width_axis)
+
+        wires: list[int] = []
+        for s in s_values_m:
+            cx, cy, cz = center_at(s)
+            tx, ty, tz = tangent_at(s)
+            tangent_norm = math.sqrt(tx * tx + ty * ty + tz * tz)
+            if tangent_norm <= 0.0:
+                raise ValueError("sweep tangent must be nonzero")
+            tangent = (tx / tangent_norm, ty / tangent_norm, tz / tangent_norm)
+
+            # e_thickness = tangent x width_axis. This is mostly global +Z,
+            # with a small in-plane component during the Kok Fig. 4 ramp.
+            ex, ey, ez = width_axis
+            thickness_axis = (
+                tangent[1] * ez - tangent[2] * ey,
+                tangent[2] * ex - tangent[0] * ez,
+                tangent[0] * ey - tangent[1] * ex,
+            )
+            thickness_norm = math.sqrt(sum(value * value for value in thickness_axis))
+            if thickness_norm <= 0.0:
+                raise ValueError("degenerate swept section axes")
+            thickness_axis = tuple(value / thickness_norm for value in thickness_axis)
+
+            points: list[int] = []
+            for wsign, tsign in ((-1.0, -1.0), (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0)):
+                x = cx + wsign * 0.5 * width_m * width_axis[0] + tsign * 0.5 * thickness_m * thickness_axis[0]
+                y = cy + wsign * 0.5 * width_m * width_axis[1] + tsign * 0.5 * thickness_m * thickness_axis[1]
+                z = cz + wsign * 0.5 * width_m * width_axis[2] + tsign * 0.5 * thickness_m * thickness_axis[2]
+                points.append(gmsh.model.occ.addPoint(x, y, z))
+            lines = [gmsh.model.occ.addLine(points[idx], points[(idx + 1) % 4]) for idx in range(4)]
+            wires.append(gmsh.model.occ.addWire(lines, checkClosed=True))
+
+        out = gmsh.model.occ.addThruSections(wires, makeSolid=True, makeRuled=True)
+        volumes = [DimTag(dim, tag) for dim, tag in out if dim == 3]
+        if not volumes:
+            raise RuntimeError("OCC addThruSections did not return a volume")
+        return volumes[0]
 
     def synchronize(self) -> None:
         gmsh.model.occ.synchronize()

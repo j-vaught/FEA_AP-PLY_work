@@ -29,9 +29,7 @@ def generate_volume_mesh(*, target_size_m: float, element_order: int = 2) -> Non
     gmsh.model.mesh.setSize(entities, target_size_m)
     gmsh.option.setNumber("Mesh.ElementOrder", element_order)
     gmsh.option.setNumber("Mesh.SecondOrderIncomplete", 0)
-    gmsh.option.setNumber("Mesh.Algorithm3D", 10)
+    gmsh.option.setNumber("Mesh.Algorithm3D", 1)
     gmsh.model.mesh.generate(3)
-    gmsh.model.mesh.optimize("Netgen")
     if element_order == 2:
-        # Netgen optimization rewrites the linear mesh, so promote after it.
         gmsh.model.mesh.setOrder(2)

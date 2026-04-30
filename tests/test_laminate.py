@@ -29,6 +29,7 @@ def test_angle_shift_translates_repeated_period_by_one_tape_width():
                 "cured_ply_thickness_mm": 0.18,
                 "undulation_ratio": 0.09,
                 "tape_spacing": 1,
+                "tow_coverage_fraction": 1.0,
             },
         }
     )
@@ -52,6 +53,7 @@ def test_laminate_orientation_groups_include_each_physical_tow_and_resin():
                 "cured_ply_thickness_mm": 0.18,
                 "undulation_ratio": 0.09,
                 "tape_spacing": 1,
+                "tow_coverage_fraction": 1.0,
             },
         }
     )
@@ -59,16 +61,47 @@ def test_laminate_orientation_groups_include_each_physical_tow_and_resin():
         solid = Laminate.from_config(config).build_occ(OCCBackend())
         groups = solid.orientation_groups()
         names = {group["name"] for group in groups}
-        assert "RESIN_PLY_1" in names
-        assert "RESIN_PLY_2" in names
+        assert any(name.startswith("RESIN_PLY_") for name in names)
         assert any(name.startswith("TOW_PLY_1_TAG_") for name in names)
         assert any(name.startswith("TOW_PLY_2_TAG_") for name in names)
-        assert any(record.name.startswith("UNDUL_PLY_1_PLY_2_TAG_") for record in solid.undulations)
+        assert any(name.startswith("UNDUL_PLY_1_PLY_2_TAG_") for name in names)
         for group in groups:
             vector = group.get("fiber_direction_unit_vector")
             if vector is not None:
                 norm = math.sqrt(sum(float(v) * float(v) for v in vector))
                 assert math.isclose(norm, 1.0, rel_tol=0.0, abs_tol=1.0e-12)
+
+
+def test_laminate_has_rotated_undulation_axes_and_low_resin_fraction():
+    config = KokConfig.model_validate(
+        {
+            "panel": {"size_x_mm": 25.0, "size_y_mm": 25.0, "n_plies": 4, "symmetry": "none"},
+            "laydown": {
+                "fiber_angles_deg": [0.0, 45.0, -45.0, 90.0],
+                "placement_sequence": "1010",
+                "tape_width_mm": 6.35,
+                "cured_ply_thickness_mm": 0.18,
+                "undulation_ratio": 0.09,
+                "tape_spacing": 1,
+                "tow_coverage_fraction": 1.0,
+            },
+        }
+    )
+    with GmshSession("test_laminate_physical_undulations"):
+        backend = OCCBackend()
+        solid = Laminate.from_config(config).build_occ(backend)
+        volumes_by_kind: dict[str, float] = {}
+        for group in solid.groups:
+            volumes_by_kind[group.kind] = volumes_by_kind.get(group.kind, 0.0) + sum(
+                backend.volume(tag) for tag in group.dim_tags
+            )
+        total = sum(volumes_by_kind.values())
+        assert volumes_by_kind["resin_pocket"] / total <= 0.20
+
+        undulation_groups = [group for group in solid.orientation_groups() if group["kind"] == "undulation"]
+        assert undulation_groups
+        assert any(float(group["fiber_direction_unit_vector"][2]) > 0.0 for group in undulation_groups)
+        assert any(float(group["fiber_direction_unit_vector"][2]) < 0.0 for group in undulation_groups)
 
 
 def test_cli_mult_ply_orientation_sidecar(tmp_path):

@@ -58,6 +58,7 @@ class LaydownConfig(BaseModel):
     cured_ply_thickness_mm: float = Field(default=0.18, gt=0.0)
     undulation_ratio: float = Field(default=0.09, gt=0.0)
     tape_spacing: int = Field(default=1, ge=1)
+    tow_coverage_fraction: float = Field(default=0.85, gt=0.0, le=1.0)
     shorthand: str | None = None
 
     @field_validator("fiber_angles_deg")
@@ -214,6 +215,7 @@ def _parse_uofsc_shorthand(text: str) -> dict[str, Any]:
             "cured_ply_thickness_mm": 0.18,
             "undulation_ratio": 0.09,
             "tape_spacing": infer_tape_spacing(placement),
+            "tow_coverage_fraction": 0.85,
             "shorthand": text,
         },
     }
@@ -253,6 +255,7 @@ def _parse_nagelsmit_shorthand(text: str) -> dict[str, Any]:
             "cured_ply_thickness_mm": 0.18,
             "undulation_ratio": 0.09,
             "tape_spacing": spacing_a,
+            "tow_coverage_fraction": 0.85,
             "shorthand": text,
         },
     }
