@@ -2,31 +2,33 @@
   "stage": 16,
   "name": "PW_panel_ballistic",
   "verdict": "INCONCLUSIVE",
+  "phase_gate_completed": "A",
   "metrics": {
     "panel_configuration": "P1-TWT",
     "published_V50_status": "UNVERIFIED",
     "rough_sweep_center_m_s": 100.0,
     "geometry_200mm_attempted": true,
-    "geometry_200mm_timeout_s": 900,
-    "geometry_200mm_mesh_written": false,
-    "geometry_100mm_attempted": true,
-    "geometry_100mm_mesh_written": true,
-    "geometry_100mm_nodes": 1120178,
-    "geometry_100mm_tetra10": 603481,
-    "geometry_100mm_physical_groups": 120,
-    "geometry_100mm_orientation_groups": 120,
-    "geometry_100mm_undulation_records": 207,
+    "geometry_200mm_mesh_written": true,
+    "geometry_200mm_wall_clock_s": 402.98,
+    "geometry_200mm_wall_clock_min": 6.72,
+    "geometry_200mm_nodes": 1979649,
+    "geometry_200mm_tetra10": 1440000,
+    "geometry_200mm_orientation_groups": 9844,
+    "geometry_200mm_undulation_records": 4466,
     "coarse_mesh_target_mm": 2.0,
-    "estimated_wall_clock_h_per_shot_lower_bound": 4.19,
+    "phase_a_gate_passed": true,
     "v50_sweep_reached": false,
-    "blocker": "100 mm downscaled coarse mesh already implies more than 4 h per shot; required graded 0.5 mm impact-zone mesh and contact/erosion would exceed workstation budget"
+    "blocker": "Phase A complete; Phase B single-shot wall-clock measurement not yet recorded in this snapshot"
   },
   "reference": {
     "configuration": "[+45/90/-45/0][10001000][0][6.35 mm]",
     "plies": 24,
     "total_thickness_mm": 4.55,
-    "section_attempted_mm": [200.0, 200.0],
-    "section_downscaled_mm": [100.0, 100.0]
+    "section_attempted_mm": [
+      200.0,
+      200.0
+    ],
+    "section_downscaled_mm": null
   },
   "tolerance": {
     "V50_relative_error": 0.07

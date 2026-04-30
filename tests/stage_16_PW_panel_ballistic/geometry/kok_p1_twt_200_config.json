@@ -3,7 +3,7 @@
     "size_x_mm": 200.0,
     "size_y_mm": 200.0,
     "n_plies": 24,
-    "symmetry": "none"
+    "symmetry": "midplane"
   },
   "laydown": {
     "fiber_angles_deg": [45.0, 90.0, -45.0, 0.0],
@@ -12,7 +12,8 @@
     "tape_width_mm": 6.35,
     "cured_ply_thickness_mm": 0.18958,
     "undulation_ratio": 0.09,
-    "tape_spacing": 3
+    "tape_spacing": 3,
+    "tow_coverage_fraction": 0.94
   },
   "mesh": {
     "in_plane_target_mm_impact_zone": 2.0,
