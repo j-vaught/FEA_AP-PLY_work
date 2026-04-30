@@ -17,7 +17,7 @@ UofSC pseudo-woven (PW) and TU Delft AP-PLY are the same automated-fibre-placeme
 | Solver | OpenRadioss | AGPL-3 |
 | Element family | solid HEXA8 / TETRA10 only | — |
 | Composite damage | LAW25 + /FAIL/HASHIN, /FAIL/PUCK, /FAIL/TSAIWU | — |
-| Geometry | clean-room Python port of Kok's AP-PLY preprocessor (planned) targeting `gmsh.model.occ.*` | MIT |
+| Geometry | clean-room Python AP-PLY geometry port targeting `gmsh.model.occ.*` | MIT |
 | Mesh | GMSH via `gmsh` Python API | GPL-2 |
 | Visualisation | OpenRadioss `anim_to_vtk` → ASCII VTK → PyVista headless / ParaView `pvbatch` | BSD-3 / Apache-2 |
 | Plots | CSV export → Typst + CeTZ | Apache-2 |
@@ -28,7 +28,7 @@ UofSC pseudo-woven (PW) and TU Delft AP-PLY are the same automated-fibre-placeme
 plan/                 # master plan, consolidation review, Kok port plan
 references/           # 7 annotated bibliographies + 7 BibTeX files
 tests/stage_NN_*/     # 16 per-stage specifications + runner skeletons
-src/kok_geom/         # AP-PLY geometry port (planned, empty so far)
+src/kok_geom/         # AP-PLY geometry port
 figures/              # generated figures
 notes/                # working notes
 ```
@@ -63,9 +63,19 @@ Each `tests/stage_NN_*/spec.md` contains geometry, mesh, BCs, material card, Ope
 - `plan/kok_port_plan.md` — clean-room Python port plan for the AP-PLY geometry preprocessor (4-week milestoned).
 - `plan/initial_framing.md` — superseded pre-research framing kept for the record.
 
+## Kok Geometry Port
+
+`src/kok_geom/` is a clean-room Python implementation of the AP-PLY geometry preprocessor targeting GMSH-OCC. M1 provides the single-tow primitive, Kok-style sinusoidal undulation profile metadata, TETRA10 mesh export, and an `orientations.json` sidecar:
+
+```bash
+kok_geom --config kok_config.json --out build/panel.msh
+```
+
+Rutger Kok's `rutger-kok/ap_ply_model_creation` repository is cited as prior art only. This implementation is based on the published AP-PLY literature and does not copy LGPL source code.
+
 ## License
 
-Pending. Most of the repository is research planning, specifications, and references; the eventual `src/kok_geom/` port is planned MIT.
+MIT for `src/kok_geom/` and the packaging added for it. Planning documents and test specifications remain project documentation by J.C. Vaught unless otherwise noted.
 
 ## Author
 

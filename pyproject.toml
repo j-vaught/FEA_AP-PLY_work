@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kok-geom"
+version = "0.1.0"
+description = "Clean-room GMSH-OCC AP-PLY geometry preprocessor"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "J.C. Vaught", email = "jvaught@sc.edu" }
+]
+dependencies = [
+  "gmsh>=4.15",
+  "meshio>=5.3",
+  "numpy>=1.26",
+  "pydantic>=2.6"
+]
+
+[project.scripts]
+kok_geom = "kok_geom.cli:main"
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
