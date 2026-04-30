@@ -1,0 +1,25 @@
+{
+  "stage": 12,
+  "name": "DCB_ENF_cohesive",
+  "verdict": "INCONCLUSIVE",
+  "metrics": {
+    "attempted_command": "python tests/stage_12_DCB_ENF_cohesive/runner.py --threads 16 --approach A",
+    "attempt_wall_clock_s_before_termination": 161,
+    "starter_reached": false,
+    "engine_reached": false,
+    "blocker": "full-resolution GMSH mesh/deck path did not reach starter within bounded attempt; runner still uses stale LAW25 + TYPE14 assumptions"
+  },
+  "reference": {
+    "DCB_SBT_peak_N": 150.4680198580416,
+    "DCB_MBT_peak_N": 145.23940140737605,
+    "ENF_SBT_peak_N": 627.9217421667403,
+    "ENF_CBT_peak_N": 602.8048724800707,
+    "mode_I_process_zone_m": 0.0027866666666666665,
+    "Turon_l_e_max_Ne3_m": 0.0009288888888888888,
+    "cohesive_constants": "IM7/8552 Camanho-Davila 2003 values in runner.py"
+  },
+  "tolerance": {
+    "peak_load_relative_error": 0.05
+  },
+  "git_sha": "2b21713f6a728f06011d705502419f2875c09239"
+}
