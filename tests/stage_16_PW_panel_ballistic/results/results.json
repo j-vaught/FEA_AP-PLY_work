@@ -71,8 +71,72 @@
     "phase_b_reduced_gate_passed": true,
     "phase_b_reduced_compute_bound": false,
     "phase_b_reduced_next_phase": "C1 V50 sweep",
-    "v50_sweep_reached": false,
-    "blocker": "INCONCLUSIVE: reduced 75 mm x 75 mm / 3 mm deck clears the Phase B wall-clock gate at 3.53 h/shot on 32 threads, but the V50 sweep was not completed in this pass."
+    "v50_sweep_reached": true,
+    "blocker": "INCONCLUSIVE: reduced 75 mm x 75 mm / 3 mm deck clears the Phase B wall-clock gate at 3.53 h/shot on 32 threads, but the V50 sweep was not completed in this pass.",
+    "v50_simulated_m_s": null,
+    "v50_published_m_s": 100.0,
+    "v50_published_status": "UNVERIFIED",
+    "v50_relative_error": null,
+    "v50_fit_status": "ALL_ARRESTED",
+    "v50_sweep_shots": [
+      {
+        "idx": 0,
+        "multiplier": 0.8,
+        "velocity_m_s": 80.0,
+        "residual_velocity_m_s": 0.0,
+        "engine_rc": 0,
+        "wrapper_elapsed_h": 3.465908495452669
+      },
+      {
+        "idx": 1,
+        "multiplier": 0.9,
+        "velocity_m_s": 90.0,
+        "residual_velocity_m_s": 0.0,
+        "engine_rc": 0,
+        "wrapper_elapsed_h": 3.472106677889824
+      },
+      {
+        "idx": 2,
+        "multiplier": 0.95,
+        "velocity_m_s": 95.0,
+        "residual_velocity_m_s": 0.0,
+        "engine_rc": 0,
+        "wrapper_elapsed_h": 3.468053212430742
+      },
+      {
+        "idx": 3,
+        "multiplier": 1.0,
+        "velocity_m_s": 100.0,
+        "residual_velocity_m_s": 0.0,
+        "engine_rc": 0,
+        "wrapper_elapsed_h": 3.482621441152361
+      },
+      {
+        "idx": 4,
+        "multiplier": 1.05,
+        "velocity_m_s": 105.0,
+        "residual_velocity_m_s": 0.0,
+        "engine_rc": 0,
+        "wrapper_elapsed_h": 3.453524698416392
+      },
+      {
+        "idx": 5,
+        "multiplier": 1.1,
+        "velocity_m_s": 110.0,
+        "residual_velocity_m_s": 0.0,
+        "engine_rc": 0,
+        "wrapper_elapsed_h": 3.4584958550665115
+      },
+      {
+        "idx": 6,
+        "multiplier": 1.2,
+        "velocity_m_s": 120.0,
+        "residual_velocity_m_s": 0.0,
+        "engine_rc": 0,
+        "wrapper_elapsed_h": 3.4485893856816823
+      }
+    ],
+    "inconclusive_reason": "V50_published is UNVERIFIED; simulated V50 reported but cannot be gated against an authoritative published number"
   },
   "reference": {
     "configuration": "[+45/90/-45/0][10001000][0][6.35 mm]",
