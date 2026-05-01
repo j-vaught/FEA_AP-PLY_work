@@ -414,10 +414,10 @@ def law12_block(material: Material) -> list[str]:
     ]
 
 
-def hashin_block(material: Material) -> list[str]:
+def hashin_block(material: Material, pthickfail: float = 1.0) -> list[str]:
     return [
         "/FAIL/HASHIN/1",
-        fmt_i(1, 0, 1) + f"{1.0:20.12g}",
+        fmt_i(1, 0, 1) + f"{pthickfail:20.12g}",
         fmt_f(material.xt, material.yt, material.zt, material.xc, material.yc),
         fmt_f(material.zc, material.s12, material.s12, material.s23, material.s13),
         fmt_f(0.0, 1.0, 0.0, 0.0),
@@ -555,6 +555,7 @@ def write_starter(
     projectile_spec: ProjectileSpec,
     starter_path: Path,
     impact_velocity_m_s: float,
+    pthickfail: float = 1.0,
 ) -> DeckMetadata:
     duplicate_planes, last_duplicate_node_id = duplicate_interface_planes(panel)
     projectile = build_projectile_mesh(float(panel.z_values[panel.strike_plane_k]), projectile_spec)
@@ -605,7 +606,7 @@ def write_starter(
                 ],
             )
             write_lines(handle, law12_block(material))
-            write_lines(handle, hashin_block(material))
+            write_lines(handle, hashin_block(material, pthickfail))
             write_lines(handle, resin_block())
             write_lines(handle, projectile_block(projectile_spec))
             write_lines(handle, type6_property(1))
@@ -1022,6 +1023,7 @@ def run_phase_b(
     write_only: bool,
     starter_only: bool,
     stop_at_cycle: int | None,
+    pthickfail: float = 1.0,
 ) -> PhaseBRunSummary:
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1039,6 +1041,7 @@ def run_phase_b(
         projectile_spec=projectile_spec,
         starter_path=starter_path,
         impact_velocity_m_s=impact_velocity_m_s,
+        pthickfail=pthickfail,
     )
     write_engine(engine_path)
 
@@ -1133,6 +1136,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--write-only", action="store_true")
     parser.add_argument("--starter-only", action="store_true")
     parser.add_argument("--stop-at-cycle", type=int, default=None)
+    parser.add_argument("--pthickfail", type=float, default=1.0,
+                        help="Hashin erosion threshold (1.0 = all IPs fail; 0.5 = half IPs fail).")
     args = parser.parse_args(argv)
 
     summary = run_phase_b(
@@ -1144,6 +1149,7 @@ def main(argv: list[str] | None = None) -> int:
         write_only=args.write_only,
         starter_only=args.starter_only,
         stop_at_cycle=args.stop_at_cycle,
+        pthickfail=args.pthickfail,
     )
 
     print(json.dumps(asdict(summary), indent=2, default=str))
